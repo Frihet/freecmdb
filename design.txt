@@ -1,0 +1,95 @@
+
+Browser compatibility:
+
+FreeCMDB is written with a somewhat modern internet browser in. It
+makes use of various features, such as SVG rendering and various CSS
+selectors, that are only available in sane browsers. In other words,
+FreeCMDB does not fully work with Internet Explorer. All major
+functionality that uses such features must have a fallback, e.g. when
+svg rendering is not provided, FreeCMDB falls back to a non-clickable
+PNG. Minor visual glitches and some reduced functionality will occur
+in older browsers, though. Firefox 2.0 an onwards should work
+fine. Feedback on other browsers is welcome.
+
+All CIs have the same list of columns. If a column is not applicable
+to a CI type, don't fill in a value. This may change in a future version.
+
+As of yet, it is not possible to track dependencies on roles or people
+unless you turn these into configuration items. Doing so would cause
+any non-trivial CMDB configuration to become huge and very hard to get
+an overview over. Especially the graphs would most likely lose their
+usefulness. Handling this intelligently is planned in a future version.
+
+Generally, FreeCMDB should be snappy, with a page rendering time of
+0.1-0.2 seconds on the slowest pages using intermediate hardware and a
+medium sized database. A normal page view performs 5-15 database
+queries. Usually, PHP is the bottleneck, not the database. There are
+several possible improvements, which could speed things up if
+needed. These include caching the graph generation as well as not
+showing the full list of CI items in the 'add dependency' forms -
+provide a smart form for searching instead.
+
+
+Database schema:
+
+The schema is simple and mostly normalized. The exception is the
+ci_log table. There are two exceptions:
+
+Firstly, one would have to split the ci_log table into 4 different
+tables to represent different change types. This may be done in a
+later version.
+
+Secondly, all column data is always stored in a varchar. In the case
+of a dropdown list, what is stored is actually the id of the column
+item in the ci_column_list table, ergo an integer that references
+another table is stored in a unreferenced varchar column. The major
+benefit of this construction is that it is possible to change column
+types back and forth without destroying data. 
+
+FreeCMDB usually avoids deleting data. When data, such as old CIs, is
+removed, a flag on that line in the database is set, and nothing else
+happens. This means that undelete functionality is relatively easy to
+implement. It also means that the database will grow with use. This
+should not be a big problem as deleting and creating CIs is not a
+common operation. If this turns out to be a problem in the future, a
+maximum time before deleted data is _truly_ removed may be
+implemented.
+
+Short-term Todo:
+
+* On copy, prompt for new name first.
+* There are some hardcodings against the Name column. Replace these with a hardcoding against a default column.
+* Paging
+* Add required column
+
+Plans for future work:
+
+* Provide a web service; integration with e.g. Nagios, as well as other CMDBs.
+* Use nmap to provide network information on CIs.
+* Add users and privileges, specifically read only and non-dml users.
+* Allow Anna to upload custom style sheets.
+* Remove the one update button per line and replace them with a common update button at the top and bottom.
+* Add more column types, e.g. list of links.
+* Custom reports, e.g. show me all CI:s with nobody set as responsible, or show me all CI:s that depend on a CI with status=down. Just extend the ci listing interface a bit with better filters and add a feature to save specific such searches.
+* Make it possible to reorder the columns in the display.
+* Pagination.
+* Change schedule: Users that can submit change requests in the CMDB that need to be approved by an admin to become visible. 
+* RfC handling system. Track life time of RfCs, and make it possible to specify how an RfC will update the CMDB beforehand, so that when the change is performed, the CMDB is updated.
+* Different columns for different CI types.
+* Add possibility to remove some features for some CI types, e.g. CI types that are really assets should not have dependency tracking or RfC handling.
+
+
+Thing sfor Feruzi to do:
+
+* Easy to use installation.
+* Write installation instructions.
+* IE support.
+* Ask before deleting.
+* If IE detected, add blurb about reduced functionality.
+
+
+
+
+
+
+
