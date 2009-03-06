@@ -1,4 +1,7 @@
 <?php
+  /**
+   Helper functions for making forms.
+   */
 
 class form
 {
@@ -160,6 +163,17 @@ Iframes not supported by this browser.
         return $res;
     }
 
+    function makeForm($content, $hidden=array(),$method='post')
+    {
+        $form = "<form accept-charset='utf-8' type='post' action=''>\n";
+        foreach($hidden as $name => $value) {
+            $form .= "<input type='hidden' name='".htmlEncode($name)."' value='".htmlEncode($value)."'>\n";
+        }
+        
+        $form .= $content;
+        $form .= "</form>\n";
+        return $form;
+    }
 
 }
 

@@ -88,6 +88,13 @@ create table ci_log
 	user_id int not null references ci_user(id)
 );
 
+create table ci_property
+(
+	id serial not null primary key,
+	name varchar(64) not null unique,
+	value varchar(2048) not null
+);
+
 create unique index ci_dependency_idx on ci_dependency (ci_id, dependency_id);
 
 create view ci_view as

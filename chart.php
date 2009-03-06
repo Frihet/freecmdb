@@ -1,4 +1,8 @@
 <?php
+  /**
+   Print dependency graphs for a selection of CIs.
+   */
+
 require_once 'Image/GraphViz.php';
 
 require_once("config.php");
@@ -6,6 +10,11 @@ require_once("util/util.php");
 require_once("util/db.php");
 require_once("model.php");
 
+
+
+/**
+ Renders the graph to 'standard output'. 
+ */
 function render($graph) 
 {
     $format = param('format','svg');
@@ -19,7 +28,7 @@ function render($graph)
          font style in the svg, so long as it doesn't
          change in a future graphviz version...
 
-         Let's hoe nobody doe a grapg containing css markup as node
+         Let's hoe nobody doe a graph containing css markup as node
          text, or this will confuse the hell out of somebody..
         */
         $res = $graph->fetch(param('format','svg'));
@@ -34,10 +43,16 @@ function render($graph)
 		
 }
 
+/**
+ Creates a new graph object with the settings that we use
+ */
 function graph() {
     return new Image_GraphViz(true, array('nodesep'=>'0.1', 'fontname'=>'sans-serif','bgcolor'=>'white'));
 }
 
+/** Chart creation object. Waklks around the graph and renders the
+ parts it likes.
+ */
 class ciChart
 {
     
@@ -45,12 +60,17 @@ class ciChart
     var $level_count;
     var $level_width;
 
-    static $highlight;
-	
+    var $highlight;
+    var $steps;
+    var $reverse;
     
-    function __construct($root) 
+    
+    function __construct($root, $reverse, $highlight, $steps) 
     {
         $this->root = $root;
+        $this->reverse = $reverse;
+        $this->highlight = $highlight;
+        $this->steps = $steps;
     }
     
     function run() 
@@ -99,13 +119,13 @@ class ciChart
                               'fontsize' => '10', 
                               'fontname' => 'sans-serif',  // Re-add font name attribute here, since GraphViz seems to ignore the main graph attribute, even though the docs say it shouldn't.
                               'label'=>str_replace(' ','\n',$node->getDescription(true)),
-                              'color' => ($is_root?'green':(array_key_exists($node->id, ciChart::$highlight)?'green':'black'))
+                              'color' => ($is_root?'green':(array_key_exists($node->id, $this->highlight)?'green':'black'))
                               )
                         );
         
-        $reverse = param('mode','dependencies')!='dependencies';
         
-        $func = (!$reverse)?"getDirectDependencies":"getDirectDependants";
+        
+        $func = (!$this->reverse)?"getDirectDependencies":"getDirectDependants";
         
         $children = $node->$func();
         
@@ -117,6 +137,9 @@ class ciChart
     }
 }
 
+/**
+ Create a legend of all node types.
+ */
 function legend()
 {
     $graph = graph();
@@ -142,13 +165,14 @@ function main()
         $ci_list = ci::fetch(array('id_arr'=>array($ci_id)));
         $ci = $ci_list[$ci_id];
 			
-        $c = new ciChart(($full=='yes')?'full':$ci, "dependencies");
+        $c = new ciChart(($full=='yes')?'full':$ci, 
+                         param('mode','dependencies')!='dependencies',
+                         param('highlight',array()), 
+                         param('steps'));
         $c->run();
     }
 }
 db::init(DB_DSN) || die("The site is down. Reason: Could not connect to the database.");
-ciChart::$highlight = util::array_to_set(param('highlight',array()));
-
 ciUser::init();
 main();
 

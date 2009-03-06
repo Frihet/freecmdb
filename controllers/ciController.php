@@ -169,7 +169,7 @@ values
         $form .= "</p><p><button type='submit'>Save</button> ";
         $form .= "<button type='button' onclick='popupHide(\"$popup_id\")'>Cancel</button></p>";
         
-        return makeForm($form, array('task'=>'updateField','controller'=>'ci','id'=>$this->id,'key'=>$field_name));
+        return form::makeForm($form, array('task'=>'updateField','controller'=>'ci','id'=>$this->id,'key'=>$field_name));
     }
     
     function getActionMenu() 
@@ -189,7 +189,7 @@ values
         }
         
         $action_links[] = makeLink("?controller=ci&amp;task=create", "Create new item", null, "Creat an empty new CI");
-        $action_links[] = makeLink(array('task'=>'remove','revision_id'=>null), "Remove", 'remove', 'Remove this CI');
+        $action_links[] = makeLink(array('task'=>'remove','revision_id'=>null), "Remove", 'remove', 'Remove this CI', array('onclick'=>'return confirm("Are you sure?");'));
         $action_links[] = makeLink(array('task'=>'copy','revision_id'=>null), "Copy", 'copy', 'Copy this CI');
         return $action_links;
         
@@ -608,7 +608,7 @@ Changed by
             $content .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
             $content .= "</td><td>\n";
             if (!$revision && $ci->isDirectDependency($item->id)) {
-                $content .= makeLink(array('task'=>'removeDependency', 'dependency_id'=>$item->id), "Remove",'remove', "Remove dependency from $my_name to $other_name");
+                $content .= makeLink(array('task'=>'removeDependency', 'dependency_id'=>$item->id), "Remove",'remove', "Remove dependency from $my_name to $other_name", array('onclick'=>'return confirm("Are you sure?");'));
             }
             $content .= "</td>\n</tr>\n";
         }	
@@ -628,7 +628,7 @@ Changed by
             }
 						
             $form .= "</select></td><td><button type='submit'>Add</button>\n";
-            $content .= makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$this->id));
+            $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$this->id));
             $content .= "</td></tr>";
         }
 				
@@ -641,7 +641,7 @@ Changed by
             $content .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
             $content .= "\n</td><td>\n";
             if (!$revision && $ci->isDirectDependant($item->id)) {
-                $content .= makeLink(array('task'=>'removeDependant', 'dependant_id'=>$item->id), "Remove",'remove', "Remove dependency from $other_name to $my_name");
+                $content .= makeLink(array('task'=>'removeDependant', 'dependant_id'=>$item->id), "Remove",'remove', "Remove dependency from $other_name to $my_name",array('onclick'=>'return confirm("Are you sure?");'));
             }
             $content .= "\n</td></tr>\n";
         }
@@ -662,7 +662,7 @@ Changed by
                 $form .= "<option value='$item_id'>$item_name</option>\n";
             }
             $form .= "</select></td><td><button type='submit'>Add</button>\n";
-            $content .= makeForm($form, array('controller'=>'ci', 'task'=>'addDependant','id'=>$this->id));
+            $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependant','id'=>$this->id));
 						
 						
             $content .= "</td></tr>";

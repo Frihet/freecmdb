@@ -1,5 +1,8 @@
 <?php
 
+require_once("controllers/adminController.php");
+
+
 define('CI_COLUMN_TEXT', 0);
 define('CI_COLUMN_TEXT_FORMATED', 1);
 define('CI_COLUMN_LIST', 2);
@@ -114,7 +117,7 @@ extends AdminController
                 
             $content .= "<button>Update</button>";
                 
-            $content .= makeLink(array('controller' => 'ciColumn', 'id' => $column_id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $column);
+            $content .= makeLink(array('controller' => 'ciColumn', 'id' => $column_id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $column, array('onclick'=>'return confirm("Are you sure?");'));
             $content .= "</td></tr>";
             $content .= "</form>";
                 

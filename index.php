@@ -170,6 +170,11 @@ skin : "fc"*/
             /**
              Try and see if we have a controller with the specified name
             */
+
+            if(!class_exists($controller_str)) {
+                @include_once("controllers/{$controller_str}.php");
+            }
+           
             if(class_exists($controller_str)) {
                 $controller = new $controller_str();
                 $controller->run();

@@ -97,9 +97,9 @@ function checkMagicQuotes()
 
 
 
-function htmlEncode($str) 
+function htmlEncode($str,$qt=ENT_QUOTES) 
 {
-    return htmlEntities($str, ENT_QUOTES, 'UTF-8');
+    return htmlEntities($str, $qt, 'UTF-8');
     
 }
 
@@ -196,36 +196,33 @@ function makeUrl($v1=null, $v2=null)
     return "?" . implode("&", $res);
 }
 
-function makeForm($content, $hidden=array(),$method='post')
-{
-        $form = "<form accept-charset='utf-8' type='post' action=''>\n";
-        foreach($hidden as $name => $value) {
-            $form .= "<input type='hidden' name='".htmlEncode($name)."' value='".htmlEncode($value)."'>\n";
-        }
-        
-        $form .= $content;
-        $form .= "</form>\n";
-        return $form;
-}
-
-
-function makeLink($arr, $txt, $class=null, $mouseover=null) 
+function makeLink($arr, $txt, $class=null, $mouseover=null, $attribute=array()) 
 {
     $mouseover_str = "";
+    $onclick_str = "";
     
     if ($mouseover) {
         $class .= " mouseoverowner";
         $mouseover_str = "<div class='onmouseover'>\n$mouseover\n</div>";
         
     }
+        
+    $attribute_str = "";
+    foreach($attribute as $key => $value) {
+        $attribute_str .= htmlEncode($key)."=\"".htmlEncode($value,ENT_COMPAT)."\"";
+        
+    }
     
+
     $class_str = $class?"class='$class'":"";
 
     if (is_array($arr)) {
         $arr = makeUrl($arr);
     }
     
-    return "<a $class_str href='$arr'>$mouseover_str" . htmlEncode($txt) . "</a>\n";
+    
+    
+    return "<a $class_str attribute_str href='$arr'  $attribute_str>$mouseover_str" . htmlEncode($txt) . "</a>\n";
 }
 
 

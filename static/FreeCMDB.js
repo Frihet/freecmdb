@@ -100,46 +100,49 @@ function stripe(id) {
 }
 
 function submitAndReloadColumnList(task,columnId, rowId, itemId, tableId, selectId) {
-	//    alert($(columnId).value + ", "+ tableId);
-	var url = 'index.php?action=form&task=' + encodeURIComponent(task) + 
-		'&column_id=' + encodeURIComponent(columnId) +
-		'&value=' + encodeURIComponent($(itemId).value) +
-		'&id=' + encodeURIComponent(rowId);
-	new Ajax.Request(url, {
-		  onSuccess: function(transport) {
+//	 alert($(columnId).value + ", "+ tableId);
+	//alert( encodeURIComponent(task));
+	
+	if(task!='removeColumnListItem' || confirm("Are you sure?")){
+		var url = 'index.php?action=form&task=' + encodeURIComponent(task) + 
+			'&column_id=' + encodeURIComponent(columnId) +
+			'&value=' + encodeURIComponent($(itemId).value) +
+			'&id=' + encodeURIComponent(rowId);
+		new Ajax.Request(url, {
+			  onSuccess: function(transport) {
 		
-				var lines = transport.responseText.split('\n');
-				var sel = $(selectId);
+					var lines = transport.responseText.split('\n');
+					var sel = $(selectId);
 		
-				while(sel.length>0) 
-				{
-					sel.remove(0);
+					while(sel.length>0) 
+					{
+						sel.remove(0);
+					}
+		
+					for (var i=0; i<lines.length; i++) {
+						var data = lines[i].split('\t');
+						//alert(data[1] + ", " + data[0]);
+						if( data[0] && data[1] )
+							sel.add(new Option(data[1], data[0]), null);
+					}
+		
+					new Ajax.Request('index.php?action=form&task=fetchListTable'+
+							 '&column_id=' + encodeURIComponent(columnId) + 
+							 '&select_id=' + encodeURIComponent(selectId) +
+							 '&table_id=' + encodeURIComponent(tableId),
+							 {
+							   onSuccess: function(transport) {
+									 var oldTab = $(tableId);
+									 var parent = oldTab.parentNode;
+									 parent.removeChild(oldTab);
+									 parent.innerHTML = transport.responseText;
+									 stripe(tableId);
+								 }
+						 
+							 });			       
 				}
-		
-				for (var i=0; i<lines.length; i++) {
-					var data = lines[i].split('\t');
-					//alert(data[1] + ", " + data[0]);
-					if( data[0] && data[1] )
-						sel.add(new Option(data[1], data[0]), null);
-				}
-		
-				new Ajax.Request('index.php?action=form&task=fetchListTable'+
-						 '&column_id=' + encodeURIComponent(columnId) + 
-						 '&select_id=' + encodeURIComponent(selectId) +
-						 '&table_id=' + encodeURIComponent(tableId),
-						 {
-						   onSuccess: function(transport) {
-								 var oldTab = $(tableId);
-								 var parent = oldTab.parentNode;
-								 parent.removeChild(oldTab);
-								 parent.innerHTML = transport.responseText;
-								 stripe(tableId);
-							 }
-				     
-						 });			       
-			}
-	});
-    
+		});
+    }
 }
 
 function installCheckFields() {

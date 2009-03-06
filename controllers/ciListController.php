@@ -1,6 +1,6 @@
 <?php
 
-class CIListController
+class ciListController
 extends Controller
 {
 
@@ -67,7 +67,7 @@ extends Controller
 ";
 		$form .= "<div class='button_list'><button type='submit'>Filter</button></div>";
 			
-		$content .= makeForm($form,array('controller'=>'ciList'), 'get');
+		$content .= form::makeForm($form,array('controller'=>'ciList'), 'get');
 		
 	
 		if (!count($ci_list)) 
@@ -107,7 +107,7 @@ Last updated
 			$content .= util::date_format($ci->update_time);
 			$content .= "</td><td>";
 
-			$content .= makeLink(array('controller' => 'ci', 'id' => $ci->id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $ci->getDescription());
+			$content .= makeLink(array('controller' => 'ci', 'id' => $ci->id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $ci->getDescription(),array('onclick'=>'return confirm("Are you sure?");'));
 			$content .= "</td></tr>";
             
 		}

@@ -1,5 +1,5 @@
 <?php
-
+require_once("controllers/adminController.php");
 
 class CITypeController
 extends AdminController
@@ -108,7 +108,7 @@ extends AdminController
 
             $content .= "<button>Update</button>";
                 
-            $content .= makeLink(array('controller' => 'ciType', 'id' => $type_id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $type);
+            $content .= makeLink(array('controller' => 'ciType', 'id' => $type_id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $type , array('onclick'=>'return confirm("Are you sure?");'));
             $content .= "</td></tr>";
             $content .= "</form>";
                 

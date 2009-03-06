@@ -77,14 +77,11 @@ Plans for future work:
 * RfC handling system. Track life time of RfCs, and make it possible to specify how an RfC will update the CMDB beforehand, so that when the change is performed, the CMDB is updated.
 * Different columns for different CI types.
 * Add possibility to remove some features for some CI types, e.g. CI types that are really assets should not have dependency tracking or RfC handling.
-
+* License tracking, including showing when a software is used by more users than the license permits.
 
 Thing sfor Feruzi to do:
 
-* Easy to use installation.
-* Write installation instructions.
 * IE support.
-* Ask before deleting.
 * If IE detected, add blurb about reduced functionality.
 
 

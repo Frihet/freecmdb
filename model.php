@@ -903,4 +903,43 @@ extends dbItem
     
 }
 
+
+class Property
+{
+    static $data=null;
+    
+    function load()
+    {
+        if (self::$data){
+            return;
+        }
+        
+        self::$data=array();
+        
+        foreach(db::fetchList('select name, value from ci_property') as $row) {
+            self::$data[$row['name']] = $row['value'];
+        }
+    }
+
+    function get($name) 
+    {
+        load();
+        return @self::$data[$name];
+    }
+    
+    function set($name, $value) 
+    {
+        load();
+        $param = array(":name"=>$name, ":value" => $value);
+        if (array_key_exists($name, self::$data)) {
+            db::query('update ci_property set value=:value where name=:name', $param);
+        } else {
+            db::query('insert into ci_property (name, value) values (:name, :value)', $param);
+        }
+        self::$data[$name] = $value;
+    }
+
+}
+
+
 ?>
