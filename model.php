@@ -24,6 +24,38 @@ class ciAction
     
 }
 
+
+class history
+{
+	
+	function fetch($id) 
+	{
+        return db::fetchList('
+select  ci_log.id, extract (epoch from create_time) as create_time, 
+        ci_log.ci_id, action, 
+        type_id_old, ci_log.column_id, 
+        column_value_old, dependency_id, 
+        cc1.value as dependency_name,
+        cc2.value as dependant_name,
+        ci_log.user_id,
+        ci_user.username
+from ci_log 
+join ci_user
+on ci_log.user_id = ci_user.id
+left join ci_column cc1
+on ci_log.dependency_id = cc1.ci_id and cc1.ci_column_type_id=6
+left join ci_column cc2
+on ci_log.ci_id = cc2.ci_id and cc2.ci_column_type_id=6
+where ci_log.ci_id = :ci_id or ci_log.dependency_id = :ci_id
+order by create_time desc', 
+                               array(':ci_id'=>$id));
+		
+
+	}
+	
+}
+
+
 class log
 {
 	function add($ci_id, $action, $arg=null) 

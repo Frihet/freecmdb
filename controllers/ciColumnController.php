@@ -82,55 +82,47 @@ extends AdminController
         $ci_column_list = ciColumnType::getColumns();
         util::setTitle("CI columns");
         $content = "<h1>CI columns</h1>";
+        
 	
-        $content .= "
+        $form .= "
 <table class='striped'>";
-        $content .= "<tr>";
-        $content .= "<th>";
-        $content .= "Name";
-        $content .= "</th><th>";
-        $content .= "Type";
-        $content .= "</th><th>";
+        $form .= "<tr>";
+        $form .= "<th>";
+        $form .= "Name";
+        $form .= "</th><th>";
+        $form .= "Type";
+        $form .= "</th><th>";
             
-        $content .= "</th></tr>";
-
+        $form .= "</th></tr>";
+        $idx = 0;
+        
         foreach($ci_column_list as $column_id => $column) {
-                
-            $content .= "<form accept-charset='utf-8' method='post' action='index.php'>";
-                
-            $content .= "<tr>";
-            $content .= "<td>";
-		
-            $content .= "<input type='hidden' name='controller' value='ciColumn'/>";
-            $content .= "<input type='hidden' name='task'   value='update'/>";
-            $content .= "<input type='hidden' name='id'     value='$column_id'/>";
-                
-            $content .= "<input name='name'  size='16' length='64' value='".htmlEncode($column)."'/>";
-		
-            $content .= "</td><td>";
-
-            $shape_select = form::makeSelect('type', ciColumnType::getTypes(), ciColumnType::getType($column_id));
             
-            $content .= $shape_select;
-                
-            $content .= "</td><td>";
-                
-            $content .= "<button>Update</button>";
-                
-            $content .= makeLink(array('controller' => 'ciColumn', 'id' => $column_id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $column, array('onclick'=>'return confirm("Are you sure?");'));
-            $content .= "</td></tr>";
-            $content .= "</form>";
-                
+            $form .= "<tr>";
+            $form .= "<td>";
 		
+            $form .= "<input type='hidden' name='id_$idx' value='$column_id'/>";
+                
+            $form .= "<input name='name_$idx'  size='16' length='64' value='".htmlEncode($column)."'/>";
+		
+            $form .= "</td><td>";
+            
+            $form .= form::makeSelect('type', ciColumnType::getTypes(), ciColumnType::getType($column_id));
+                
+            $form .= "</td><td>";
+                
+            $form .= makeLink(array('controller' => 'ciColumn', 'id' => $column_id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $column, array('onclick'=>'return confirm("Are you sure?");'));
+            $form .= "</td></tr>";
+            
+            $idx++;
         }
-            
+        
         $name = htmlEncode(param('name',''));
             
         $shape_select = form::makeSelect('type', ciColumnType::getTypes());
             
-        $content .= "
+        $form .= "
 <tr>
-  <form accept-charset='utf-8' method='post' action='index.php'>
     <td>
       <input type='hidden' name='controller' value='ciColumn'/>
       <input type='hidden' name='task'   value='create'/>
@@ -140,13 +132,15 @@ extends AdminController
       $shape_select
     </td>
     <td>
-      <button type='submit' class='add'>Add</button>
     </td>
-  </form>
 </tr>";
-            
-        $content .= "</table>";
-  
+        
+
+        $form .= "</table>";
+        $form .= "<div class='button_list'><button>Update</button></div>";
+        
+        $content .= form::makeForm($form,array('task'=>'update','controller'=>'ciColumn'));
+          
         
         $this->show($content);
             

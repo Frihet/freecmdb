@@ -1,13 +1,18 @@
 <?php
 
-  /** Entry point for all FreeCMDB functinality except the charts,
+  /** 
+
+   Entry point for all FreeCMDB functinality except the charts,
    which live in a separate file.
 
-   Code layout:
+   This project mostly uses an MVC layout, though it's not very strict
+   about it. The file is split up into files as follows:
 
    model.php: All model code.
 
-   db.php: Database abstraction.
+   db.php: Database abstraction, provides a set of global functions
+   (actually static methods, in order to be more namespace clean) for
+   database access.
 
    controllers/*.php: All controllers. As of today, view code is
    embedded in the controller code. That should be cleaned up.
@@ -174,7 +179,7 @@ skin : "fc"*/
             if(!class_exists($controller_str)) {
                 @include_once("controllers/{$controller_str}.php");
             }
-           
+			
             if(class_exists($controller_str)) {
                 $controller = new $controller_str();
                 $controller->run();

@@ -69,7 +69,6 @@ class Controller
 		
         echo $content;
 
-
         echo "<div class='content_post'>";
         echo "</div>";
         echo "</div>";
@@ -124,7 +123,26 @@ class Controller
     {
 	    return false;
     }
-    
+
+	/** Check if a view with the specified name exists. If no ,try to
+	 autoload it. Recheck, and render if it possible, and exit with an
+	 error otherwise.
+	 */
+	function render($view) 
+	{
+		if(!class_exists("{$view}View")) {
+			@include("views/{$view}View.php");
+		}
+		if(!class_exists("{$view}View")) {
+			die("Unknown view $view");
+		}
+		$viewName = "{$view}View";
+		
+		$v = new $viewName();
+		$v->render($this);
+		
+	}
+	
 	
 }
 
