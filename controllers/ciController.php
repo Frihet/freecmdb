@@ -53,42 +53,13 @@ extends Controller
     
     function updateField($key, $value)
     {
+		$ci = new ci();
+		$ci->id=param('id');
         if ($key=='type') {
-            log::add($this->id, CI_ACTION_CHANGE_TYPE);
-            db::query('update ci set ci_type_id=:type_id where id=:id',
-                      array(':type_id'=>param('type'),':id'=>param('id')));
-            return;
-        }
-
-        log::add($this->id, CI_ACTION_CHANGE_COLUMN, $key);
-        
-        $query = "
-update ci_column
-set value=:value
-where ci_id=:id
-and ci_column_type_id=:key
-";
-        $arr = array('key'=>$key, 'value'=>$value, 'id'=>$this->id);
-        $res = db::query($query, $arr);
-        $count = db::count();
-        if (!$count) {
-            $query = "
-insert into ci_column
-(
-        ci_id,
-        ci_column_type_id,
-        value
-)
-values
-(
-        :id,
-        :key,
-        :value
-)";
-            $res = db::query($query, $arr);
-            
-        }
-    
+			$ci->setType(param('type'));
+        } else {
+			$ci->set($key, $value);
+		}
     }
     
     function updateFieldWrite()
@@ -226,27 +197,6 @@ select ci_id, :new_id from ci_dependency where dependency_id = :old_id', array('
         $this->viewWrite();
     }
 
-    function formatHistoryValue($val, $column_id) 
-    {
-        if ($val ==null) {
-            return "<em class='value'>&lt;empty&gt;</em>";
-        }
-        
-        $type = ciColumnType::getType($column_id);
-        if ($type != CI_COLUMN_IFRAME) {
-            $val = form::makeInput(null, $val, $column_id, true);
-            $val = strip_tags($val);
-        }        
-
-        
-        if(strlen($val) > 64) {
-            $val = substr($val, 0, 60) . "...";
-        }
-        
-        return "<em class='value'>«".htmlEncode($val)."»</em>";
-
-    }
-
     function revertWrite()
     {
         $ci = $this->getCi();
@@ -288,8 +238,7 @@ order by cl2.create_time desc;',
 	{
 		return history::fetch($this->id);
     }
-	
-    
+	    
     function historyWrite()
     {
 		$this->render("ciHistory");
@@ -298,10 +247,8 @@ order by cl2.create_time desc;',
 	function viewWrite()
 	{
 		$this->render("ci");
-		
 	}
 	
-    
 }
 
 ?>

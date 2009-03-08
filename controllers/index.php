@@ -131,7 +131,7 @@ class Controller
 	function render($view) 
 	{
 		if(!class_exists("{$view}View")) {
-			@include("views/{$view}View.php");
+			include("views/{$view}View.php");
 		}
 		if(!class_exists("{$view}View")) {
 			die("Unknown view $view");

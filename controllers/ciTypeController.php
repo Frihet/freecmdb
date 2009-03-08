@@ -2,7 +2,7 @@
 require_once("controllers/adminController.php");
 
 class CITypeController
-extends AdminController
+extends adminController
 {
 
     function createWrite()

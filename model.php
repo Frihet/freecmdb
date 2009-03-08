@@ -133,7 +133,15 @@ values
          */
         function getLatestIds()
         {
-            return db::fetchList("select ci_log.ci_id from ci_log join ci on ci_log.ci_id = ci.id where ci.deleted=false group by ci_id order by max(create_time) desc limit 10");
+            return db::fetchList("
+select ci_log.ci_id 
+from ci_log 
+join ci 
+on ci_log.ci_id = ci.id 
+where ci.deleted=false 
+group by ci_id 
+order by max(create_time) desc 
+limit 10");
         }
         
 }
@@ -278,19 +286,36 @@ class ciColumnList
 	}
 
         function addItem($column_id, $value){
-            $query = "insert into ci_column_list (ci_column_type_id, name) values (:column_id, :value)";
+            $query = "
+insert into ci_column_list 
+(
+		ci_column_type_id, 
+		name
+) 
+values 
+(
+		:column_id, 
+		:value
+)";
             $param = array(':column_id'=>$column_id, ':value'=>$value);        
             db::query($query, $param);
         }
         
         function updateItem($id, $value){
-            $query = "update ci_column_list set name=:value where id=:id";
+            $query = "
+update ci_column_list 
+set name=:value 
+where id=:id";
             $param = array(':id'=>$id, ':value'=>$value);        
             db::query($query, $param);
         }
 
         function removeItem($id, $column_id){
-            $query = "update ci_column_list set deleted=true where id=:id and ci_column_type_id=:column_id";
+            $query = "
+update ci_column_list 
+set deleted=true 
+where id=:id 
+and ci_column_type_id=:column_id";
             $param = array(':column_id'=>$column_id, ':id'=>$id);        
             db::query($query, $param);
         }
@@ -384,6 +409,51 @@ extends dbItem
 	
 	static $_cache = array();
 
+	function setType($type)
+	{
+		$this->type=$type;
+		
+		log::add($id, CI_ACTION_CHANGE_TYPE);
+		db::query('update ci set ci_type_id=:type_id where id=:id',
+				  array(':type_id'=>$type,':id'=>$this->id));
+	}
+
+	function set($key, $value) 
+	{
+		
+        log::add($this->id, CI_ACTION_CHANGE_COLUMN, $key);
+		
+        $query = "
+update ci_column
+set value=:value
+where ci_id=:id
+and ci_column_type_id=:key
+";
+        $arr = array('key'=>$key, 'value'=>$value, 'id'=>$this->id);
+        $res = db::query($query, $arr);
+        $count = db::count();
+        if (!$count) {
+            $query = "
+insert into ci_column
+(
+        ci_id,
+        ci_column_type_id,
+        value
+)
+values
+(
+        :id,
+        :key,
+        :value
+)";
+            $res = db::query($query, $arr);
+            
+        }
+
+}
+
+
+
 	function count()
 	{
 		$res = db::fetchList("select count(*) cnt from $table");
@@ -417,7 +487,9 @@ extends dbItem
     
 	function getDescription($long=true) 
 	{
-		$nam = $this->get('Name');
+		$default_column = Property::get("ciColumn.default");
+	
+		$nam = $this->get(ciColumnType::getName($default_column));
 		return ($nam?$nam:'<unnamed>') . ($long?(' <' . $this->type_name. ">"):'');
 	}
     
@@ -881,7 +953,19 @@ on cc.ci_id = ci_view.id and cc.ci_column_type_id = :column_type";
 			$where_str = "where " . implode(' and ', $where);
 		}
 			
-		$arr = db::fetchList("select ci_view.*, extract(epoch from log.update_time) as update_time from ci_view left join (select max(create_time) as update_time, ci_id from ci_log group by ci_id) log on log.ci_id = ci_view.id $join $where_str $limit $offset", $db_param);
+		$arr = db::fetchList("
+select ci_view.*, extract(epoch from log.update_time) as update_time 
+from ci_view 
+left join 
+(
+		select max(create_time) as update_time, ci_id 
+		from ci_log group by ci_id
+) log 
+on log.ci_id = ci_view.id 
+$join 
+$where_str 
+$limit 
+$offset", $db_param);
 			
 		if(!count($arr)){
 			return array();
@@ -902,7 +986,11 @@ on cc.ci_id = ci_view.id and cc.ci_column_type_id = :column_type";
 			
 		list($col_id_arr_param, $col_id_arr_named) = db::in_list($col_id_arr);
 		
-		$arr2 = db::fetchList("select * from ci_column_view where id in ($col_id_arr_param) order by name", $col_id_arr_named);
+		$arr2 = db::fetchList("
+select * 
+from ci_column_view 
+where id in ($col_id_arr_param) 
+order by name", $col_id_arr_named);
 			
 		foreach( $arr2 as $row) {
 			$out[$row['id']]->_ci_column[$row['column_type_id']] = $row['value'];
@@ -955,13 +1043,13 @@ class Property
 
     function get($name) 
     {
-        load();
+		self::load();
         return @self::$data[$name];
     }
     
     function set($name, $value) 
     {
-        load();
+		self::load();
         $param = array(":name"=>$name, ":value" => $value);
         if (array_key_exists($name, self::$data)) {
             db::query('update ci_property set value=:value where name=:name', $param);

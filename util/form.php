@@ -165,7 +165,7 @@ Iframes not supported by this browser.
 
     function makeForm($content, $hidden=array(),$method='post')
     {
-        $form = "<form accept-charset='utf-8' type='post' action=''>\n";
+        $form = "<form accept-charset='utf-8' method='post' action=''>\n";
         foreach($hidden as $name => $value) {
             $form .= "<input type='hidden' name='".htmlEncode($name)."' value='".htmlEncode($value)."'>\n";
         }

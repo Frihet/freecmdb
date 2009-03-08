@@ -177,7 +177,7 @@ skin : "fc"*/
             */
 
             if(!class_exists($controller_str)) {
-                @include_once("controllers/{$controller_str}.php");
+                include_once("controllers/{$controller_str}.php");
             }
 			
             if(class_exists($controller_str)) {

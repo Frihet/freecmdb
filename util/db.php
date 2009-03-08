@@ -156,6 +156,22 @@ class db
         return db::$last_res->rowCount();
     }
 
+	function begin()
+	{
+		db::$db->beginTransaction();		
+	}
+	
+	function commit()
+	{
+		db::$db->commit();		
+	}
+	
+	function rollback()
+	{
+		db::$db->rollback();		
+	}
+	
+
 }
 
 

@@ -92,7 +92,6 @@ function checkMagicQuotes()
         $_GET = stripslashesDeep($_GET);
         $_POST = stripslashesDeep($_POST);
     }
-    
 }
 
 
@@ -100,7 +99,6 @@ function checkMagicQuotes()
 function htmlEncode($str,$qt=ENT_QUOTES) 
 {
     return htmlEntities($str, $qt, 'UTF-8');
-    
 }
 
 function param($name, $default=null) 
@@ -116,7 +114,7 @@ function error($str, $log=true)
     if ($log)
         logMessage("Error: $str");
     
-    $fmt = "<div class='error'>Error: $str</div>";
+    $fmt = "<div class='error'>Error: ".htmlEncode($str)."</div>";
     util::$message_str .= $fmt;
 }
 
@@ -125,7 +123,7 @@ function message($str, $log=true)
     if ($log)
         logMessage($str);
     
-    $fmt = "<div class='message'>$str</div>";
+    $fmt = "<div class='message'>".htmlEncode($str)."</div>";
     util::$message_str .= $fmt;
 }
 
@@ -180,7 +178,7 @@ function makeUrl($v1=null, $v2=null)
 	
     foreach($_GET as $key => $value) 
     {
-			if (array_key_exists($key, $filter)) {
+		if (array_key_exists($key, $filter)) {
             continue;
         }
         
