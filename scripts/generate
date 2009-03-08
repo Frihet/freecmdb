@@ -1,0 +1,53 @@
+#! /bin/bash
+
+type="$1"
+name="$2"
+
+case "$type" in
+
+	 view)
+	 echo -n >views/"${name}"View.php "
+<?php
+
+class ${name}View
+	extends View
+{
+
+	function render($component)
+	{
+
+	}
+
+}
+
+?>"
+	 ;;
+
+	 controller)
+	 echo -n >controllers/"${name}"Controller.php "
+<?php
+
+class ${name}Controller
+	extends Controller
+{
+
+	function doView()
+	{
+
+	}
+
+}
+
+?>"
+	 ;;
+
+	 *)
+	 echo "Unknown component type '$type'." >&2
+	 exit 1
+	 ;;
+esac
+
+
+	
+
+
