@@ -76,15 +76,11 @@ class ciChart
     function run() 
     {
         $graph = graph();
-        if($this->root == 'full') 
-            {
-                $this->render_all($graph);
-            }
-        else 
-            {
-                $this->render($graph, $this->root);
-            }
-			
+        if($this->root == 'full') {
+			$this->render_all($graph);
+		} else {
+			$this->render($graph, $this->root);
+		}			
         render($graph);		
     }
     

@@ -13,7 +13,7 @@ extends Controller
         
     }
 
-    function addDependencyWrite()
+    function addDependencyRun()
     {
         $other_id = param('dependency_id');
         $ci = $this->getCi();
@@ -22,7 +22,7 @@ extends Controller
         redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
 
-    function addDependantWrite()
+    function addDependantRun()
     {
         $other_id = param('dependant_id');
         $ci_list = ci::fetch(array('id_arr'=>array($other_id)));
@@ -32,7 +32,7 @@ extends Controller
         redirect(makeUrl(array('task'=>null, 'dependant_id'=>null)));
     }
 
-    function removeDependencyWrite()
+    function removeDependencyRun()
     {
         $other_id = param('dependency_id');
         $ci = $this->getCi();
@@ -41,7 +41,7 @@ extends Controller
         redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
 
-    function removeDependantWrite()
+    function removeDependantRun()
     {
         $other_id = param('dependant_id');
         $ci_list = ci::fetch(array('id_arr'=>array($other_id)));
@@ -62,7 +62,7 @@ extends Controller
 		}
     }
     
-    function updateFieldWrite()
+    function updateFieldRun()
     {
         $key = param('key');
         $value = param('value');
@@ -76,7 +76,7 @@ extends Controller
         redirect(makeUrl(array('task'=>null, 'key'=>null, 'value' => null)));
     }
     
-    function createWrite()
+    function createRun()
     {
         db::query("insert into ci (ci_type_id) select id from ci_type where deleted=false limit 1");
         $id = db::lastInsertId("ci_id_seq");
@@ -98,7 +98,7 @@ extends Controller
         return $this->ci;
     }
 
-    function saveAllWrite() 
+    function saveAllRun() 
     {
         $arr = array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'dependency_id'=>null);
         foreach($_REQUEST as $key => $value) {
@@ -119,7 +119,7 @@ extends Controller
         redirect(makeUrl($arr));
     }
     
-    function removeWrite()
+    function removeRun()
     {
         log::add($this->id, CI_ACTION_REMOVE);
         $res = db::query("update ci set deleted=true where id = :id", array('id'=>$this->id));
@@ -166,7 +166,7 @@ extends Controller
         
     }
     
-    function copyWrite()
+    function copyRun()
     {
         $id_orig = param('id');
         db::query('insert into ci (ci_type_id) select ci_type_id from ci where id=:id', array(':id'=>$id_orig));
@@ -192,12 +192,12 @@ select ci_id, :new_id from ci_dependency where dependency_id = :old_id', array('
     }
 	
 
-    function editWrite()
+    function editRun()
     {
-        $this->viewWrite();
+        $this->viewRun();
     }
 
-    function revertWrite()
+    function revertRun()
     {
         $ci = $this->getCi();
         $revision_id = param('revision_id');
@@ -239,12 +239,12 @@ order by cl2.create_time desc;',
 		return history::fetch($this->id);
     }
 	    
-    function historyWrite()
+    function historyRun()
     {
 		$this->render("ciHistory");
 	}
 	
-	function viewWrite()
+	function viewRun()
 	{
 		$this->render("ci");
 	}

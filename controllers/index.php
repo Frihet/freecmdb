@@ -9,8 +9,8 @@
  
  Specifically, run will check the value of the $_REQUEST parameter
  task, and check if a method exists named in the same way, but with a
- 'Write' suffix exists. For example, to implement a 'save' task, a
- developer needs to implement a 'saveWrite' method.
+ 'Run' suffix exists. For example, to implement a 'save' task, a
+ developer needs to implement a 'saveRun' method.
 
 */
 class Controller
@@ -23,7 +23,7 @@ class Controller
     {
         $task = param('task','view');
         
-        $str = "{$task}Write";
+        $str = "{$task}Run";
         if(method_exists($this, $str)) {
             $this->$str();
         }
@@ -153,7 +153,7 @@ class CsvController
 extends Controller
 {
     
-    function viewWrite()
+    function viewRun()
     {
         
     }

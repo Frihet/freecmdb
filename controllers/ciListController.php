@@ -4,7 +4,7 @@ class ciListController
 extends Controller
 {
 
-	function viewWrite() 
+	function viewRun() 
 	{
 		$arr = array();
 			

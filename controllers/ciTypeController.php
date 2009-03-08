@@ -5,14 +5,14 @@ class CITypeController
 extends adminController
 {
 
-    function createWrite()
+    function createRun()
     {
         $name = param('name');
         $shape = param('shape','box');
 
         if (ciType::getId($name) !== null) {
             error("Another CI type named $name already exists");
-            $this->viewWrite();
+            $this->viewRun();
         }
         else {
             db::query("insert into ci_type (name, shape) values (:name, :shape)",
@@ -28,7 +28,7 @@ extends adminController
         }
     }
 
-    function updateWrite()
+    function updateRun()
     {
         $name = param('name');
         $shape = param('shape','box');
@@ -36,7 +36,7 @@ extends adminController
 
         if (ciType::getId($name) !== null && ciType::getId($name) != $id) {
             error("Another CI type named $name already exists");
-            $this->viewWrite();
+            $this->viewRun();
         }
         else {
             db::query("update ci_type set name=:name, shape=:shape where id=:id",
@@ -52,7 +52,7 @@ extends adminController
         }
     }
 
-    function removeWrite()
+    function removeRun()
     {
         $id = param('id');
         db::query('update ci_type set deleted=true where id=:id', array(':id'=>$id));
@@ -68,7 +68,7 @@ extends adminController
     }
     
 
-    function viewWrite() 
+    function viewRun() 
     {
         $ci_type_list = ciType::getTypes();	
         util::setTitle("CI types");

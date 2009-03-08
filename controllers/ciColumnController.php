@@ -39,7 +39,7 @@ extends adminController
 		
     }
 
-    function updateWrite()
+    function updateRun()
     {
 		$ok = true;
 		
@@ -80,7 +80,7 @@ extends adminController
 		}
 		else {
 			db::rollback();
-			$this->viewWrite();
+			$this->viewRun();
 		}
 
 	}
@@ -107,7 +107,7 @@ extends adminController
 		return true;
     }
 
-    function removeWrite()
+    function removeRun()
     {
         $id = param('id');
 		if (!cicolumnType::update($id, null, null, 1)) {
@@ -120,7 +120,7 @@ extends adminController
     }
     
 
-    function viewWrite() 
+    function viewRun() 
     {
 		$this->render("ciColumn");
 	}

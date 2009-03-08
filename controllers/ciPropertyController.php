@@ -6,7 +6,7 @@ class CiPropertyController
 extends adminController
 {
 
-    function updateWrite()
+    function updateRun()
     {
 		db::begin();
 
@@ -43,7 +43,7 @@ extends adminController
 		return true;
     }
 
-    function viewWrite() 
+    function viewRun() 
     {
 		$this->render("ciProperty");
 	}

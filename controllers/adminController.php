@@ -18,7 +18,7 @@ extends Controller
 	}
 	
 	
-	function viewWrite()
+	function viewRun()
 	{
 		util::setTitle("Administration");
 		$content .= "<p>";
