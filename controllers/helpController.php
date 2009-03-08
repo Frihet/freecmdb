@@ -32,8 +32,9 @@ extends Controller
 
     function viewWrite()
     {
-        
-            $this->add("Welcome to FreeCMDB", "
+		util::setTitle("FreeCMDB help");
+		
+            $this->add("Introduction", "
 <p>
 FreeCMDB is a Configuration Managment DataBase (CMDB), which is a tool
 for tracking important assets in an IT environment. It is intended to

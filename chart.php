@@ -97,18 +97,25 @@ class ciChart
     {
         $done = array();
         $ci_list = ci::fetch();
-        foreach($ci_list as $ci) 
-            {					
-                $this->render_node($graph, $ci, $done, false);
-            }
+        foreach($ci_list as $ci) {					
+			$this->render_node($graph, $ci, $done, false);
+		}
 			
     }
 	
-    function render_node($graph, $node, $done, $is_root) 
+    function render_node($graph, $node, $done, $is_root, $depth=0) 
     {
+		
         if (array_key_exists($node->id, $done)) {
             return;
         }
+		$max_depth = Property::get("chart.max_depth");
+		
+		if ($max_depth > 0 && $depth >= $max_depth) 
+		{
+			return;
+		}
+				
         $revision_id = param('revision_id');
         $revision_str = $revision_id !== null? "&revision_id=$revision_id":"";
         
@@ -131,7 +138,7 @@ class ciChart
         
         foreach($children  as $child) {
             $done[$node->id] = $node;
-            $this->render_node($graph, $child, $done, false);
+            $this->render_node($graph, $child, $done, false, $depth+1);
             $graph->addEdge(array($node->getDescription(true) => $child->getDescription(true)),array ( 'arrowhead'=>($reverse?'normal':'inv')));
         }
     }

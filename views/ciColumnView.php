@@ -9,8 +9,9 @@ class ciColumnview
 
         $ci_column_list = ciColumnType::getColumns();
         util::setTitle("CI columns");
-        $content = "<h1>CI columns</h1>";
-        	
+		$content = "";
+		
+
         $form = "
 <div class='button_list'><button>Update</button></div>
 <table class='striped'>

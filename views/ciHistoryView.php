@@ -31,10 +31,8 @@ class ciHistoryView
         $ci = $controller->getCi();
         $action_links = $controller->getActionMenu();
         util::setTitle("History for " . $ci->getDescription());
-        $content = "<h1>History for ".htmlEncode($ci->getDescription())."</h1>";
-
 		
-        $content .= "
+        $content = "
 <table class='striped history_table'>
 <tr>
 <th>

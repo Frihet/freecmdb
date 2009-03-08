@@ -3,12 +3,6 @@
 require_once("controllers/adminController.php");
 
 
-define('CI_COLUMN_TEXT', 0);
-define('CI_COLUMN_TEXT_FORMATED', 1);
-define('CI_COLUMN_LIST', 2);
-define('CI_COLUMN_LINK_LIST', 3);
-define('CI_COLUMN_IFRAME', 4);
-
 class CiColumnController
 extends adminController
 {
@@ -105,10 +99,7 @@ extends adminController
 				return true;
 				
 			}
-			
-            db::query("update ci_column_type set name=:name, type=:type where id=:id",
-                      array(':name' => $name, ':type' => $type, ':id' => $id));
-            if (!db::count()) {
+            if (!cicolumnType::update($id, $name, $type, 0)) {
                 error("Column type $type for column $name could not be found, not updated.");
 				return false;
             }
@@ -119,14 +110,12 @@ extends adminController
     function removeWrite()
     {
         $id = param('id');
-        db::query('update ci_column_type set deleted=true where id=:id', array(':id'=>$id));
-
-        if (db::count()) {
-            message("Column removed");
-        }
-        else {
+		if (!cicolumnType::update($id, null, null, 1)) {
             error("Column could not be found, not removed.");
-        }        
+		} else {
+			message("Column removed");
+        }
+
         redirect(makeUrl(array('controller'=>'ciColumn', 'task'=>'view', 'id'=>null)));
     }
     

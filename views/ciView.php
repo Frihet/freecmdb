@@ -26,7 +26,7 @@ extends View
 
         util::setTitle("$action_str " . $ci->getDescription());
         
-        $content .= "<h1>".htmlEncode($action_str ." ". $ci->getDescription())."</h1>";
+        $content = "";
 	
 		
         if ($edit) {
@@ -66,9 +66,9 @@ extends View
         foreach($ci->_ci_column as $key => $value) {
 
             if (ciColumnType::getType($key) == CI_COLUMN_IFRAME && !$edit && !$revision) 
-                {
-                    continue;
-                }
+			{
+				continue;
+			}
 						
 
             $content .= "<tr>";

@@ -29,7 +29,6 @@ extends Controller
 
 		$ci_list = ci::fetch($arr);
                 util::setTitle("View CIs");
-		$content = "<h1>View CIs</h1>";
 		$form = "";
 		
 		$form .= "

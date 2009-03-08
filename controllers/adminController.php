@@ -11,7 +11,8 @@ extends Controller
 	{
 		Controller::show(
 			array(makeLink("?controller=ciType", "Edit CI types", null),
-			      makeLink("?controller=ciColumn", "Edit CI columns", null)),
+			      makeLink("?controller=ciColumn", "Edit CI columns", null),
+			      makeLink("?controller=ciProperty", "Edit properties", null)),
 			$content);
 
 	}
@@ -19,15 +20,13 @@ extends Controller
 	
 	function viewWrite()
 	{
-		$title = "Administration";
-		
-                util::setTitle($title);
-		$content .= "<h1>$title</h1>";
-                $content .= "<p>";
+		util::setTitle("Administration");
+		$content .= "<p>";
                 
 		$content .= "This is the adminitration section of FreeCMDB. Use it to change what types of CI to model, and what data should be available for each CI.";
 		$content .= "<ul><li>".makeLink("?controller=ciType", "Edit CI types", null)."</li>";
 		$content .= "<li>".makeLink("?controller=ciColumn", "Edit CI columns", null)."</li>";
+		$content .= "<li>".makeLink("?controller=ciProperty", "Edit properties", null)."</li>";
 		$content .= "</ul>";
                 $content .= "</p>";
 	

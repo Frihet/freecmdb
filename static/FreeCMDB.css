@@ -21,7 +21,7 @@ body
 
 h1, h2, h3, h4 
 {
-    margin-left:0.5em;
+    margin-left:0em;
     color: #333;
 }
 
@@ -210,8 +210,7 @@ box, to add the top/bottom margins, thus working around the problem.
 .figure 
 {
     float:left;
-    margin: 1em;
-    margin-right: 1em;
+    margin: 1em 1em 0em 0em;
     padding: 0.5em;
     border: 1px solid #aaa;
     background-color: white;
@@ -236,7 +235,8 @@ box, to add the top/bottom margins, thus working around the problem.
 table
 {
     border-collapse: collapse;
-    margin: 0.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
     border: 1px solid #aaa;
 }
 
@@ -426,7 +426,7 @@ Stykling for installation screen
 .content_inner
 {
     border: 1px solid #aaa;
-    padding: 0.5em;
+    padding: 1em;
 }
 
 .content_post
@@ -470,5 +470,5 @@ iframe
 .iframe_header
 {
     font-weight: bold;
-    margin: 0.5em;
+    margin-right: 0.5em;
 }

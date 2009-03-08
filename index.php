@@ -195,7 +195,7 @@ skin : "fc"*/
         $out = ob_get_contents();
         ob_clean();
 	
-        $this->writeHeader("FreeCMDB - " . util::getTitle(), $controller);
+        $this->writeHeader("FreeCMDB - " . htmlEncode(util::getTitle()), $controller);
 
         echo $out;
         

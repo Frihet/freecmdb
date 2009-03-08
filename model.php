@@ -7,6 +7,12 @@ define('CI_ACTION_CHANGE_COLUMN', 3);
 define('CI_ACTION_ADD_DEPENDENCY', 4);
 define('CI_ACTION_REMOVE_DEPENDENCY', 5);
 
+define('CI_COLUMN_TEXT', 0);
+define('CI_COLUMN_TEXT_FORMATED', 1);
+define('CI_COLUMN_LIST', 2);
+define('CI_COLUMN_LINK_LIST', 3);
+define('CI_COLUMN_IFRAME', 4);
+
 
 class ciAction
 {
@@ -335,6 +341,25 @@ class ciColumnType
 		return ciColumnType::$id_lookup[$name];
         
 	}
+
+	function update($id, $name, $type, $deleted) 
+	{
+		$val = array();
+		$param = array(":id"=>$id);
+		foreach(array("name", "type", "deleted") as $key) 
+		{
+			if ($$key !== null) 
+			{
+				$val[] = "$key = :$key";
+				$param[":$key"]=$$key;
+			}
+		}
+		
+		db::query("update ci_column_type set " . implode(", ", $val) . " where id=:id",
+				  $param);
+		return !!db::count();
+	}
+	
     
 	function getName($id)
 	{
@@ -346,7 +371,6 @@ class ciColumnType
 	{
 		ciColumnType::load();
 		return ciColumnType::$type_lookup[$id];
-
 	}
 
 	function getColumns($include_none = false)
@@ -363,10 +387,10 @@ class ciColumnType
 	function getTypes()
 	{
 		return array(CI_COLUMN_TEXT=>'Unformated text',
-			     CI_COLUMN_TEXT_FORMATED=>'Multiline text with formating',
-			     CI_COLUMN_LIST=>'List',
-			     CI_COLUMN_IFRAME=>'IFrame'/*
-							CI_COLUMN_LINK_LIST=>'List of links'*/);
+					 CI_COLUMN_TEXT_FORMATED=>'Multiline text with formating',
+					 CI_COLUMN_LIST=>'List',
+					 CI_COLUMN_IFRAME=>'IFrame'/*
+												CI_COLUMN_LINK_LIST=>'List of links'*/);
 	}
     
 	function load()
@@ -1034,8 +1058,6 @@ class Property
             return;
         }
         
-        self::$data=array();
-        
         foreach(db::fetchList('select name, value from ci_property') as $row) {
             self::$data[$row['name']] = $row['value'];
         }
@@ -1044,6 +1066,7 @@ class Property
     function get($name) 
     {
 		self::load();
+		
         return @self::$data[$name];
     }
     
@@ -1060,6 +1083,5 @@ class Property
     }
 
 }
-
 
 ?>

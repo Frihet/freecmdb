@@ -66,6 +66,8 @@ class Controller
 
         echo "<div class='content'>";
         echo "<div class='content_inner'>";
+
+		echo "<h1>" . htmlEncode(util::getTitle()). "</h1>";
 		
         echo $content;
 

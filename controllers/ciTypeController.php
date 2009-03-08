@@ -72,7 +72,6 @@ extends adminController
     {
         $ci_type_list = ciType::getTypes();	
         util::setTitle("CI types");
-        $content = "<h1>CI types</h1>";
 		
         $content .= "
 <table class='striped'>";

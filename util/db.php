@@ -13,15 +13,14 @@
   */
 class db
 {
-    static $debug = false;
-    
-
+	static $debug=false;
+	
     static $db;
     static $last_res;
     static $last_count=null;
     static $query_count=0;
     static $query_time = 0;
-
+	
     static $error = null;
 
     /**
@@ -90,15 +89,14 @@ class db
 		         
         $t2 = microtime(true);
         db::$query_time += ($t2-$t1);
-                
+			
         if (self::$debug) {
-            $msg = "<pre>".htmlEncode($q);
+            $msg = htmlEncode($q);
             if (count($param)) {
                 $msg .= "\n".htmlEncode(sprint_r($param));
             }
-            $msg .= "</pre>";
+            
             message($msg);
-            echo "</pre>";
         }
                 
         db::$last_res = $res;
@@ -109,7 +107,7 @@ class db
     /**
      Fetch the output of the specified query as a list off hashes
      */
-    function fetchList($q, $param=Array()) 
+    function fetchList($q, $param=array()) 
     {
         $res = db::query($q, $param);
         $out = array();
@@ -124,7 +122,7 @@ class db
     /**
      Fetch a single row of output from the specified query as a hash
      */
-    function fetchRow($q, $param=Array()) 
+    function fetchRow($q, $param=array()) 
     {
         $res = db::query($q, $param);
         $row = $res->fetch();
@@ -136,7 +134,7 @@ class db
     /**
      Fetch a single value from the specified query
      */
-    function fetchItem($q, $param=Array()) 
+    function fetchItem($q, $param=array()) 
     {
         $res = db::query($q, $param);
         $row = $res->fetch();
