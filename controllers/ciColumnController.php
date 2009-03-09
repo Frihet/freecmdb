@@ -11,79 +11,59 @@ extends adminController
     {
 
         $name = param('name_new');
-        $type = param('type_new',0);
+        $type = param('type_new');
 
-		if (strlen($name) && $type !== null) 
-		{
-			
-			if (ciColumnType::getId($name) !== null) {
-				error("Another CI type named $name already exists");
-				return false;
-			}
-			else {
-				db::query("insert into ci_column_type (name, type) values (:name, :type)",
-						  array(':name'=>$name, ':type'=>$type));
-				if (db::count()) {
-					message("Column type created");
-				}
-				else {
-					error("Column type could not be created.");
-					return false;
-				}
-				return db::lastInsertId("ci_column_type_id_seq");
-				
-			}
-		}
-
-		return true;
-		
+        if (strlen($name) && $type !== null) {
+            if (ciColumnType::getId($name) !== null) {
+                error("Another CI type named $name already exists");
+                return false;
+            }
+            return ciColumnType::create($name, $type);
+        }
+        return true;
     }
+    
 
     function updateRun()
     {
-		$ok = true;
-		
-		db::begin();
-
-		$new_id = $this->createColumn();
-		$ok &= ($new_id !== false);
-		
-
-		for ($idx=0;param("id_$idx")!==null;$idx++) 
-		{
-			$ok &= $this->updateColumn(param("id_$idx"),
-									   param("type_$idx"),
-									   param("name_$idx"));
-		}
-
-		if ($ok) 
-		{
-			$default = param('default');
-			if (($default == 'new' && $new_id !== false && $new_id !== true) || $default >= 0) {
-				Property::set("ciColumn.default",$default=="new"?$new_id:$default);
-			}
-			else 
-			{
-				error("Invalid default column");
-				$ok = false;
-			}
-			
-		}
-		
-
-		if ($ok) {
-			
-
-			db::commit();
-			message("Columns updated");
-			redirect(makeUrl(array('controller'=>'ciColumn','task'=>null)));
-		}
-		else {
-			db::rollback();
-			$this->viewRun();
-		}
-
-	}
+        $ok = true;
+	
+        db::begin();
+        
+        $new_id = $this->createColumn();
+        $ok &= ($new_id !== false);
+	
+        
+        for ($idx=0;param("id_$idx")!==null;$idx++) {
+            $ok &= $this->updateColumn(param("id_$idx"),
+                                       param("type_$idx"),
+                                       param("name_$idx"));
+        }
+        
+        if ($ok) {
+            $default = param('default');
+            if (($default == 'new' && $new_id !== false && $new_id !== true) || $default >= 0) {
+                Property::set("ciColumn.default",$default=="new"?$new_id:$default);
+            } else {
+                error("Invalid default column");
+                $ok = false;
+            }
+            
+        }
+	
+        
+        if ($ok) {
+            
+            
+            db::commit();
+            message("Columns updated");
+            redirect(makeUrl(array('controller'=>'ciColumn','task'=>null)));
+        } else {
+            db::rollback();
+            $this->viewRun();
+        }
+        
+    }
 
 
     function updateColumn($id, $type, $name)

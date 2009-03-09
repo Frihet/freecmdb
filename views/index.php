@@ -1,7 +1,10 @@
 <?php
 
-class View
+abstract class View
 {
+
+	abstract function render($controller);
+	
 	
 }
 

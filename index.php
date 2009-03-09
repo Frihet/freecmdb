@@ -144,7 +144,7 @@ skin : "fc"*/
 
     /**
      Write out the message list.
-     */
+	*/
     function writeMessages()
     {
         $msg = messageGet();
@@ -159,13 +159,13 @@ skin : "fc"*/
     
     /**
      Main application runner.
-     */
+	*/
     function main() 
     {
         ob_start();
 
         util::setTitle("");
-	$controller = null;
+		$controller = null;
 	
         try {
             
@@ -208,7 +208,7 @@ skin : "fc"*/
 }
 
 
-db::init(DB_DSN) || die("The site is down. Reason: Could not connect to the database.");
+db::init(DB_DSN) || die("The site is down. Could not connect to the database.");
 ciUser::init() || die("Login error.");
 
 ob_start();

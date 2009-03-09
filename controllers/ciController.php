@@ -58,7 +58,11 @@ extends Controller
         if ($key=='type') {
 			$ci->setType(param('type'));
         } else {
-			$ci->set($key, $value);
+			if ($value !== null) {
+				$ci->set($key, $value);
+			} else {
+				$ci->delete($key);
+			}
 		}
     }
     
@@ -214,20 +218,19 @@ order by cl2.create_time desc;',
         $ci_orig = clone($ci);
 
         foreach($edits as $edit) {
-            echo "WOWOWO<br>";
-            
             $ci->apply($edit);
         }
         if ($ci->ci_type_id != $ci_orig->ci_type_id) {
             $this->updateField('type', $ci->ci_type_id);
-            echo "LALALA col type {$ci->ci_type_id}<br>" ;
-            
+            echo "Change ci type from {$ci_orig->ci_type_id} to {$ci->ci_type_id}<br>" ;
         }
         foreach($ci->_ci_column as $key=>$value) {
-            if ($value !== $ci_orig->_ci_column[$key]) {
-                $this->updateField($key, $value);
-                echo "LALALA col $key $value<br>" ;
-                
+			$old_value = $ci_orig->_ci_column[$key];
+			
+            if ($value !== $old_value) {
+				$this->updateField($key, $value);
+								
+                echo "Change column value of $key from $old_value to $value<br>" ;
             }
         }
         

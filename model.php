@@ -210,6 +210,32 @@ class ciType
 		ciType::load();
 		return ciType::$types[$id];
 	}
+
+        function create($name, $shape) 
+        {
+            db::query("insert into ci_type (name, shape) values (:name, :shape)",
+                      array(':name'=>$name, ':shape'=>$shape));
+            return db::count()?db::lastInsertId("ci_type_id_seq"):false;
+        }
+        
+	function update($id, $name, $shape, $deleted) 
+	{
+            $val = array();
+            $param = array(":id"=>$id);
+            foreach(array("name", "shape", "deleted") as $key) {
+                if ($$key !== null) {
+                    $val[] = "$key = :$key";
+                    $param[":$key"]=$$key;
+                }
+            }
+            
+            db::query("update ci_type set " . implode(", ", $val) . " where id=:id",
+                      $param);
+            return !!db::count();
+	}
+	
+    
+
 	
 	function getShape($id) 
 	{
@@ -342,6 +368,13 @@ class ciColumnType
         
 	}
 
+        function create($name, $type) 
+        {
+            db::query("insert into ci_column_type (name, type) values (:name, :type)",
+                      array(':name'=>$name, ':type'=>$type));
+            return db::count()?db::lastInsertId("ci_column_type_id_seq"):false;
+        }
+        
 	function update($id, $name, $type, $deleted) 
 	{
 		$val = array();
@@ -442,6 +475,20 @@ extends dbItem
 				  array(':type_id'=>$type,':id'=>$this->id));
 	}
 
+	function delete($key) 
+	{
+		log::add($this->id, CI_ACTION_CHANGE_COLUMN, $key);
+        $query = "
+delete from ci_column
+where ci_id=:id
+and ci_column_type_id=:key
+";
+        $arr = array(':key'=>$key, ':id'=>$this->id);
+        $res = db::query($query, $arr);
+	}
+	
+
+
 	function set($key, $value) 
 	{
 		
@@ -453,7 +500,7 @@ set value=:value
 where ci_id=:id
 and ci_column_type_id=:key
 ";
-        $arr = array('key'=>$key, 'value'=>$value, 'id'=>$this->id);
+        $arr = array(':key'=>$key, ':value'=>$value, ':id'=>$this->id);
         $res = db::query($query, $arr);
         $count = db::count();
         if (!$count) {
@@ -474,7 +521,7 @@ values
             
         }
 
-}
+	}
 
 
 

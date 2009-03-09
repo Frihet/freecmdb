@@ -13,7 +13,7 @@
   */
 class db
 {
-	static $debug=false;
+    static $debug=false;
 	
     static $db;
     static $last_res;
@@ -84,7 +84,8 @@ class db
             }
         catch(PDOException $e) {
             self::$error = $e->getMessage();
-            error($e->getMessage());
+			
+            error($q . " " . sprint_r($param) . ": ".$e->getMessage());
         }
 		         
         $t2 = microtime(true);
