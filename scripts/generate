@@ -6,14 +6,13 @@ name="$2"
 case "$type" in
 
 	 view)
-	 echo -n >views/"${name}"View.php "
-<?php
+	 echo -n >views/"${name}"View.php "<?php
 
 class ${name}View
 	extends View
 {
 
-	function render($component)
+	function render(\$controller)
 	{
 
 	}
@@ -24,14 +23,13 @@ class ${name}View
 	 ;;
 
 	 controller)
-	 echo -n >controllers/"${name}"Controller.php "
-<?php
+	 echo -n >controllers/"${name}"Controller.php "<?php
 
 class ${name}Controller
 	extends Controller
 {
 
-	function doView()
+	function viewRun()
 	{
 
 	}
