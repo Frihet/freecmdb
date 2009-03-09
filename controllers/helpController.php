@@ -35,17 +35,35 @@ extends Controller
 		util::setTitle("FreeCMDB help");
 		
             $this->add("Introduction", "
-<p>
-FreeCMDB is a Configuration Managment DataBase (CMDB), which is a tool
-for tracking important assets in an IT environment. It is intended to
-be used to track such things as servers and software services running
-on various servers, but can also be used for other tasks such as
-general purpose asset managment.
-</p>
+<p> FreeCMDB is a Configuration Managment DataBase (CMDB), which is a
+tool for tracking important assets in an IT environment and the
+relationships between them. It is intended to be used to track such
+things as servers and software services running on various servers,
+but can also be used for other tasks such as general purpose asset
+managment. The tracking of dependencies in a CMDB allows the user to
+answer such questions as «If Router X goes down, which services will go
+down?» </p>
+
+<p> The basic elements of a CMDB are called Configuration Items
+(CI). A CI can be a physical server, a software service, or even a
+person. Any item that you want to track using the CMDB is a CI. Every
+CI has various properties, such as name, URI, description and service
+owner. The exact list of such properties (called columns in FreeCMDB)
+can be changed in the administration menu of FreeCMDB (see
+below). </p>
 ");
+            $this->add("Installation","
+TODO
+");
+            
             $this->add("Page layout", "
 <p>
 Each FreeCMDB page consists of the same parts. These are:
+
+<div class='figure'>
+<img src='static/freecmdb_screen.png'/>
+<span class='caption'>The different elements of the FreeCMDB user interface.</span>
+</div>
 
 <ul>
 
@@ -74,10 +92,6 @@ actions.</li>
 </p>
 ");
 
-            $this->add("Installation","
-TODO
-");
-            
             $this->add("Handling CIs","
 <p> To start using FreeCMDB, first install the software (see
 installation instructions), then go to the web page you have
