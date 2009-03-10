@@ -473,22 +473,30 @@ extends dbItem
 		log::add($id, CI_ACTION_CHANGE_TYPE);
 		db::query('update ci set ci_type_id=:type_id where id=:id',
 				  array(':type_id'=>$type,':id'=>$this->id));
-	}
+                return !!db::count();
+        }
 
-	function delete($key) 
+	function deleteValue($key) 
 	{
 		log::add($this->id, CI_ACTION_CHANGE_COLUMN, $key);
-        $query = "
+                $query = "
 delete from ci_column
 where ci_id=:id
 and ci_column_type_id=:key
 ";
-        $arr = array(':key'=>$key, ':id'=>$this->id);
-        $res = db::query($query, $arr);
+                $arr = array(':key'=>$key, ':id'=>$this->id);
+                $res = db::query($query, $arr);
+                return !!db::count();
 	}
 	
 
-
+        function delete()
+        {
+            log::add($this->id, CI_ACTION_REMOVE);
+            $res = db::query("update ci set deleted=true where id = :id", array('id'=>$this->id));
+            return !!db::count();
+        }
+                
 	function set($key, $value) 
 	{
 		
@@ -520,7 +528,8 @@ values
             $res = db::query($query, $arr);
             
         }
-
+        return !!db::count();
+        
 	}
 
 
@@ -534,26 +543,27 @@ values
 
 	function apply($edit) 
 	{
-		if ($edit['ci_id'] != $this->id) {
-			return;
-		}
-        
-		//        echo "Apply revision ".$edit['id']." to item " .$this->id . "<br>";
-        
-		unset(ci::$_cache[$this->id]);
-	
-		if($edit['action'] == CI_ACTION_CHANGE_COLUMN) {
-			$this->_ci_column[$edit['column_id']] = $edit['column_value_old'];
-		}
-		else if($edit['action'] == CI_ACTION_CHANGE_TYPE) {
-			$this->ci_type_id = $edit['type_id_old'];
-		}
+            if ($edit['ci_id'] != $this->id) {
+                return;
+            }
+            
+            //        echo "Apply revision ".$edit['id']." to item " .$this->id . "<br>";
+            
+            unset(ci::$_cache[$this->id]);
+            
+            if($edit['action'] == CI_ACTION_CHANGE_COLUMN) {
+                $this->_ci_column[$edit['column_id']] = $edit['column_value_old'];
+                //echo "change col to ".$edit['column_value_old']."<br>";
+            }
+            else if($edit['action'] == CI_ACTION_CHANGE_TYPE) {
+                $this->ci_type_id = $edit['type_id_old'];
+                //echo "change type to {$edit['type_id_old']}<br>";
+            }
 	}
     
-
 	function get($name) 
 	{
-		return $this->_ci_column[ciColumnType::getId($name)];
+            return $this->_ci_column[ciColumnType::getId($name)];
 	}
     
 	function getDescription($long=true) 

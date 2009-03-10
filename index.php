@@ -186,7 +186,8 @@ skin : "fc"*/
             } else {
                 header("Status: 404");
                 echo "Controller $controller not found!";
-            }
+                exit(0);
+          }
         }
         catch(PDOException $e) {
             echo "PDO Exception";

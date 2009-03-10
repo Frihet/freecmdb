@@ -53,17 +53,17 @@ extends Controller
     
     function updateField($key, $value)
     {
-		$ci = new ci();
-		$ci->id=param('id');
+        $ci = new ci();
+        $ci->id=param('id');
         if ($key=='type') {
-			$ci->setType(param('type'));
+            return $ci->setType(param('type'));
         } else {
-			if ($value !== null) {
-				$ci->set($key, $value);
-			} else {
-				$ci->delete($key);
-			}
-		}
+            if ($value !== null) {
+                return $ci->set($key, $value);
+            } else {
+                return $ci->deleteValue($key);
+            }
+        }
     }
     
     function updateFieldRun()
@@ -125,9 +125,8 @@ extends Controller
     
     function removeRun()
     {
-        log::add($this->id, CI_ACTION_REMOVE);
-        $res = db::query("update ci set deleted=true where id = :id", array('id'=>$this->id));
-        if ($res->rowCount()) {
+        $ci = $this->getCi();
+        if ($ci->delete()) {
             message('CI removed');
         }
         else {
@@ -204,7 +203,7 @@ select ci_id, :new_id from ci_dependency where dependency_id = :old_id', array('
     function revertRun()
     {
         $ci = $this->getCi();
-        $revision_id = param('revision_id');
+        $revision_id = param('target_revision_id');
         
         $edits = db::fetchList('
 select cl2.ci_id, cl2.action, cl2.type_id_old, cl2.column_id, cl2.column_value_old, cl2.dependency_id
@@ -216,30 +215,57 @@ order by cl2.create_time desc;',
                                array(':ci_id'=>$this->id, ':revision_id'=>$revision_id));
         
         $ci_orig = clone($ci);
-
+        
+        $delete = false;
+        
         foreach($edits as $edit) {
+            
+            if ($edit['action'] == CI_ACTION_CREATE) {
+                $delete = true;
+            }
+            
             $ci->apply($edit);
         }
+
+        $ok = true;
+        db::begin();
+        
         if ($ci->ci_type_id != $ci_orig->ci_type_id) {
-            $this->updateField('type', $ci->ci_type_id);
-            echo "Change ci type from {$ci_orig->ci_type_id} to {$ci->ci_type_id}<br>" ;
+            $ok &= $this->updateField('type', $ci->ci_type_id);
         }
+
         foreach($ci->_ci_column as $key=>$value) {
-			$old_value = $ci_orig->_ci_column[$key];
-			
+            $old_value = $ci_orig->_ci_column[$key];
+            //echo "Column $key: NEW $value, old $old_value<br>";
+            
             if ($value !== $old_value) {
-				$this->updateField($key, $value);
-								
-                echo "Change column value of $key from $old_value to $value<br>" ;
+                $ok &= $this->updateField($key, $value);
+                //echo "Change column value of $key from $old_value to $value<br>" ;
             }
         }
+        if ($delete) {
+            //echo "Delete CI {$ci->id}";
+            $ok &= $ci->delete();
+        }
         
-        //redirect(makeUrl(array('task'=>'view', 'revision_id'=>null)));
+        if ($ok) {
+            db::commit();
+            if (!$delete) {
+                redirect(makeUrl(array('task'=>null, 'revision_id'=>null)));
+            }
+            else {
+                redirect(makeUrl(array('task'=>null, 'to_revision_id'=>null, 'controller' => 'ciList', 'id'=>null)));
+            }
+        }
+        else {
+            db::rollback();
+            redirect(makeUrl(array('task'=>'history','to_revision_id'=>null)));
+        }
     }
     
-	function getEdits() 
-	{
-		return history::fetch($this->id);
+    function getEdits() 
+    {
+        return history::fetch($this->id);
     }
 	    
     function historyRun()

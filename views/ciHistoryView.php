@@ -102,7 +102,7 @@ Changed by
                 $username = makeLink(array('controller'=>'user','id'=>$edit['user_id']), $edit['username']);
                 $time = util::date_format($edit['create_time']);
                 $buttons =  makeLink(array('task'=>'view', 'revision_id' => $edit['id']),'Show', 'revision');
-                $buttons .= makeLink(array('task'=>'revert', 'revision_id' => $edit['id']),'Revert', 'revert');
+                $buttons .= makeLink(array('task'=>'revert', 'target_revision_id' => $edit['id']),'Revert', 'revert');
                 $content.= "
 <tr>
 <td>$desc</td>
