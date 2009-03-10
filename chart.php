@@ -135,7 +135,7 @@ class ciChart
         foreach($children  as $child) {
             $done[$node->id] = $node;
             $this->render_node($graph, $child, $done, false, $depth+1);
-            $graph->addEdge(array($node->getDescription(true) => $child->getDescription(true)),array ( 'arrowhead'=>($reverse?'normal':'inv')));
+            $graph->addEdge(array($node->getDescription(true) => $child->getDescription(true)),array ( 'arrowhead'=>($this->reverse?'normal':'inv')));
         }
     }
 }
