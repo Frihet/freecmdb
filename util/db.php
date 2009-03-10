@@ -30,7 +30,7 @@ class db
     {
         
         try {
-            self::$db = new PDO($dsn);
+            self::$db = new PDO($dsn, null, null, array(PDO::ATTR_PERSISTENT => true));
             self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             self::$error = $e->getMessage();
