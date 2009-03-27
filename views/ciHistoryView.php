@@ -25,9 +25,9 @@ class ciHistoryView
     }
 
 
-	function render($controller) 
-	{
-		$edits = $controller->getEdits();
+    function render($controller) 
+    {
+        $edits = $controller->getEdits();
         $ci = $controller->getCi();
         $action_links = $controller->getActionMenu();
         util::setTitle("History for " . $ci->getDescription());
@@ -122,10 +122,10 @@ Changed by
         
 
         $controller->show($action_links,
-                    $content);
+                          $content);
 		
 
-	}
+    }
 	
 
 }

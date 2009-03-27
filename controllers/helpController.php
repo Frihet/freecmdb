@@ -61,7 +61,7 @@ TODO
 Each FreeCMDB page consists of the same parts. These are:
 
 <div class='figure'>
-<img src='static/freecmdb_screen.png'/>
+<img src='static/freecmdb_screen.png' alt='The different elements of the FreeCMDB user interface'/>
 <span class='caption'>The different elements of the FreeCMDB user interface.</span>
 </div>
 
@@ -130,6 +130,45 @@ access to it, use a .htaccess file to set a password.  </li>
 
 </ul>
 </p>
+");
+            $this->add("Notes", "
+<p> Whenever you perform an action that changes data in FreeCMDB, such
+as updating a CI, FreeCMDB will perform a redirect afterwards. Because
+of this, the reload button as well as the back/forward buttons will
+always work, and you never risk double posts. It also means that it is
+always safe to bookmark URLs, and they should always take you back to
+the same page. The drawback of using this technique is that all page
+views that update information must perform two roundtrips to the
+server instead of one. If you're on a connection with very high
+latency, this might be noticable. </p>
+
+
+");
+            
+            $this->add("Performance", "
+<p> FreeCMDB is designed with speed in mind. To increase speed,
+FreeCMDB by default uses compression to decrease the bandwidth used by
+sending html to the browser. FreeCMDB also uses the extremely
+efficient SVG file format for sending images to the
+browser. Performance information, such as server side rendering time
+and number of SQL queries performed during a page view can be seen by
+hovering the cursor over the copyright statement at the bottom of the
+page. Note that the rendering time does not include transfer time to
+the browser or the time used by the browser to render the page. In the
+case of pages that caused redirects (see above), the rendering time of
+both pages will be included, but the time taken to send the redirect
+request to the browser is not.</p>
+
+");
+            
+            $this->add("Support","
+FreeCMDB is free software, released under the GPLv3 license. This
+means that anybody is allowed to modify and support it. Because
+FreeCMDB is based on common components such as PHP and PostgreSQL,
+there are companies and individuals located all over the world with
+the competence needed to support FreeCMDB. FreeCode AS; the company
+that created FreeCMDB would be more than happy to help you out with
+support. You can contact us at <a href='mailto:sales@freecode.no'>sales@freecode.no</a>.
 ");
             
                        

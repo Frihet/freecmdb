@@ -22,8 +22,13 @@ class Controller
     function run() 
     {
         $task = param('task','view');
+
+        $class_name = get_class($this);
+        $event_name = $class_name.ucfirst($task);
+        Event::emit($event_name,array("source"=>$this));
         
         $str = "{$task}Run";
+        
         if(method_exists($this, $str)) {
             $this->$str();
         }
@@ -31,7 +36,7 @@ class Controller
             echo "Unknown task: $task";
         }
     }
-
+    
     /**
      Output a correctly formated action menu, given a set of links as input.
     */
@@ -41,7 +46,7 @@ class Controller
         echo "<ul>\n";
         if( count($link_list)) {
             echo  "<li><h2>Actions</h2></li>\n";
-        
+            
             foreach($link_list as $link) {
                 
                 echo "<li>";
@@ -51,7 +56,7 @@ class Controller
         }
         
         echo $this->action_box();
-
+        
         echo "</ul>\n";
         echo "</div>\n";
 					

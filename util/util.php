@@ -6,13 +6,33 @@ class util
 	static $ci_html_title="";
 	static $message_str="";
 
+        function loadClass($name) 
+        {
+            
+            if(class_exists($name)) {
+                return;
+            }
+            
+            if(strcasecmp(substr($name, strlen($name)-strlen("controller")),"controller" )==0) {
+                include_once("controllers/{$name}.php");
+                return;
+            }
+            
+            
+            if(strcasecmp(substr($name, strlen($name)-strlen("plugin")),"plugin" )==0) {
+                $dir_name = substr($name, 0, strlen($name)-strlen("plugin"));
+                include_once("plugins/{$dir_name}/index.php");
+                return;
+            }
+            
+	}
+        
         function array_to_set($arr)
         {
             $res = array();
-            foreach($arr as $val) 
-                {
-                    $res[$val] = true;
-                }
+            foreach($arr as $val) {
+                $res[$val] = true;
+            }
             return $res;
         }
         
@@ -72,7 +92,6 @@ function sprint_r($var)
     $res = ob_get_contents();
     ob_end_clean();
     return $res;
-    
 }
 
 function stripslashesDeep($value)
@@ -137,15 +156,23 @@ function messageGet()
 
 function redirect($page=null) 
 {
+    global $start_time;
     if (!$page) {
         $page = "?";
         
     }
     unset($_REQUEST['message_str']);
+
+    $stop_time = microtime(true);
+    $page .= strchr($page, '?')!==false?'&':'?';
+    $page .= "redirect_render_time=" . sprintf("%.4f",$stop_time-$start_time);
+    
     if (messageGet()) {
-        $page .= strchr($page, '?')!==false?'&':'?';
-        $page .= "message_str=" . urlEncode(messageGet()) ;
+        $page .= "&message_str=" . urlEncode(messageGet()) ;
     }
+    
+    $page .= "&redirect_query_time=" . sprintf("%.4f",db::$query_time);
+    $page .= "&redirect_query_count=" . db::$query_count;
     
     header("Location: $page");
     exit(0);
@@ -174,7 +201,7 @@ function makeUrl($v1=null, $v2=null)
         }
     }
     
-	$filter = array( 'message_str'=>true, 'filter_column'=>true, 'filter_column_value'=>true);
+    $filter = array( 'message_str'=>true, 'filter_column'=>true, 'filter_column_value'=>true, 'redirect_query_time'=>true, 'redirect_query_count'=>true);
 	
     foreach($_GET as $key => $value) 
     {
@@ -208,7 +235,6 @@ function makeLink($arr, $txt, $class=null, $mouseover=null, $attribute=array())
     $attribute_str = "";
     foreach($attribute as $key => $value) {
         $attribute_str .= htmlEncode($key)."=\"".htmlEncode($value,ENT_COMPAT)."\"";
-        
     }
     
 
@@ -220,7 +246,7 @@ function makeLink($arr, $txt, $class=null, $mouseover=null, $attribute=array())
     
     
     
-    return "<a $class_str attribute_str href='$arr'  $attribute_str>$mouseover_str" . htmlEncode($txt) . "</a>\n";
+    return "<a $class_str href='$arr'  $attribute_str>$mouseover_str" . htmlEncode($txt) . "</a>\n";
 }
 
 

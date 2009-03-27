@@ -38,6 +38,7 @@ require_once("util/db.php");
 require_once("install.php");
 
 require_once("config.php");
+require_once("util/plugin.php");
 require_once("model.php");
 require_once("util/form.php");
 require_once("controllers/index.php");
@@ -96,8 +97,8 @@ skin : "fc"*/
         $stop_time = microtime(true);
         
         $copyright = "© 2009 Freecode AS";
-        $performance = "Page rendered in " . sprintf("%.2f", $stop_time - $start_time) . " seconds. " .db::$query_count . " database queries executed in " . sprintf("%.2f", db::$query_time) . " seconds.";
-       
+        $performance = "Page rendered in " . sprintf("%.2f", $stop_time - $start_time + param('redirect_render_time',0.0)) . " seconds. " .(db::$query_count+param('redirect_query_count',0)) . " database queries executed in " . sprintf("%.2f", db::$query_time+param('redirect_query_time',0)) . " seconds.";
+        
         echo "<div class='copyright'>\n";
         
         echo makeLink("http://www.freecode.no", $copyright, 'copyright_inner', $performance);
@@ -112,21 +113,20 @@ skin : "fc"*/
     
     /**
      Write out the top menu.
-     */    
+    */    
     function writeMenu($controller)
     {
-	    $is_admin = $controller->isAdmin();
-	    $is_help = $controller->isHelp();
-	    $is_ci = !$is_admin && !$is_help;
-	    
-
+        $is_admin = $controller->isAdmin();
+        $is_help = $controller->isHelp();
+        $is_ci = !$is_admin && !$is_help;
+	
         echo "<div class='main_menu'>\n";
         echo "<ul>\n";
- 
-	        echo "<li>";
+        
+        echo "<li>";
 	echo makeLink("?controller=ciList", "Items", $is_ci?'selected':null);
         echo "</li>\n";
-
+        
         echo "<li>";
 	echo makeLink("?controller=admin", "Administration", $is_admin?'selected':null);
         echo "</li>\n";
@@ -176,10 +176,8 @@ skin : "fc"*/
              Try and see if we have a controller with the specified name
             */
 
-            if(!class_exists($controller_str)) {
-                include_once("controllers/{$controller_str}.php");
-            }
-			
+            util::loadClass($controller_str);
+            
             if(class_exists($controller_str)) {
                 $controller = new $controller_str();
                 $controller->run();
@@ -210,6 +208,8 @@ skin : "fc"*/
 
 
 db::init(DB_DSN) || die("The site is down. Could not connect to the database.");
+db::query("set client_encoding to \"utf8\"");
+
 ciUser::init() || die("Login error.");
 
 ob_start();

@@ -296,19 +296,19 @@ extends View
             
         if ($need_legend) {
             $content .= $this->makeChart('chart.php?legend=true', "Legend for the above figure(s)");
-								
         }
-						
 		
         return $content;
     }
 		
     function makeChart($param, $caption) 
     {
+		$title = htmlEncode($caption);
+		
         return "
 <div class='figure'>
-<object data='$param' type='image/svg+xml'>
-<img src='$param&format=png'/>
+<object data='$param' type='image/svg+xml' title='$title'>
+<img src='$param&format=png' alt='$title'/>
 </object>
 <span class='caption'>".htmlEncode($caption)."</span>
 </div>";

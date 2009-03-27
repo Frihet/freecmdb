@@ -55,27 +55,14 @@ common operation. If this turns out to be a problem in the future, a
 maximum time before deleted data is _truly_ removed may be
 implemented.
 
-Short-term Todo:
-
-* On copy, prompt for new name first.
-* There are some hardcodings against the Name column. Replace these with a hardcoding against a default column.
-* Paging
-* Add required column
 
 Plans for future work:
 
-* Provide a web service; integration with e.g. Nagios, as well as other CMDBs.
+* Add mandatory columns
 * Use nmap to provide network information on CIs.
-* Add users and privileges, specifically read only and non-dml users.
 * Allow Anna to upload custom style sheets.
-* Remove the one update button per line and replace them with a common update button at the top and bottom.
 * Add more column types, e.g. list of links.
-* Custom reports, e.g. show me all CI:s with nobody set as responsible, or show me all CI:s that depend on a CI with status=down. Just extend the ci listing interface a bit with better filters and add a feature to save specific such searches.
 * Make it possible to reorder the columns in the display.
-* Pagination.
-* Change schedule: Users that can submit change requests in the CMDB that need to be approved by an admin to become visible. 
-* RfC handling system. Track life time of RfCs, and make it possible to specify how an RfC will update the CMDB beforehand, so that when the change is performed, the CMDB is updated.
-* Different columns for different CI types.
 * Add possibility to remove some features for some CI types, e.g. CI types that are really assets should not have dependency tracking or RfC handling.
 * License tracking, including showing when a software is used by more users than the license permits.
 

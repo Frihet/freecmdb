@@ -54,6 +54,11 @@ extends adminController
             return false;
         }
         else {
+            if( ciType::getName($id) == $name && 
+                ciType::getShape($id) == $shape) {
+                return true;
+            }
+            
             $ok = ciType::update($id, $name, $shape, 0);
             if (!$ok) {
                 error("CI type could not be found, not updated.");

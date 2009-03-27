@@ -16,16 +16,16 @@ define('CI_COLUMN_IFRAME', 4);
 
 class ciAction
 {
-	function getDescription($id) 
-	{
-		$desc=array(CI_ACTION_CREATE => 'CI created',
-			    CI_ACTION_REMOVE => 'CI removed',
-			    CI_ACTION_CHANGE_TYPE => 'CI type changed',
-			    CI_ACTION_CHANGE_COLUMN => 'CI column value changed',
-			    CI_ACTION_ADD_DEPENDENCY => 'Added new dependency',
-			    CI_ACTION_REMOVE_DEPENDENCY => 'Removed dependency');
-		return $desc[$id];
-	}
+    function getDescription($id) 
+    {
+        $desc=array(CI_ACTION_CREATE => 'CI created',
+                    CI_ACTION_REMOVE => 'CI removed',
+                    CI_ACTION_CHANGE_TYPE => 'CI type changed',
+                    CI_ACTION_CHANGE_COLUMN => 'CI column value changed',
+                    CI_ACTION_ADD_DEPENDENCY => 'Added new dependency',
+                    CI_ACTION_REMOVE_DEPENDENCY => 'Removed dependency');
+        return $desc[$id];
+    }
     
     
 }
@@ -34,8 +34,8 @@ class ciAction
 class history
 {
 	
-	function fetch($id) 
-	{
+    function fetch($id) 
+    {
         return db::fetchList('
 select  ci_log.id, extract (epoch from create_time) as create_time, 
         ci_log.ci_id, action, 
@@ -54,28 +54,28 @@ left join ci_column cc2
 on ci_log.ci_id = cc2.ci_id and cc2.ci_column_type_id=6
 where ci_log.ci_id = :ci_id or ci_log.dependency_id = :ci_id
 order by create_time desc', 
-                               array(':ci_id'=>$id));
+                             array(':ci_id'=>$id));
 		
 
-	}
+    }
 	
 }
 
 
 class log
 {
-	function add($ci_id, $action, $arg=null) 
-	{
-		//echo "add($ci_id, $action, $arg);<br>";
+    function add($ci_id, $action, $arg=null) 
+    {
+        //echo "add($ci_id, $action, $arg);<br>";
         
         
-		$value = array();
-		$param=array();
+        $value = array();
+        $param=array();
                 
-		switch ($action) {
-			case CI_ACTION_CREATE:
-			case CI_ACTION_REMOVE:
-				$query = "
+        switch ($action) {
+        case CI_ACTION_CREATE:
+        case CI_ACTION_REMOVE:
+            $query = "
 insert into ci_log 
 (
         create_time, ci_id, action, user_id
@@ -84,12 +84,12 @@ values
 (
         now(), :ci_id, :action, :user_id
 )";
-				$param = array(':ci_id'=>$ci_id, ':action'=>$action, ':user_id'=>ciUser::$me->id);
-				db::query($query, $param);
-				break;
+            $param = array(':ci_id'=>$ci_id, ':action'=>$action, ':user_id'=>ciUser::$me->id);
+            db::query($query, $param);
+            break;
             
-			case CI_ACTION_CHANGE_TYPE:
-				$query = "
+        case CI_ACTION_CHANGE_TYPE:
+            $query = "
 insert into ci_log 
 (
         create_time, ci_id, action, type_id_old, user_id
@@ -97,12 +97,12 @@ insert into ci_log
 select now(), :ci_id, :action, ci_type_id, :user_id
 from ci
 where id = :ci_id";
-				$param = array(':ci_id'=>$ci_id, ':action'=>$action, ':user_id'=>ciUser::$me->id);
-				db::query($query, $param);
-				break;
+            $param = array(':ci_id'=>$ci_id, ':action'=>$action, ':user_id'=>ciUser::$me->id);
+            db::query($query, $param);
+            break;
             
-			case CI_ACTION_CHANGE_COLUMN:
-				$query = "
+        case CI_ACTION_CHANGE_COLUMN:
+            $query = "
 insert into ci_log 
 (
         create_time, ci_id, action, column_id, column_value_old, user_id
@@ -111,14 +111,14 @@ select now(), :ci_id, :action, :column_id, value, :user_id
 from ci_column_view
 where id = :ci_id and column_type_id = :column_id";
 
-				$param = array(':ci_id'=>$ci_id, ':action'=>$action, ':column_id'=>$arg, ':user_id'=>ciUser::$me->id);
-				db::query($query, $param);
+            $param = array(':ci_id'=>$ci_id, ':action'=>$action, ':column_id'=>$arg, ':user_id'=>ciUser::$me->id);
+            db::query($query, $param);
             
-				break;
+            break;
 
-			case CI_ACTION_ADD_DEPENDENCY:
-			case CI_ACTION_REMOVE_DEPENDENCY:
-				$query = "
+        case CI_ACTION_ADD_DEPENDENCY:
+        case CI_ACTION_REMOVE_DEPENDENCY:
+            $query = "
 insert into ci_log 
 (
         create_time, ci_id, action, dependency_id, user_id
@@ -128,18 +128,18 @@ values
         now(), :ci_id, :action, :dependency_id, :user_id
 )";
             
-				$param = array(':ci_id'=>$ci_id, ':action'=>$action, ':dependency_id'=>$arg, ':user_id'=>ciUser::$me->id);
-				db::query($query, $param);
-				break;
-		}
-	}
+            $param = array(':ci_id'=>$ci_id, ':action'=>$action, ':dependency_id'=>$arg, ':user_id'=>ciUser::$me->id);
+            db::query($query, $param);
+            break;
+        }
+    }
 
-        /**
-         Return a list containing the ids of the last ten CIs to be edited
-         */
-        function getLatestIds()
-        {
-            return db::fetchList("
+    /**
+     Return a list containing the ids of the last ten CIs to be edited
+    */
+    function getLatestIds()
+    {
+        return db::fetchList("
 select ci_log.ci_id 
 from ci_log 
 join ci 
@@ -148,7 +148,7 @@ where ci.deleted=false
 group by ci_id 
 order by max(create_time) desc 
 limit 10");
-        }
+    }
         
 }
 
@@ -156,126 +156,140 @@ limit 10");
 class dbItem
 {
 
-	/**
-	 * Returns an array of all public properties of this object
-	 * type. By convention, this is exactly the same as the list of
-	 * fields in the database, and also the same thing as all fields
-	 * whose name does not begin with an underscore.
-	 */
-	function getPublicProperties() {
-		static $cache = null;
-		if (is_null( $cache )) {
-			$cache = array();
-			foreach (get_class_vars( get_class( $this ) ) as $key=>$val) {
-				if (substr( $key, 0, 1 ) != '_') {
-					$cache[] = $key;
-				}
-			}
-		}
-		return $cache;
-	}
+    /**
+     * Returns an array of all public properties of this object
+     * type. By convention, this is exactly the same as the list of
+     * fields in the database, and also the same thing as all fields
+     * whose name does not begin with an underscore.
+     */
+    function getPublicProperties() {
+        static $cache = null;
+        if (is_null( $cache )) {
+            $cache = array();
+            foreach (get_class_vars( get_class( $this ) ) as $key=>$val) {
+                if (substr( $key, 0, 1 ) != '_') {
+                    $cache[] = $key;
+                }
+            }
+        }
+        return $cache;
+    }
 
-	function initFromArray($arr)
-	{
-		$count = 0;
+    function initFromArray($arr)
+    {
+        $count = 0;
+        if ($arr) {
+            foreach ($this->getPublicProperties() as $key) {
+                if (array_key_exists($key, $arr)) {
+                    $this->$key = $arr[$key];
+                    $count ++;
+                }
+            }
+        }
         
-		foreach ($this->getPublicProperties() as $key) {
-			if (array_key_exists($key, $arr)) {
-				$this->$key = $arr[$key];
-				$count ++;
-			}
-		}
-		return $count;
+        return $count;
         
-        
-	}
+    }
     
-    
+    function find($col_name, $col_value, $class_name, $table_name) 
+    {
+        $res = new $class_name();
+        $data = db::fetchRow("select * from $table_name where $col_name=:value",
+                             array(':value'=>$col_value));
+                
+        if (!$data) {
+            return null;
+        }
+        $res->initFromArray($data);
+        
+        return $res;
+    }
+        
 }
 
 class ciType
 {
-	static $types=null;
-	static $shapes=null;
-	static $ids=null;
+    static $types=null;
+    static $shapes=null;
+    static $ids=null;
     
-	function getTypes() 
-	{
-		ciType::load();
-		return ciType::$types;
-	}
+    function getTypes() 
+    {
+        ciType::load();
+        return ciType::$types;
+    }
 	
-	function getName($id) 
-	{
-		ciType::load();
-		return ciType::$types[$id];
-	}
+    function getName($id) 
+    {
+        ciType::load();
+        return ciType::$types[$id];
+    }
 
-        function create($name, $shape) 
-        {
-            db::query("insert into ci_type (name, shape) values (:name, :shape)",
-                      array(':name'=>$name, ':shape'=>$shape));
-            return db::count()?db::lastInsertId("ci_type_id_seq"):false;
-        }
+    function create($name, $shape) 
+    {
+        db::query("insert into ci_type (name, shape) values (:name, :shape)",
+                  array(':name'=>$name, ':shape'=>$shape));
+        return db::count()?db::lastInsertId("ci_type_id_seq"):false;
+    }
         
-	function update($id, $name, $shape, $deleted) 
-	{
-            $val = array();
-            $param = array(":id"=>$id);
-            foreach(array("name", "shape", "deleted") as $key) {
-                if ($$key !== null) {
-                    $val[] = "$key = :$key";
-                    $param[":$key"]=$$key;
-                }
+    function update($id, $name, $shape, $deleted) 
+    {
+        $val = array();
+        $param = array(":id"=>$id);
+        foreach(array("name", "shape", "deleted") as $key) {
+            if ($$key !== null) {
+                $val[] = "$key = :$key";
+                $param[":$key"]=$$key;
             }
+        }
             
-            db::query("update ci_type set " . implode(", ", $val) . " where id=:id",
-                      $param);
-            return !!db::count();
-	}
+        db::query("update ci_type set " . implode(", ", $val) . " where id=:id",
+                  $param);
+        return !!db::count();
+    }
 	
     
 
 	
-	function getShape($id) 
-	{
-		ciType::load();
-		return ciType::$shapes[$id];
-	}
+    function getShape($id) 
+    {
+        ciType::load();
+        return ciType::$shapes[$id];
+    }
     
-	function getId($name) 
-	{
-		ciType::load();
-		return ciType::$ids[$name];
-	}
+    function getId($name) 
+    {
+        ciType::load();
+        return ciType::$ids[$name];
+    }
 
-	function getShapes()
-	{
-		return array('box'=>'Box', 
-			     'diamond' => 'Diamond',
-			     'doubleoctagon'=>'Double octagon',
-			     'ellipse'=>'Ellipse', 
-			     'house'=>'House',
-			     'octagon'=>'Octagon',
-			     'triangle' => 'Triangle');
-	}
+    function getShapes()
+    {
+        return array('box'=>'Box', 
+                     'diamond' => 'Diamond',
+                     'doubleoctagon'=>'Double octagon',
+                     'ellipse'=>'Ellipse', 
+                     'house'=>'House',
+                     'octagon'=>'Octagon',
+                     'triangle' => 'Triangle');
+    }
     
-	function load()
-	{
-		if (ciType::$types != null) {
-			return;
-		}
+    function load()
+    {
+        if (ciType::$types != null) {
+            return;
+        }
 
-                ciType::$types=array();
-                ciType::$ids=array();
-                ciType::$shapes=array();
+        ciType::$types=array();
+        ciType::$ids=array();
+        ciType::$shapes=array();
                 
-		foreach(db::fetchList("select * from ci_type where deleted=false order by name") as $row) {
-			ciType::$types[$row['id']] = $row['name'];
-			ciType::$ids[$row['name']] = $row['id'];
-			ciType::$shapes[$row['id']] = $row['shape'];
-		}
-	}
+        foreach(db::fetchList("select * from ci_type where deleted=false order by name") as $row) {
+            ciType::$types[$row['id']] = $row['name'];
+            ciType::$ids[$row['name']] = $row['id'];
+            ciType::$shapes[$row['id']] = $row['shape'];
+        }
+    }
 
 
 }
@@ -283,42 +297,42 @@ class ciType
 
 class ciColumnList
 {
-	static $items = null;
-	static $name_lookup = null;
+    static $items = null;
+    static $name_lookup = null;
 
-	function getItems($column_id) 
-	{
-		ciColumnList::load();
-		if (!array_key_exists($column_id, ciColumnList::$items)) {
-                    return array();
-                }
-                    return ciColumnList::$items[$column_id];
-	}
+    function getItems($column_id) 
+    {
+        ciColumnList::load();
+        if (!array_key_exists($column_id, ciColumnList::$items)) {
+            return array();
+        }
+        return ciColumnList::$items[$column_id];
+    }
     
-	function getName($id) 
-	{
-		ciColumnList::load();
-		return ciColumnList::$name_lookup[$id];
-	}
+    function getName($id) 
+    {
+        ciColumnList::load();
+        return ciColumnList::$name_lookup[$id];
+    }
     
-	function load() 
-	{
-		if (ciColumnList::$items != null) {
-			return;
-		}
+    function load() 
+    {
+        if (ciColumnList::$items != null) {
+            return;
+        }
         
-                ciColumnList::$items = array();
+        ciColumnList::$items = array();
                 
-		foreach(db::fetchList("select * from ci_column_list order by name") as $row) {
-			if(!$row['deleted']) {
-				ciColumnList::$items[$row['ci_column_type_id']][$row['id']] = $row['name'];
-			}
-			ciColumnList::$name_lookup[$row['id']] = $row['name'];
-		}
-	}
+        foreach(db::fetchList("select * from ci_column_list order by name") as $row) {
+            if(!$row['deleted']) {
+                ciColumnList::$items[$row['ci_column_type_id']][$row['id']] = $row['name'];
+            }
+            ciColumnList::$name_lookup[$row['id']] = $row['name'];
+        }
+    }
 
-        function addItem($column_id, $value){
-            $query = "
+    function addItem($column_id, $value){
+        $query = "
 insert into ci_column_list 
 (
 		ci_column_type_id, 
@@ -329,177 +343,182 @@ values
 		:column_id, 
 		:value
 )";
-            $param = array(':column_id'=>$column_id, ':value'=>$value);        
-            db::query($query, $param);
-        }
+        $param = array(':column_id'=>$column_id, ':value'=>$value);        
+        db::query($query, $param);
+    }
         
-        function updateItem($id, $value){
-            $query = "
+    function updateItem($id, $value){
+        $query = "
 update ci_column_list 
 set name=:value 
 where id=:id";
-            $param = array(':id'=>$id, ':value'=>$value);        
-            db::query($query, $param);
-        }
+        $param = array(':id'=>$id, ':value'=>$value);        
+        db::query($query, $param);
+    }
 
-        function removeItem($id, $column_id){
-            $query = "
+    function removeItem($id, $column_id){
+        $query = "
 update ci_column_list 
 set deleted=true 
 where id=:id 
 and ci_column_type_id=:column_id";
-            $param = array(':column_id'=>$column_id, ':id'=>$id);        
-            db::query($query, $param);
-        }
+        $param = array(':column_id'=>$column_id, ':id'=>$id);        
+        db::query($query, $param);
+    }
         
 }
 
 
 class ciColumnType
 {
-	static $id_lookup=null;
-	static $name_lookup=null;
-	static $type_lookup=null;
+    static $id_lookup=null;
+    static $name_lookup=null;
+    static $type_lookup=null;
 
-	function getId($name) 
-	{
-		ciColumnType::load();
-		return ciColumnType::$id_lookup[$name];
+    function getId($name) 
+    {
+        ciColumnType::load();
+        return ciColumnType::$id_lookup[$name];
         
-	}
+    }
 
-        function create($name, $type) 
-        {
-            db::query("insert into ci_column_type (name, type) values (:name, :type)",
-                      array(':name'=>$name, ':type'=>$type));
-            return db::count()?db::lastInsertId("ci_column_type_id_seq"):false;
-        }
+    function create($name, $type) 
+    {
+        db::query("insert into ci_column_type (name, type) values (:name, :type)",
+                  array(':name'=>$name, ':type'=>$type));
+        return db::count()?db::lastInsertId("ci_column_type_id_seq"):false;
+    }
         
-	function update($id, $name, $type, $deleted) 
-	{
-		$val = array();
-		$param = array(":id"=>$id);
-		foreach(array("name", "type", "deleted") as $key) 
-		{
-			if ($$key !== null) 
-			{
-				$val[] = "$key = :$key";
-				$param[":$key"]=$$key;
-			}
-		}
+    function update($id, $name, $type, $deleted) 
+    {
+        $val = array();
+        $param = array(":id"=>$id);
+        foreach(array("name", "type", "deleted") as $key) 
+            {
+                if ($$key !== null) 
+                    {
+                        $val[] = "$key = :$key";
+                        $param[":$key"]=$$key;
+                    }
+            }
 		
-		db::query("update ci_column_type set " . implode(", ", $val) . " where id=:id",
-				  $param);
-		return !!db::count();
-	}
+        db::query("update ci_column_type set " . implode(", ", $val) . " where id=:id",
+                  $param);
+        return !!db::count();
+    }
 	
     
-	function getName($id)
-	{
-		ciColumnType::load();
-		return ciColumnType::$name_lookup[$id];
-	}
+    function getName($id)
+    {
+        ciColumnType::load();
+        return ciColumnType::$name_lookup[$id];
+    }
 
-	function getType($id)
-	{
-		ciColumnType::load();
-		return ciColumnType::$type_lookup[$id];
-	}
+    function getType($id)
+    {
+        ciColumnType::load();
+        return ciColumnType::$type_lookup[$id];
+    }
 
-	function getColumns($include_none = false)
-	{
-		ciColumnType::load();
-		if ( $include_none) 
-		{
-			return array(-1 => 'Any') +ciColumnType::$name_lookup;
-		}
+    function getColumns($include_none = false)
+    {
+        ciColumnType::load();
+        if ( $include_none) 
+            {
+                return array(-1 => 'Any') +ciColumnType::$name_lookup;
+            }
 		
-		return ciColumnType::$name_lookup;
-	}
+        return ciColumnType::$name_lookup;
+    }
     
-	function getTypes()
-	{
-		return array(CI_COLUMN_TEXT=>'Unformated text',
-					 CI_COLUMN_TEXT_FORMATED=>'Multiline text with formating',
-					 CI_COLUMN_LIST=>'List',
-					 CI_COLUMN_IFRAME=>'IFrame'/*
-												CI_COLUMN_LINK_LIST=>'List of links'*/);
-	}
+    function getTypes()
+    {
+        return array(CI_COLUMN_TEXT=>'Unformated text',
+                     CI_COLUMN_TEXT_FORMATED=>'Multiline text with formating',
+                     CI_COLUMN_LIST=>'List',
+                     CI_COLUMN_IFRAME=>'IFrame'/*
+                                                CI_COLUMN_LINK_LIST=>'List of links'*/);
+    }
     
-	function load()
-	{
-		if (ciColumnType::$id_lookup != null) {
-			return;
-		}
+    function load()
+    {
+        if (ciColumnType::$id_lookup != null) {
+            return;
+        }
         
-		foreach(db::fetchList("select * from ci_column_type where deleted=false order by name") as $row) {
-			ciColumnType::$id_lookup[$row['name']] = $row['id'];
-			ciColumnType::$name_lookup[$row['id']] = $row['name'];
-			ciColumnType::$type_lookup[$row['id']] = $row['type'];
-		}
+        foreach(db::fetchList("select * from ci_column_type where deleted=false order by name") as $row) {
+            ciColumnType::$id_lookup[$row['name']] = $row['id'];
+            ciColumnType::$name_lookup[$row['id']] = $row['name'];
+            ciColumnType::$type_lookup[$row['id']] = $row['type'];
+        }
         
-	}
+    }
 
 }
 
 function ciCompare($a, $b) 
 {
-	return strcasecmp($a->getDescription(), $b->getDescription());
+    return strcasecmp($a->getDescription(), $b->getDescription());
 }
 
 class ci
 extends dbItem
 {
-	static $_table = "ci_view";
-	static $_dependency_list = null;
-	static $_revisions=null;
+    static $_table = "ci_view";
+    static $_dependency_list = null;
+    static $_revisions=null;
     
-	var $type_name;
-	var $id;
-	var $ci_type_id;
-	var $_ci_column=null;
-	var $_dependants;
-	var $_dependencies;
-	var $_direct_dependant;
-	var $_direct_dependency;
-	var $update_time;
+    var $type_name;
+    var $id;
+    var $ci_type_id;
+    var $_ci_column=null;
+    var $_dependants;
+    var $_dependencies;
+    var $_direct_dependant;
+    var $_direct_dependency;
+    var $update_time;
 	
-	static $_cache = array();
+    static $_cache = array();
 
-	function setType($type)
-	{
-		$this->type=$type;
-		
-		log::add($id, CI_ACTION_CHANGE_TYPE);
-		db::query('update ci set ci_type_id=:type_id where id=:id',
-				  array(':type_id'=>$type,':id'=>$this->id));
-                return !!db::count();
-        }
+    function setType($type)
+    {
+        $this->type=$type;
+        db::begin();
+        log::add($id, CI_ACTION_CHANGE_TYPE);
+        db::query('update ci set ci_type_id=:type_id where id=:id',
+                  array(':type_id'=>$type,':id'=>$this->id));
+        db::commit();
+        return !!db::count();
+    }
 
-	function deleteValue($key) 
-	{
-		log::add($this->id, CI_ACTION_CHANGE_COLUMN, $key);
-                $query = "
+    function deleteValue($key) 
+    {
+        db::begin();
+        log::add($this->id, CI_ACTION_CHANGE_COLUMN, $key);
+        $query = "
 delete from ci_column
 where ci_id=:id
 and ci_column_type_id=:key
 ";
-                $arr = array(':key'=>$key, ':id'=>$this->id);
-                $res = db::query($query, $arr);
-                return !!db::count();
-	}
+        $arr = array(':key'=>$key, ':id'=>$this->id);
+        $res = db::query($query, $arr);
+        db::commit();
+        return !!db::count();
+    }
 	
 
-        function delete()
-        {
-            log::add($this->id, CI_ACTION_REMOVE);
-            $res = db::query("update ci set deleted=true where id = :id", array('id'=>$this->id));
-            return !!db::count();
-        }
+    function delete()
+    {
+        db::begin();
+        log::add($this->id, CI_ACTION_REMOVE);
+        $res = db::query("update ci set deleted=true where id = :id", array('id'=>$this->id));
+        db::commit();
+        return !!db::count();
+    }
                 
-	function set($key, $value) 
-	{
-		
+    function set($key, $value) 
+    {
+        db::begin();
         log::add($this->id, CI_ACTION_CHANGE_COLUMN, $key);
 		
         $query = "
@@ -528,513 +547,483 @@ values
             $res = db::query($query, $arr);
             
         }
+        db::commit();
         return !!db::count();
         
-	}
+    }
 
 
 
-	function count()
-	{
-		$res = db::fetchList("select count(*) cnt from $table");
-		$row = $res->fetch();
-		return $row['cnt'];
-	}
+    function count()
+    {
+        $res = db::fetchList("select count(*) cnt from $table");
+        $row = $res->fetch();
+        return $row['cnt'];
+    }
 
-	function apply($edit) 
-	{
-            if ($edit['ci_id'] != $this->id) {
-                return;
-            }
+    function apply($edit) 
+    {
+        if ($edit['ci_id'] != $this->id) {
+            return;
+        }
             
-            //        echo "Apply revision ".$edit['id']." to item " .$this->id . "<br>";
+        //        echo "Apply revision ".$edit['id']." to item " .$this->id . "<br>";
             
-            unset(ci::$_cache[$this->id]);
+        unset(ci::$_cache[$this->id]);
             
-            if($edit['action'] == CI_ACTION_CHANGE_COLUMN) {
-                $this->_ci_column[$edit['column_id']] = $edit['column_value_old'];
-                //echo "change col to ".$edit['column_value_old']."<br>";
-            }
-            else if($edit['action'] == CI_ACTION_CHANGE_TYPE) {
-                $this->ci_type_id = $edit['type_id_old'];
-                //echo "change type to {$edit['type_id_old']}<br>";
-            }
-	}
+        if($edit['action'] == CI_ACTION_CHANGE_COLUMN) {
+            $this->_ci_column[$edit['column_id']] = $edit['column_value_old'];
+            //echo "change col to ".$edit['column_value_old']."<br>";
+        }
+        else if($edit['action'] == CI_ACTION_CHANGE_TYPE) {
+            $this->ci_type_id = $edit['type_id_old'];
+            //echo "change type to {$edit['type_id_old']}<br>";
+        }
+    }
     
-	function get($name) 
-	{
-            return $this->_ci_column[ciColumnType::getId($name)];
-	}
+    function get($name) 
+    {
+        return $this->_ci_column[ciColumnType::getId($name)];
+    }
     
-	function getDescription($long=true) 
-	{
-		$default_column = Property::get("ciColumn.default");
+    function getDescription($long=true) 
+    {
+        $default_column = Property::get("ciColumn.default");
 	
-		$nam = $this->get(ciColumnType::getName($default_column));
-		return ($nam?$nam:'<unnamed>') . ($long?(' <' . $this->type_name. ">"):'');
-	}
+        $nam = $this->get(ciColumnType::getName($default_column));
+        return ($nam?$nam:'<unnamed>') . ($long?(' <' . $this->type_name. ">"):'');
+    }
     
 
-	function removeDependency($other_id) 
-	{
-		$delete_query = "
+    function removeDependency($other_id) 
+    {
+        $delete_query = "
 delete from ci_dependency
 where dependency_id = :other_id
 and ci_id = :my_id";
-		$delete_arr = array(":my_id" => $this->id, ":other_id" => $other_id);
-		$res = db::query($delete_query, $delete_arr);
+        $delete_arr = array(":my_id" => $this->id, ":other_id" => $other_id);
+        $res = db::query($delete_query, $delete_arr);
         
-		if ($res->rowCount()) {
-			log::add($this->id, CI_ACTION_REMOVE_DEPENDENCY, $other_id);
-		}
-	}
+        if ($res->rowCount()) {
+            log::add($this->id, CI_ACTION_REMOVE_DEPENDENCY, $other_id);
+        }
+    }
     
-	function addDependency($other_id) 
-	{
-		$arr = array(':my_id' => $this->id, ':other_id' => $other_id);
+    function addDependency($other_id) 
+    {
+        $arr = array(':my_id' => $this->id, ':other_id' => $other_id);
         
-		$res = db::query("
+        $res = db::query("
 insert into ci_dependency 
 (ci_id, dependency_id) 
 values (:my_id, :other_id)
 ", $arr);
-		if ($res->rowCount()) {
-			log::add($this->id, CI_ACTION_ADD_DEPENDENCY, $other_id);
-		}
-	}
+        if ($res->rowCount()) {
+            log::add($this->id, CI_ACTION_ADD_DEPENDENCY, $other_id);
+        }
+    }
     
-	function getDependencies() 
-	{
-		if($this->_dependencies === null) 
-		{
-			$this->_dependencies = ci::_getDependencies(array($this->id), true);
-		}
+    function getDependencies() 
+    {
+        if($this->_dependencies === null) 
+            {
+                $this->_dependencies = ci::_getDependencies(array($this->id), true);
+            }
 			
-		return $this->_dependencies;
-	}
+        return $this->_dependencies;
+    }
 
-	function isDirectDependency($id) 
-	{
-		$this->getDirectDependencies();
-		return array_key_exists($id, $this->_direct_dependencies);
-	}
+    function isDirectDependency($id) 
+    {
+        $this->getDirectDependencies();
+        return array_key_exists($id, $this->_direct_dependencies);
+    }
     
-	function isDependency($id) 
-	{
-		$this->getDependencies();
+    function isDependency($id) 
+    {
+        $this->getDependencies();
         
-		return array_key_exists($id, $this->_dependencies);
-	}
+        return array_key_exists($id, $this->_dependencies);
+    }
     
     
-	function getDependants() 
-	{
-		if ($this->_dependants === null) 
-		{
-			$this->_dependants = ci::_getDependants(array($this->id), true);
-		}
-		return $this->_dependants;
-	}
+    function getDependants() 
+    {
+        if ($this->_dependants === null) 
+            {
+                $this->_dependants = ci::_getDependants(array($this->id), true);
+            }
+        return $this->_dependants;
+    }
 
-	function _loadDependencies()
-	{
-		ci::_loadRevisions();
+    function _loadDependencies()
+    {
+        ci::_loadRevisions();
 
-	}
+    }
 	
 
-	function _getDependencies($id_arr, $all=false) 
-	{
-		ci::_loadDependencies();
+    function _getDependencies($id_arr, $all=false) 
+    {
+        ci::_loadDependencies();
 			
-		$dep_arr = array();
-		$id_arr_map = array();
+        $dep_arr = array();
+        $id_arr_map = array();
             
-		foreach($id_arr as $id) {
-			$id_arr_map[$id] = true;
-		}
+        foreach($id_arr as $id) {
+            $id_arr_map[$id] = true;
+        }
 			
-		if( !$all) 
-		{
+        if( !$all) 
+            {
 					
-			foreach(ci::$_dependency_list as $dep) 
-			{
-				if(array_key_exists($dep['ci_id'], $id_arr_map))
-				{
-					$dep_arr[] = $dep['dependency_id'];
-				}
-			}
-		}
-		else 
-		{
-			$done = array();
-			$prev = $id_arr_map;
+                foreach(ci::$_dependency_list as $dep) 
+                    {
+                        if(array_key_exists($dep['ci_id'], $id_arr_map))
+                            {
+                                $dep_arr[] = $dep['dependency_id'];
+                            }
+                    }
+            }
+        else 
+            {
+                $done = array();
+                $prev = $id_arr_map;
 					
-			while (true) 
-			{					
-				$stop = true;
-				foreach(ci::$_dependency_list as $dep) 
-				{
+                while (true) 
+                    {					
+                        $stop = true;
+                        foreach(ci::$_dependency_list as $dep) 
+                            {
 									
-					if(array_key_exists($dep['ci_id'], $prev) &&
-					   !array_key_exists($dep['dependency_id'], $done)) 
-					{
-						$done[$dep['dependency_id']] = true;
-						$dep_arr[] = $dep['dependency_id'];
-						$next[$dep['dependency_id']] = true;
-						$stop = false;
-					}
-				}
-				if ($stop) 
-				{
-					break;
-				}
-				$prev = $next;
-			}
-		}
+                                if(array_key_exists($dep['ci_id'], $prev) &&
+                                   !array_key_exists($dep['dependency_id'], $done)) 
+                                    {
+                                        $done[$dep['dependency_id']] = true;
+                                        $dep_arr[] = $dep['dependency_id'];
+                                        $next[$dep['dependency_id']] = true;
+                                        $stop = false;
+                                    }
+                            }
+                        if ($stop) 
+                            {
+                                break;
+                            }
+                        $prev = $next;
+                    }
+            }
 
-		return ci::fetch(array('id_arr' => $dep_arr));
+        return ci::fetch(array('id_arr' => $dep_arr));
 
-	}
+    }
 	
-	function _getDependants($id_arr, $all=false) 
-	{
-		ci::_loadDependencies();
+    function _getDependants($id_arr, $all=false) 
+    {
+        ci::_loadDependencies();
 			
-		$dep_arr = array();
-		$id_arr_map = array();
+        $dep_arr = array();
+        $id_arr_map = array();
 			
-		foreach($id_arr as $id) 
-		{
-			$id_arr_map[$id] = true;
-		}
+        foreach($id_arr as $id) 
+            {
+                $id_arr_map[$id] = true;
+            }
 			
-		if( !$all) 
-		{
+        if( !$all) 
+            {
 					
-			foreach(ci::$_dependency_list as $dep) 
-			{
-				if(array_key_exists($dep['dependency_id'], $id_arr_map))
-				{
-					$dep_arr[] = $dep['ci_id'];
-				}
-			}
-		}
-		else 
-		{
-			$done = array();
-			$prev = $id_arr_map;
+                foreach(ci::$_dependency_list as $dep) 
+                    {
+                        if(array_key_exists($dep['dependency_id'], $id_arr_map))
+                            {
+                                $dep_arr[] = $dep['ci_id'];
+                            }
+                    }
+            }
+        else 
+            {
+                $done = array();
+                $prev = $id_arr_map;
 					
-			while (true) 
-			{					
-				$stop = true;
-				foreach(ci::$_dependency_list as $dep) 
-				{
+                while (true) 
+                    {					
+                        $stop = true;
+                        foreach(ci::$_dependency_list as $dep) 
+                            {
 									
-					if(array_key_exists($dep['dependency_id'], $prev) &&
-					   !array_key_exists($dep['ci_id'], $done)) 
-					{
-						$done[$dep['ci_id']] = true;
-						$dep_arr[] = $dep['ci_id'];
-						$next[$dep['ci_id']] = true;
-						$stop = false;
-					}
-				}
-				if ($stop) 
-				{
-					break;
-				}
-				$prev = $next;
-			}
-		}
+                                if(array_key_exists($dep['dependency_id'], $prev) &&
+                                   !array_key_exists($dep['ci_id'], $done)) 
+                                    {
+                                        $done[$dep['ci_id']] = true;
+                                        $dep_arr[] = $dep['ci_id'];
+                                        $next[$dep['ci_id']] = true;
+                                        $stop = false;
+                                    }
+                            }
+                        if ($stop) 
+                            {
+                                break;
+                            }
+                        $prev = $next;
+                    }
+            }
 
-		return ci::fetch(array('id_arr' => $dep_arr));
+        return ci::fetch(array('id_arr' => $dep_arr));
 
-	}
+    }
 	
     
-	function getDirectDependencies() 
-	{
-		if ($this->_direct_dependencies === null) {
-			$this->_direct_dependencies = ci::_getDependencies(array($this->id));
-		}
-		return $this->_direct_dependencies;
-	}
+    function getDirectDependencies() 
+    {
+        if ($this->_direct_dependencies === null) {
+            $this->_direct_dependencies = ci::_getDependencies(array($this->id));
+        }
+        return $this->_direct_dependencies;
+    }
     
-	function getDirectDependants() 
-	{
-		if ($this->_direct_dependants === null) {
-			$this->_direct_dependants = ci::_getDependants(array($this->id));
-		}
-		return $this->_direct_dependants;
-	}
+    function getDirectDependants() 
+    {
+        if ($this->_direct_dependants === null) {
+            $this->_direct_dependants = ci::_getDependants(array($this->id));
+        }
+        return $this->_direct_dependants;
+    }
 	
-	function _getDirectDependants($id_arr, $exclude=null) 
-	{
-		$query = "
-select ci_id
-from ci_dependency 
-where dependency_id in 
-";
-		list($id_arr_param, $id_arr_named) = db::in_list($id_arr);
-		$query .= "($id_arr_param)";
-
-		$arr = $id_arr_named;
-
-		$dep_arr = db::fetchList($query, $arr);
-		$dep_arr2 = array();
-		$direct = array();
-        
-		foreach($dep_arr as $dep) {
-			$dep_arr2[] = $dep['ci_id'];
-		}
-        
-		$param = array('id_arr' => $dep_arr2);
-		if($exclude) 
-		{
-			$param['exclude'] = $exclude;
-		}
-		
-		$res = ci::fetch($param);
-
-		return $res;
-	}
+    function isDirectDependant($id) 
+    {
+        $this->getDirectDependants();
+        return array_key_exists($id, $this->_direct_dependants);
+    }
     
-	function isDirectDependant($id) 
-	{
-		$this->getDirectDependants();
-		return array_key_exists($id, $this->_direct_dependants);
-	}
-    
-	function isDependant($id) 
-	{
-		$this->getDependants();
-		return array_key_exists($id, $this->_dependants);
-	}
+    function isDependant($id) 
+    {
+        $this->getDependants();
+        return array_key_exists($id, $this->_dependants);
+    }
 
-	function applyAll()
-	{
-		ci::_loadRevisions();
-		if(array_key_exists($this->id, ci::$_revisions)) {
-			foreach(ci::$_revisions[$this->id] as $edit) {
-				$this->apply($edit);
-			}
-		}
+    function applyAll()
+    {
+        ci::_loadRevisions();
+        if(array_key_exists($this->id, ci::$_revisions)) {
+            foreach(ci::$_revisions[$this->id] as $edit) {
+                $this->apply($edit);
+            }
+        }
         
-	}
+    }
     
-	function _loadRevisions()
-	{
-		if (ci::$_revisions!==null) {
-			return;
-		}
+    function _loadRevisions()
+    {
+        if (ci::$_revisions!==null) {
+            return;
+        }
         
-		$revision_id = param('revision_id');
-		if ($revision_id === null) {
-			ci::$_revisions = array();
-			$rev=array();
-		}
-		else {
+        $revision_id = param('revision_id');
+        if ($revision_id === null) {
+            ci::$_revisions = array();
+            $rev=array();
+        }
+        else {
             
-			$rev = db::fetchList('
+            $rev = db::fetchList('
 select cl2.id, extract (epoch from cl2.create_time) as create_time, cl2.ci_id, cl2.action, cl2.type_id_old, cl2.column_id, cl2.column_value_old, cl2.dependency_id
 from ci_log as cl
 join ci_log as cl2
 on cl2.create_time > cl.create_time
 where cl.id=:revision_id
 order by create_time desc', 
-					     array(':revision_id'=>$revision_id));
-			ci::$_revisions=array();
-			foreach($rev as $revision) {
-				ci::$_revisions[$revision['ci_id']][] = $revision;
-			}
-		}
+                                 array(':revision_id'=>$revision_id));
+            ci::$_revisions=array();
+            foreach($rev as $revision) {
+                ci::$_revisions[$revision['ci_id']][] = $revision;
+            }
+        }
         
 
-		$query = "
+        $query = "
 select ci_id, dependency_id
 from ci_dependency 
 ";
-		$remove=array();
-		$add = array();
+        $remove=array();
+        $add = array();
         
-		foreach($rev as $edit) {
-			switch ($edit['action']) {
-				case CI_ACTION_ADD_DEPENDENCY:
-					$remove[$edit['ci_id']][$edit['dependency_id']]=true;
-					$add[$edit['ci_id']][$edit['dependency_id']]=false;
-					break;
+        foreach($rev as $edit) {
+            switch ($edit['action']) {
+            case CI_ACTION_ADD_DEPENDENCY:
+                $remove[$edit['ci_id']][$edit['dependency_id']]=true;
+                $add[$edit['ci_id']][$edit['dependency_id']]=false;
+                break;
                 
-				case CI_ACTION_REMOVE_DEPENDENCY:
-					$remove[$edit['ci_id']][$edit['dependency_id']]=false;
-					$add[$edit['ci_id']][$edit['dependency_id']]=true;
-					break;
-			}
-		}
+            case CI_ACTION_REMOVE_DEPENDENCY:
+                $remove[$edit['ci_id']][$edit['dependency_id']]=false;
+                $add[$edit['ci_id']][$edit['dependency_id']]=true;
+                break;
+            }
+        }
 
-		$dep_list = array();
+        $dep_list = array();
         
-		foreach(db::fetchList($query) as $dep) {
-			$id = $dep['ci_id'];
-			$dep_id = $dep['dependency_id'];
+        foreach(db::fetchList($query) as $dep) {
+            $id = $dep['ci_id'];
+            $dep_id = $dep['dependency_id'];
             
-			if(array_key_exists($id, $remove) && array_key_exists($dep_id, $remove[$id]) && $remove[$id][$dep_id]) {
-				continue;
-			}
-			$dep_list[] = $dep;
-		}
-		foreach($add as $ci_id => $add_list) {
-			foreach($add_list as $dep_id => $doit) {
-				if ($doit) {
-					$dep_list[] = array('ci_id'=>$ci_id, 'dependency_id'=>$dep_id);
-				}
-			}
-		}
-            
-		ci::$_dependency_list = $dep_list;
+            if(array_key_exists($id, $remove) && array_key_exists($dep_id, $remove[$id]) && $remove[$id][$dep_id]) {
+                continue;
+            }
+            $dep_list[] = $dep;
+        }
+        foreach($add as $ci_id => $add_list) {
+            foreach($add_list as $dep_id => $doit) {
+                if ($doit) {
+                    $dep_list[] = array('ci_id'=>$ci_id, 'dependency_id'=>$dep_id);
+                }
+            }
+        }
+        
+        ci::$_dependency_list = $dep_list;
         
         
-	}
+    }
     
 
 
-	function fetch($param=array()) 
-	{
-		if (array_key_exists('id_arr', $param)) {
+    function fetch($param=array()) 
+    {
+        if (array_key_exists('id_arr', $param)) {
 				
-			$id_arr = $param['id_arr'];
-			$id_arr2=array();
-			$res=array();
-			if (!$id_arr) {
-                            return array();
-                        }
+            $id_arr = $param['id_arr'];
+            $id_arr2=array();
+            $res=array();
+            if (!$id_arr) {
+                return array();
+            }
                         
-			foreach($id_arr as $id) 
-			{
-				if (array_key_exists($id, ci::$_cache)) 
-				{
-					$res[$id] = ci::$_cache[$id];
-				}
-				else 
-				{
-					$id_arr2[] = $id;
-				}
-			}
-			if (count($id_arr2)) 
-			{
-				$param['id_arr'] = $id_arr2;
-				$res2 = ci::fetchUncached($param);
-				$res = $res + $res2;
-			}
-			return ci::sortFetchResult($res);
-		}
-		else 
-		{
-			return ci::sortFetchResult(ci::fetchUncached($param));
-		}
+            foreach($id_arr as $id) 
+                {
+                    if (array_key_exists($id, ci::$_cache)) 
+                        {
+                            $res[$id] = ci::$_cache[$id];
+                        }
+                    else 
+                        {
+                            $id_arr2[] = $id;
+                        }
+                }
+            if (count($id_arr2)) 
+                {
+                    $param['id_arr'] = $id_arr2;
+                    $res2 = ci::fetchUncached($param);
+                    $res = $res + $res2;
+                }
+            return ci::sortFetchResult($res);
+        }
+        else 
+            {
+                return ci::sortFetchResult(ci::fetchUncached($param));
+            }
 		
-	}
+    }
 
 
-	function sortFetchResult($arr) 
-	{
+    function sortFetchResult($arr) 
+    {
 			
-		uasort($arr,"ciCompare");
-		return $arr;
-	}
+        uasort($arr,"ciCompare");
+        return $arr;
+    }
 	
 	
-	function fetchUncached($param=array()) 
-	{
-		$where = array();
-		$db_param = array();
-		$limit = "";
-		$offset = "";
-		$join = "";
+    function fetchUncached($param=array()) 
+    {
+        $where = array();
+        $db_param = array();
+        $limit = "";
+        $offset = "";
+        $join = "";
 			
-		$where[] = "ci_view.deleted = false";
+        $where[] = "ci_view.deleted = false";
         
-		if (array_key_exists('id_arr', $param)) {
-			if (count($param['id_arr'])==0) 
-			{
-				return array();
+        if (array_key_exists('id_arr', $param)) {
+            if (count($param['id_arr'])==0) 
+                {
+                    return array();
 							
-			}
+                }
 					
-			list($id_arr_param, $id_arr_named) = db::in_list($param['id_arr']);
-			$where[] = "id in ($id_arr_param)";
-			$db_param = array_merge($db_param, $id_arr_named);
-		}
+            list($id_arr_param, $id_arr_named) = db::in_list($param['id_arr']);
+            $where[] = "id in ($id_arr_param)";
+            $db_param = array_merge($db_param, $id_arr_named);
+        }
 			
-		if (array_key_exists('exclude', $param)) {
+        if (array_key_exists('exclude', $param)) {
 					
-			list($id_arr_param, $id_arr_named) = db::in_list($param['exclude']);
-			$where[] = "id not in ($id_arr_param)";
-			$db_param = array_merge($db_param, $id_arr_named);
-		}
+            list($id_arr_param, $id_arr_named) = db::in_list($param['exclude']);
+            $where[] = "id not in ($id_arr_param)";
+            $db_param = array_merge($db_param, $id_arr_named);
+        }
 			
-		if (array_key_exists('filter_column', $param)) {
-			$filter = $param['filter_column'];
+        if (array_key_exists('filter_column', $param)) {
+            $filter = $param['filter_column'];
 					
-			if (ciColumnType::getType($filter[0]) == CI_COLUMN_LIST) 
-			{
-				$join .= "
+            if (ciColumnType::getType($filter[0]) == CI_COLUMN_LIST) 
+                {
+                    $join .= "
 join ci_column cc
 on cc.ci_id = ci_view.id and cc.ci_column_type_id = :column_type
 join ci_column_list cl
 on cast(cc.value as int) = cl.id
 ";
-				$column = "cl.name";
+                    $column = "cl.name";
 							
-			}
-			else 
-			{
+                }
+            else 
+                {
 							
-				$join .= "
+                    $join .= "
 join ci_column cc
 on cc.ci_id = ci_view.id and cc.ci_column_type_id = :column_type";
-				$column = "cc.value";
+                    $column = "cc.value";
 
-			}
+                }
 					
-			$i = 0;
+            $i = 0;
 					
-			$where_parts=array();
+            $where_parts=array();
 					
 
-			foreach(explode(' ', $filter[1]) as $val) 
-			{
-				$where_parts[] = "lower($column) like lower(:filter_value_$i)";
-				$db_param[":filter_value_$i"] = "%$val%";
-				$i++;
+            foreach(explode(' ', $filter[1]) as $val) 
+                {
+                    $where_parts[] = "lower($column) like lower(:filter_value_$i)";
+                    $db_param[":filter_value_$i"] = "%$val%";
+                    $i++;
 							
-			}
-			$where[] = implode(" or ", $where_parts);
+                }
+            $where[] = implode(" or ", $where_parts);
 					
 					
-			$db_param[':column_type'] = $filter[0];
-		}
-		if (array_key_exists('filter_type', $param)) {
-			$filter = $param['filter_type'];
+            $db_param[':column_type'] = $filter[0];
+        }
+        if (array_key_exists('filter_type', $param)) {
+            $filter = $param['filter_type'];
 					
-			$where[] = "ci_type_id = :filter_type_id";
-			$db_param[':filter_type_id'] = $filter;
-		}
+            $where[] = "ci_type_id = :filter_type_id";
+            $db_param[':filter_type_id'] = $filter;
+        }
 			
-		if (array_key_exists('limit', $param)) {
-			$limit = "limit " . $param['limit'];
-		}
+        if (array_key_exists('limit', $param)) {
+            $limit = "limit " . $param['limit'];
+        }
 			
-		if (array_key_exists('offset', $param)) {
-			$limit = "offset " . $param['offset'];
-		}
+        if (array_key_exists('offset', $param)) {
+            $limit = "offset " . $param['offset'];
+        }
 			
-		$where_str = "";
-		if (count($where)) {
-			$where_str = "where " . implode(' and ', $where);
-		}
+        $where_str = "";
+        if (count($where)) {
+            $where_str = "where " . implode(' and ', $where);
+        }
 			
-		$arr = db::fetchList("
+        $arr = db::fetchList("
 select ci_view.*, extract(epoch from log.update_time) as update_time 
 from ci_view 
 left join 
@@ -1048,59 +1037,59 @@ $where_str
 $limit 
 $offset", $db_param);
 			
-		if(!count($arr)){
-			return array();
-		}
+        if(!count($arr)){
+            return array();
+        }
 			
 			
-		$col_id_arr = array();
+        $col_id_arr = array();
 			
-		$out = array();
-		foreach( $arr as $row) {
-			$ci = new ci();
-			$ci->initFromArray($row);
-			ci::$_cache[$ci->id] = $ci;
+        $out = array();
+        foreach( $arr as $row) {
+            $ci = new ci();
+            $ci->initFromArray($row);
+            ci::$_cache[$ci->id] = $ci;
 					
-			$out[$row['id']] = $ci;
-			$col_id_arr[] = $row['id'];
-		}
+            $out[$row['id']] = $ci;
+            $col_id_arr[] = $row['id'];
+        }
 			
-		list($col_id_arr_param, $col_id_arr_named) = db::in_list($col_id_arr);
+        list($col_id_arr_param, $col_id_arr_named) = db::in_list($col_id_arr);
 		
-		$arr2 = db::fetchList("
+        $arr2 = db::fetchList("
 select * 
 from ci_column_view 
 where id in ($col_id_arr_param) 
 order by name", $col_id_arr_named);
 			
-		foreach( $arr2 as $row) {
-			$out[$row['id']]->_ci_column[$row['column_type_id']] = $row['value'];
-			$out[$row['id']]->applyAll();
-		}
+        foreach( $arr2 as $row) {
+            $out[$row['id']]->_ci_column[$row['column_type_id']] = $row['value'];
+            $out[$row['id']]->applyAll();
+        }
 			
-		return $out;
-	}
+        return $out;
+    }
 }
 
 
 class ciUser
 extends dbItem
 {
-	static $me;
-	var $id;
-	var $username;
-	var $fullname;
-	var $password;
-	var $email;
-	var $deleted;
+    static $me;
+    var $id;
+    var $username;
+    var $fullname;
+    var $password;
+    var $email;
+    var $deleted;
     
-	function init()
-	{
-		ciUser::$me = new ciUser();
-		$user_list = db::fetchList('select * from ci_user limit 1');
-		ciUser::$me->initFromArray($user_list[0]);
-                return true;
-	}
+    function init()
+    {
+        ciUser::$me = new ciUser();
+        $user_list = db::fetchList('select * from ci_user limit 1');
+        ciUser::$me->initFromArray($user_list[0]);
+        return true;
+    }
     
 }
 
@@ -1122,14 +1111,14 @@ class Property
 
     function get($name) 
     {
-		self::load();
+        self::load();
 		
         return @self::$data[$name];
     }
     
     function set($name, $value) 
     {
-		self::load();
+        self::load();
         $param = array(":name"=>$name, ":value" => $value);
         if (array_key_exists($name, self::$data)) {
             db::query('update ci_property set value=:value where name=:name', $param);
@@ -1139,6 +1128,62 @@ class Property
         self::$data[$name] = $value;
     }
 
+}
+
+class Event
+{
+    static $data=null;
+    
+    /**
+     Load all events. Called automatically when needed, never call manually.
+     */
+    function _load()
+    {
+        if (self::$data){
+            return;
+        }
+        
+        self::$data=array();
+        
+        foreach(db::fetchList('select event_name, class_name from ci_event') as $row) {
+            if (!array_key_exists($row['event_name'],self::$data)) {
+                self::$data[$row['event_name']]=array();
+            }
+            self::$data[$row['event_name']][] =  $row;
+        }
+    }
+
+    /**
+     Emit the specified event. Send the specified parameters to all even handlers.
+    */
+    function emit($name, $param) 
+    {
+        
+        self::_load();
+        $ev = self::$data[$name];
+        
+        if ($ev) {
+            
+            foreach($ev as $item) {
+            
+                $class_str = $item['class_name'];
+                
+                $method_str = $name."Handler";
+                util::loadClass($class_str);
+                
+                eval("$class_str::$method_str(\$param);");
+            }
+        }
+    }
+    
+    /**
+     Register a new event handler. 
+    */
+    function register($event_name, $class_name) 
+    {
+        echo "ERROR - Registering new events not yet implemented!";
+    }
+    
 }
 
 ?>

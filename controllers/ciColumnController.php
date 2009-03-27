@@ -48,13 +48,9 @@ extends adminController
                 error("Invalid default column");
                 $ok = false;
             }
-            
         }
 	
-        
         if ($ok) {
-            
-            
             db::commit();
             message("Columns updated");
             redirect(makeUrl(array('controller'=>'ciColumn','task'=>null)));

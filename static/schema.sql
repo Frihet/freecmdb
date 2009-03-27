@@ -3,6 +3,7 @@ drop view ci_column_view;
 
 drop index ci_dependency_idx;
 
+drop table ci_property;
 drop table ci_log;
 drop table ci_dependency;
 drop table ci_column;
@@ -95,7 +96,24 @@ create table ci_property
 	value varchar(2048) not null
 );
 
+create table ci_event
+(
+	id serial not null primary key,
+	event_name varchar(32) not null,
+	class_name varchar(64) not null
+);
+
+create table ci_plugins
+(
+	id serial not null primary key,
+	plugin_name varchar(32) not null
+);
+
+
 create unique index ci_dependency_idx on ci_dependency (ci_id, dependency_id);
+create index ci_session_user_idx on ci_session (user_id);
+create index ci_column_ci_idx on ci_column (ci_id);
+create index ci_log_ci_idx on ci_log (ci_id);
 
 create view ci_view as
 select c.*, ct.name as type_name 

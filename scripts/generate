@@ -29,14 +29,33 @@ class ${name}Controller
 	extends Controller
 {
 
-	function viewRun()
-	{
+    function viewRun()
+    {
 
-	}
+    }
 
 }
 
 ?>"
+	 ;;
+
+	 plugin)
+	 mkdir plugins/"${name}"
+	 echo -n >plugins/"${name}"/index.php "<?php
+
+class ${name}Plugin
+	extends Plugin
+{
+
+}
+
+?>"
+	 
+	 echo >plugins/"${name}"/event.json "
+[]
+"
+	 
+
 	 ;;
 
 	 *)

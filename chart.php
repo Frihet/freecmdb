@@ -1,7 +1,7 @@
 <?php
   /**
    Print dependency graphs for a selection of CIs.
-   */
+  */
 
 require_once 'Image/GraphViz.php';
 
@@ -14,7 +14,7 @@ require_once("model.php");
 
 /**
  Renders the graph to 'standard output'. 
- */
+*/
 function render($graph) 
 {
     $format = param('format','svg');
@@ -45,14 +45,14 @@ function render($graph)
 
 /**
  Creates a new graph object with the settings that we use
- */
+*/
 function graph() {
     return new Image_GraphViz(true, array('nodesep'=>'0.1', 'fontname'=>'sans-serif','bgcolor'=>'white'));
 }
 
 /** Chart creation object. Waklks around the graph and renders the
  parts it likes.
- */
+*/
 class ciChart
 {
     
@@ -77,10 +77,10 @@ class ciChart
     {
         $graph = graph();
         if($this->root == 'full') {
-			$this->render_all($graph);
-		} else {
-			$this->render($graph, $this->root);
-		}			
+            $this->render_all($graph);
+        } else {
+            $this->render($graph, $this->root);
+        }			
         render($graph);		
     }
     
@@ -94,8 +94,8 @@ class ciChart
         $done = array();
         $ci_list = ci::fetch();
         foreach($ci_list as $ci) {					
-			$this->render_node($graph, $ci, $done, false);
-		}
+            $this->render_node($graph, $ci, $done, false);
+        }
 			
     }
 	
@@ -105,12 +105,12 @@ class ciChart
         if (array_key_exists($node->id, $done)) {
             return;
         }
-		$max_depth = Property::get("chart.max_depth");
+        $max_depth = Property::get("chart.max_depth");
 		
-		if ($max_depth > 0 && $depth >= $max_depth) 
-		{
-			return;
-		}
+        if ($max_depth > 0 && $depth >= $max_depth) 
+            {
+                return;
+            }
 				
         $revision_id = param('revision_id');
         $revision_str = $revision_id !== null? "&revision_id=$revision_id":"";
@@ -126,8 +126,6 @@ class ciChart
                               )
                         );
         
-        
-        
         $func = (!$this->reverse)?"getDirectDependencies":"getDirectDependants";
         
         $children = $node->$func();
@@ -142,7 +140,7 @@ class ciChart
 
 /**
  Create a legend of all node types.
- */
+*/
 function legend()
 {
     $graph = graph();
@@ -176,7 +174,9 @@ function main()
     }
 }
 db::init(DB_DSN) || die("The site is down. Reason: Could not connect to the database.");
+db::query("set client_encoding to \"utf8\"");
+
 ciUser::init();
 main();
 
-?>
+                 ?>

@@ -1,8 +1,8 @@
 <?php
   /**
    Controller for ci objects
-   */
-class CIController
+  */
+class CiController
 extends Controller
 {
     var $id;
@@ -71,10 +71,8 @@ extends Controller
         $key = param('key');
         $value = param('value');
         
-        
         $this->updateField($key, $value);
         
-
         message('CI updated');
         
         redirect(makeUrl(array('task'=>null, 'key'=>null, 'value' => null)));
@@ -105,6 +103,7 @@ extends Controller
     function saveAllRun() 
     {
         $arr = array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'dependency_id'=>null);
+        db::begin();
         foreach($_REQUEST as $key => $value) {
             $prefix = substr($key, 0, 6);
             $suffix = substr($key, 6);
@@ -119,6 +118,7 @@ extends Controller
                       array(':type_id'=>$type_id,':id'=>param('id')));
 
         }
+        db::commit();
         message('Fields updated');
         redirect(makeUrl($arr));
     }
@@ -174,7 +174,7 @@ extends Controller
         $id_orig = param('id');
         db::query('insert into ci (ci_type_id) select ci_type_id from ci where id=:id', array(':id'=>$id_orig));
         $id_new = db::lastInsertId("ci_id_seq");
-
+        
         db::query('
 insert into ci_column (ci_id, ci_column_type_id, value)
 select :new_id, ci_column_type_id, value from ci_column where ci_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new));
@@ -186,20 +186,19 @@ select :new_id, dependency_id from ci_dependency where ci_id = :old_id', array('
         db::query('
 insert into ci_dependency (ci_id, dependency_id)
 select ci_id, :new_id from ci_dependency where dependency_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new));
-
+        
         redirect(makeUrl(array('id'=>$id_new, 'task'=>null)));
-			
+	
         /*
          FIXME: Update default column with shiny new value, e.g. append (copy) to it or something...
         */
     }
 	
-
     function editRun()
     {
         $this->viewRun();
     }
-
+    
     function revertRun()
     {
         $ci = $this->getCi();
@@ -233,7 +232,7 @@ order by cl2.create_time desc;',
         if ($ci->ci_type_id != $ci_orig->ci_type_id) {
             $ok &= $this->updateField('type', $ci->ci_type_id);
         }
-
+        
         foreach($ci->_ci_column as $key=>$value) {
             $old_value = $ci_orig->_ci_column[$key];
             //echo "Column $key: NEW $value, old $old_value<br>";
@@ -270,13 +269,13 @@ order by cl2.create_time desc;',
 	    
     function historyRun()
     {
-		$this->render("ciHistory");
-	}
+        $this->render("ciHistory");
+    }
 	
-	function viewRun()
-	{
-		$this->render("ci");
-	}
+    function viewRun()
+    {
+        $this->render("ci");
+    }
 	
 }
 
