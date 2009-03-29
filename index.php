@@ -121,6 +121,9 @@ skin : "fc"*/
         $is_ci = !$is_admin && !$is_help;
 	
         echo "<div class='main_menu'>\n";
+		echo "<div class='main_menu_inner'>";
+		echo "<div class='logo'><a href='?'>FreeCMDB</a></div>";
+		
         echo "<ul>\n";
         
         echo "<li>";
@@ -139,7 +142,7 @@ skin : "fc"*/
         echo makeLink("?controller=logout", "Log out", null);
         echo "</li>\n";
         */        
-        echo "</ul></div>\n";
+        echo "</ul></div></div>\n";
     }
 
     /**

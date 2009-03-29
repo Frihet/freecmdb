@@ -105,14 +105,10 @@ class dbMaker
     /**
      Execute the specified query.
     */
-    function query($q, $param_in=array())
+    function query($q, $param=array())
     {
         $t1 = microtime(true);
         self::$query_count += 1;
-        $param=array();
-        foreach($param_in as $key => $value) {
-			$param[substr($key,1)] = $value;
-        }
         try {
             if (array_key_exists($q, self::$statement_cache)) {
                 $res = self::$statement_cache[$q];
@@ -152,7 +148,9 @@ class dbMaker
     {
         $res = self::query($q, $param);
         $out = array();
-
+        if (!$res) {
+            return array();
+        }
         while($row = $res->fetch()) {
             $out[] = $row;
         }
@@ -181,7 +179,7 @@ class dbMaker
     {
         $res = self::query($q, $param);
         $row = $res->fetch();
-        self::$last_count = $res->r();
+        self::$last_count = $res->rowCount();
         $res->closeCursor();
         return $row[0];
     }

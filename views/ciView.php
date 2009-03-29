@@ -115,6 +115,9 @@ extends View
             $content .= $this->makeDependencies($controller);
 						
         }
+
+		$content .= implode("",$controller->getContent("ci_table"));
+
         
         $content .= "</table>\n";
     

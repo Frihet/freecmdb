@@ -16,6 +16,9 @@
 class Controller
 {
 
+	private $extra_content=array();
+	
+
     /** Check the task param and try to run the corresponding
      function, if it exists. Gives an error otherwise.
     */
@@ -43,6 +46,7 @@ class Controller
     function actionMenu($link_list) 
     {
         echo "<div class='action_menu'>\n";
+		echo implode("",$this->getContent("action_menu_pre"));
         echo "<ul>\n";
         if( count($link_list)) {
             echo  "<li><h2>Actions</h2></li>\n";
@@ -56,6 +60,7 @@ class Controller
         }
         
         echo $this->action_box();
+		echo implode("",$this->getContent("action_menu_post"));
         
         echo "</ul>\n";
         echo "</div>\n";
@@ -74,7 +79,12 @@ class Controller
 
 		echo "<h1>" . htmlEncode(util::getTitle()). "</h1>";
 		
+		echo implode("",$this->getContent("content_pre"));
+
         echo $content;
+
+		echo implode("",$this->getContent("content_post"));
+		
 
         echo "<div class='content_post'>";
         echo "</div>";
@@ -82,7 +92,7 @@ class Controller
         echo "</div>";
     }
 
-    /** Create a little box with misc information for the botton od
+    /** Create a little box with misc information for the botton of
      the action menu. Currently, this box only contains the ten laat
      edited CIs.
      */
@@ -148,6 +158,16 @@ class Controller
 		$v = new $viewName();
 		$v->render($this);
 		
+	}
+
+	function addContent($position, $content) 
+	{
+		$this->extra_content[$position][]= $content;
+	}
+
+	function getContent($position)
+	{
+		return $this->extra_content[$position]?$this->extra_content[$position]:array();
 	}
 	
 	
