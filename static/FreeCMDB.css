@@ -4,13 +4,11 @@
   */
 body
 {
-    background-color: #ddd;
+	background-image: url('../static/bg.png');
+	background-repeat: repeat-x;
+    background-color: #1d1d1d;
     padding: 0%;
     margin: 0%;
-}
-
-body
-{
     font-size: 80%;
     font-family: sans-serif;
 }
@@ -38,18 +36,75 @@ h2
 /*
   Form styling
   */
-button 
+button,
+.content .edit,
+.content .remove,
+.content .revision,
+.content .revert
+
 {
-    background-color: #eee;
-    border: 1px solid #888;
-    padding: 0px 5px 0px 5px;
-    color: black;
+    background-color: #35373f;
+    border: 1px solid #111;
+	border-radius: 3px;
+    -moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	background-image: url('../static/button_bg.png');
+	background-repeat: repeat-x;
+
+    padding: 2px 10px 2px 10px;
+    color: white;
 }
 
+/*
+  Styling for anchors that look like buttons.
+  */
+body .content .edit,
+body .content .remove,
+body .content .revision,
+body .content .revert
+{
+    text-decoration: none;
+    padding: 4px 12px 4px 12px;
+    /* 
+
+Kludge: This would ideally be the total size of the text box (which
+is defined in pt) plus the size of the borders, margins, etc.,
+which are defined in pixels, as well as a bit of extra margin,
+which is also defined in pixels. Sadly, that is impossible, so
+we have this semi-arbitrary number, which looks good most of the time.
+
+It's worth investigating if all links could be wrapped in a div in a
+box, to add the top/bottom margins, thus working around the problem.
+
+*/
+    line-height: 20pt;
+}
+
+
+
+
+body .content .edit:active,
+body .content .remove:active,
+body .content .revision:active,
+body .content .revert:active,
+body button:active
+{
+	background-image: url('../static/button_bg_active.png');
+	background-color: #25262c;
+    color: #aaa;
+}
+
+.content .edit:hover,
+.content .remove:hover,
+.content .revision:hover,
+.content .revert:hover,
 button:hover
 {
-    background-color: white;
+	background-image: url('../static/button_bg_hover.png');
+	background-color: #3b3d47;
+	cursor:pointer;cursor:hand
 }
+
 input
 {
     background-color: white;
@@ -77,42 +132,6 @@ select
 {
     margin: 0.5em;
     clear:left;
-}
-
-/*
-  Styling for images that look like buttons.
-  */
-.content .edit,
-.content .remove,
-.content .revision,
-.content .revert
-{
-    background-color: #eee;
-    border: 1px solid #888;
-    color: black;
-    text-decoration: none;
-    padding: 1px 6px 1px 6px;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    /* 
-
-Kludge: This would ideally be the total size of the text box (which
-is defined in pt) plus the size of the borders, margins, etc.,
-which are defined in pixels, as well as a bit of extra margin,
-which is also defined in pixels. Sadly, that is impossible, so
-we have this semi-arbitrary number, which looks good most of the time.
-
-It's worth investigating if all links could be wrapped in a div in a
-box, to add the top/bottom margins, thus working around the problem.
-
-*/
-    line-height: 19pt;
-}
-
-.content .edit:hover,
-.content .remove:hover
-{
-    background-color: white;
 }
 
 .anchor
@@ -312,16 +331,45 @@ Stykling for installation screen
   */
 .main_menu
 {
-    background-color: white;
     margin: 1%;
     padding: 0%;
 }
 
-.main_menu ul
+.main_menu_inner
 {
+    background-color: white;
     padding: 1em;
     margin: 0%;
-    border: 1px solid #aaa;
+    border: 1px solid #000;
+
+	border-radius-top-left: 6px;
+    -moz-border-radius-topleft: 6px;
+	-webkit-border-radius-top-left: 6px;
+
+	border-radius-top-right: 10px;
+    -moz-border-radius-topright: 10px;
+	-webkit-border-radius-top-right: 10px;
+}
+
+.main_menu_inner
+{
+	background-repeat: no-repeat;
+	background-position: top right;
+	background-image: url('../static/bg2.jpg');
+}
+
+.main_menu .logo
+{
+    padding-top: 4em;
+    padding-bottom: 4em;
+    font-weight: bold;
+	
+}
+
+.main_menu ul
+{
+    margin: 0%;
+    padding: 0%;
 }
 
 .main_menu li
@@ -453,6 +501,21 @@ Misc minor styling
 .copyright_inner
 {
     text-align: center;
+}
+
+.copyright a
+{
+    color: #aaa;
+}
+
+.copyright a:hover
+{
+    color: #aaa;
+}
+
+.copyright a:visited
+{
+    color: #aaa;
 }
 
 iframe
