@@ -19,7 +19,7 @@ extends Controller
         $this->action_items[] = "<a href='#$count'>".$header."</a>";
     }
     
-    function getContent()
+    function get()
     {
         return $this->content;
     }
@@ -52,8 +52,11 @@ owner. The exact list of such properties (called columns in FreeCMDB)
 can be changed in the administration menu of FreeCMDB (see
 below). </p>
 ");
+            
             $this->add("Installation","
-TODO
+
+FreeCMDB requires the following php packages to run: GraphViz, PDO, and json.
+
 ");
             
             $this->add("Page layout", "
@@ -172,7 +175,7 @@ support. You can contact us at <a href='mailto:sales@freecode.no'>sales@freecode
 ");
             
                        
-            $this->show($this->getActionMenu(),$this->getContent());
+            $this->show($this->getActionMenu(),$this->get());
 		
 	}
 	
