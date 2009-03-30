@@ -116,7 +116,7 @@ class dbMaker
                 self::$statement_cache[$q] = $res = self::$db->prepare($q);
             }
             
-            $res->execute($param);
+            $ok = $res->execute($param);
         }
         catch (PDOException $e) {
             self::$error = $e->getMessage();
@@ -138,7 +138,7 @@ class dbMaker
         
         self::$last_res = $res;
         self::$last_count=null;
-        return $res;
+        return $ok?$res:false;
     }
 
     /**

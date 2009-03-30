@@ -127,15 +127,15 @@ skin : "fc"*/
         echo "<ul>\n";
         
         echo "<li>";
-	echo makeLink("?controller=ciList", "Items", $is_ci?'selected':null);
+		echo makeLink("?controller=ciList", "Items", $is_ci?'selected':null);
         echo "</li>\n";
         
         echo "<li>";
-	echo makeLink("?controller=admin", "Administration", $is_admin?'selected':null);
+		echo makeLink("?controller=admin", "Administration", $is_admin?'selected':null);
         echo "</li>\n";
         
         echo "<li>";
-	echo makeLink("?controller=help", "Help", $is_help?'selected':null);
+		echo makeLink("?controller=help", "Help", $is_help?'selected':null);
 
         /*
         echo "<li>";
