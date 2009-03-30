@@ -163,9 +163,11 @@ Iframes not supported by this browser.
         return $res;
     }
 
-    function makeForm($content, $hidden=array(),$method='post')
+    function makeForm($content, $hidden=array(),$method='post', $file_upload=false)
     {
-        $form = "<form accept-charset='utf-8' method='post' action=''>\n";
+        $enc = $file_upload?"enctype='multipart/form-data'":"";
+        
+        $form = "<form accept-charset='utf-8' method='post' action='' $enc>\n";
         foreach($hidden as $name => $value) {
             $form .= "<input type='hidden' name='".htmlEncode($name)."' value='".htmlEncode($value)."'>\n";
         }

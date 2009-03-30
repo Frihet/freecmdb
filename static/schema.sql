@@ -103,10 +103,13 @@ create table ci_event
 	class_name varchar(64) not null
 );
 
-create table ci_plugins
+create table ci_plugin
 (
 	id serial not null primary key,
-	plugin_name varchar(32) not null
+	name varchar(32) not null,
+	description varchar(2048) not null,
+	version varchar(16) not null,
+	author varchar(256) not null
 );
 
 
