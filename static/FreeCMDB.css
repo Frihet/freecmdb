@@ -331,7 +331,7 @@ Stykling for installation screen
   */
 .main_menu
 {
-    margin: 1%;
+    margin: 2% 2% 1% 2%;
     padding: 0%;
 }
 
@@ -399,7 +399,10 @@ Stykling for installation screen
 .messages
 {
     background-color: white;
-    margin: 1%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    margin-left: 2%;
+    margin-right: 2%;
     padding: 0%;
 }
 
@@ -407,7 +410,7 @@ Stykling for installation screen
 {
     padding: 1em;
     margin: 0%;
-    border: 1px solid #aaa;
+    border: 1px solid #000;
 }
 
 .error
@@ -426,14 +429,14 @@ Stykling for installation screen
     float: left;
     width: 15%;
     padding: 0%;
-    margin-left: 1%;
+    margin-left: 2%;
 }
 
 .action_menu ul
 {
     margin: 0%;
     padding: 1em;
-    border: 1px solid #aaa;
+    border: 1px solid #000;
 }
 
 .action_menu li
@@ -462,7 +465,7 @@ Stykling for installation screen
 .content
 {
     float: left;
-    width: 82%;
+    width: 80%;
     background-color: white;
     margin: 0%;
     margin-left: 1%;
@@ -473,7 +476,7 @@ Stykling for installation screen
 
 .content_inner
 {
-    border: 1px solid #aaa;
+    border: 1px solid #000;
     padding: 1em;
 }
 
