@@ -538,3 +538,10 @@ iframe
     font-weight: bold;
     margin-right: 0.5em;
 }
+
+.numeric
+{
+    display: block;
+    text-align: right;
+    width:100%;
+}

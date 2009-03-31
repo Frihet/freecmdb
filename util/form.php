@@ -167,7 +167,7 @@ Iframes not supported by this browser.
     {
         $enc = $file_upload?"enctype='multipart/form-data'":"";
         
-        $form = "<form accept-charset='utf-8' method='post' action='' $enc>\n";
+        $form = "<form accept-charset='utf-8' method='$method' action='' $enc>\n";
         foreach($hidden as $name => $value) {
             $form .= "<input type='hidden' name='".htmlEncode($name)."' value='".htmlEncode($value)."'>\n";
         }

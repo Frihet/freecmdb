@@ -17,7 +17,6 @@ class Controller
 {
 
 	private $extra_content=array();
-	
 
     /** Check the task param and try to run the corresponding
      function, if it exists. Gives an error otherwise.
@@ -28,7 +27,7 @@ class Controller
 
         $class_name = get_class($this);
         $event_name = $class_name.ucfirst($task);
-        Event::emit($event_name,array("source"=>$this));
+        Event::emit($event_name,array("source"=>$this, "point"=>"pre"));
         
         $str = "{$task}Run";
         
@@ -38,6 +37,7 @@ class Controller
         else {
             echo "Unknown task: $task";
         }
+        Event::emit($event_name,array("source"=>$this, "point"=>"post"));
     }
     
     /**
@@ -59,7 +59,7 @@ class Controller
             }
         }
         
-        echo $this->action_box();
+        echo $this->actionBox();
 		echo implode("",$this->getContent("action_menu_post"));
         
         echo "</ul>\n";
@@ -93,28 +93,29 @@ class Controller
     }
 
     /** Create a little box with misc information for the botton of
-     the action menu. Currently, this box only contains the ten laat
+     the action menu. Currently, this box only contains the ten last
      edited CIs.
      */
-    function action_box() 
+    function actionBox() 
     {
+		/*
+		 * Don't show "latest revisions" action box when in history mode - it's confusing to have two different timelines...
+		 */
+		
         if(param('revision_id') === null && !$this->isAdmin() && !$this->isHelp()) {
-            
+			
             $latest_id = log::getLatestIds();
             
             foreach($latest_id as $row) {
                 $id_arr[] = $row['ci_id'];
             }
-
+			
             //var_dump($latest_id);
-
-            /*
-             Don't show latest revisions when in history mode - it's confusing to have two different timelines...
-            */
-                    
+			
             $items = ci::fetch(array('id_arr'=>$id_arr));
             $res .= "\n<li><h2>Latest edits</h2></li>\n\n";
-            if (!$id_arr) {
+            
+			if (!$id_arr) {
                 return "";
             }
             

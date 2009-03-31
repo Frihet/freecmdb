@@ -105,7 +105,7 @@ class ciChart
         if (array_key_exists($node->id, $done)) {
             return;
         }
-        $max_depth = Property::get("chart.max_depth");
+        $max_depth = Property::get("chart.maxDepth");
 		
         if ($max_depth > 0 && $depth >= $max_depth) 
             {

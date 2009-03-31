@@ -17,8 +17,7 @@ class util
                 include_once("controllers/{$name}.php");
                 return;
             }
-            
-            
+                        
             if(strcasecmp(substr($name, strlen($name)-strlen("plugin")),"plugin" )==0) {
                 $dir_name = substr($name, 0, strlen($name)-strlen("plugin"));
                 include_once("plugins/{$dir_name}/index.php");

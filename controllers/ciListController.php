@@ -1,11 +1,17 @@
 <?php
 
-class ciListController
+class CiListController
 extends Controller
 {
 
-	function viewRun() 
+	private $ci_list = null;
+	private $extra_column = array();
+	
+
+	function get_ci_list()
 	{
+		if(!$this->ci_list) 
+		{
 		$arr = array();
 			
 		$filter_type = param('filter_type');
@@ -24,11 +30,26 @@ extends Controller
 			$filtered = true;
 			$arr['filter_type'] = $filter_type;
 		}
+		
+		$this->ci_list = ci::fetch($arr);
+		}
+		
+		return $this->ci_list;
+		
+	}
 
+	function addColumn($name, $desc)
+	{
+		$this->extra_column[] = array($name, $desc);
+	}
+	
 
-
-		$ci_list = ci::fetch($arr);
-                util::setTitle("View CIs");
+	function viewRun() 
+	{
+		
+		$ci_list = $this->get_ci_list();
+		
+		util::setTitle("View CIs");
 		$form = "";
 		
 		$form .= "
@@ -84,7 +105,19 @@ Item
 </th>
 <th>
 Type
-</th>
+</th>";
+		
+		foreach($this->extra_column as $column) 
+		{
+			$desc = htmlEncode($column[1]);
+			$content .= "<th>
+$desc
+</th>";
+			
+		}
+		
+
+		$content .= "
 <th>
 Last updated
 </th>
@@ -102,20 +135,36 @@ Last updated
 			$content .= "</td><td>";
 			$content .= ciType::getName($ci->ci_type_id);
 			
-			$content .= "</td><td>";
+			$content .= "</td>";
+
+			foreach($this->extra_column as $column) 
+			{
+				$col = $column[0];
+				$val = $ci->$col;
+				$content .= "<td>
+$val
+</td>";
+				
+			}
+		
+
+			$content .= "<td>";
 			$content .= util::date_format($ci->update_time);
 			$content .= "</td><td>";
 
-			$content .= makeLink(array('controller' => 'ci', 'id' => $ci->id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $ci->getDescription(),array('onclick'=>'return confirm("Are you sure?");'));
+			$content .= makeLink(array('controller' => 'ci', 'id' => $ci->id,'task'=>'remove'),
+								 'Remove', 'remove', "Remove the CI " . $ci->getDescription(),
+								 array('onclick'=>'return confirm("Are you sure?");'));
 			$content .= "</td></tr>";
-            
 		}
+
 		$content .= "</table>";
 		}
 		
-		$content .= $this->makeChart($filtered?$ci_list:array());
+		if (count($ci_list) < (int)Property::get("chart.maxItems")){
+			$content .= $this->makeChart($filtered?$ci_list:array());
+		}
 		
-
 		$this->show(array(makeLink("?controller=ci&amp;task=create", "Create new item", null, "Creat an empty new CI")), 
 			    $content);
 

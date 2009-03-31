@@ -3,12 +3,151 @@
 class rtPlugin
 {
     static $has_db=false;
+
+    /**
+     Add the issue count coumn to the ci list view
+     */
+    function ciListControllerViewHandler($param)
+    {
+        if(!rtPlugin::initDb()) {
+            return;
+        }
+		
+		
+        if($param['point'] == 'pre') {
+            $source = $param["source"];
+            $source->addColumn("tickets", "Issue count");
+            $param = array();
+            $id_list=array();
+            $i=0;
+            
+            foreach($source->get_ci_list() as $ci) {
+                $name = ":dyn_var_" . $i++;
+                
+                $rt_id = CiRtMapping::getRtId($ci->id);
+                $param[$name] = "fsck.com-rt://".Property::get("rtPlugin.RtName")."/ticket/" . $rt_id;
+                $id_list[] = $name;
+                $ci->tickets = "<span class='numeric'>0</span>";
+                
+            }
+            $id_list = implode(", ", $id_list);
+            
+            $q = "select
+l.base base, count(t.id) count
+from Links l
+join Tickets t
+on l.Target = concat('fsck.com-rt://', :rt_name, '/ticket/', t.id)
+where l.Base in ($id_list) and l.Type = 'DependsOn' and status != 'closed'
+group by l.Base
+";
+
+            $param[':rt_name'] = Property::get("rtPlugin.RtName");
+            
+            $counts = dbRt::fetchList($q, $param);
+            
+            $ci_list = $source->get_ci_list();
+            
+            foreach($counts as $row) {
+                $stuff = explode("/", $row['base']);
+                $id = CiRtMapping::getCiId($stuff[count($stuff)-1]);
+                $count = $row['count'];
+                $ci_list[$id]->tickets = "<span class='numeric'>$count</span>";
+            }
+            
+        }
+    }
+
+    /**
+     Propagate CI changes
+     */
+    function ciControllerRemoveHandler($param)
+    {
+        if(!rtPlugin::initDb()) {
+            return;
+        }
+		
+		
+        if($param['point'] == 'post') {
+            $source = $param["source"];
+            ciRtMapping::removeOne($source->getCi());
+        }
+    }
     
+    /**
+     Propagate CI changes
+     */
+    function ciControllerSaveAllHandler($param)
+    {
+        if(!rtPlugin::initDb()) {
+            return;
+        }
+		
+		
+        if($param['point'] == 'post') {
+            $source = $param["source"];
+            ciRtMapping::updateOne($source->getCi());
+        }        
+    }
+    
+
+    /**
+     Propagate CI changes
+     */
+    function ciControllerUpdateFieldHandler($param)
+    {
+        if(!rtPlugin::initDb()) {
+            return;
+        }
+		
+		
+        if($param['point'] == 'post') {
+            $source = $param["source"];
+            ciRtMapping::updateOne($source->getCi());
+        }        
+    }
+    
+
+    /**
+     Propagate CI changes
+     */
+    function ciControllerCopyHandler($param)
+    {
+        if(!rtPlugin::initDb()) {
+            return;
+        }
+		
+		
+        if($param['point'] == 'post') {
+            ciRtMapping::update();
+        }        
+    }
+    
+
+    /**
+     Propagate CI changes
+     */
+    function ciControllerRevertHandler($param)
+    {
+        if(!rtPlugin::initDb()) {
+            return;
+        }
+		
+		
+        if($param['point'] == 'post') {
+            $source = $param["source"];
+            ciRtMapping::updateOne($source->getCi());
+        }
+    }
+    
+    /**
+     Show all open issues when viewing a CI
+     */
     function ciControllerViewHandler($param)
     {
-        
-        if (!Property::get("rtPlugin.DSN"))
+        if($param['point'] == 'post') {
             return;
+        }
+        
         
         $source = $param["source"];
         $ci = $source->getCi();
@@ -48,27 +187,31 @@ class rtPlugin
     
     function initDb() 
     {
+        if (!Property::get("rtPlugin.DSN"))
+            return false;
+        
         if (self::$has_db) {
+            return true;
+        }
+        if(class_exists("dbRt")) {
             return;
         }
 
-        self::$has_db = true;
         dbMaker::makeDb("dbRt");
-        return dbRt::init(Property::get("rtPlugin.DSN"));
+        self::$has_db = dbRt::init(Property::get("rtPlugin.DSN"));
+        return self::$has_db;
+
     }
 
     function setup()
     {
-        //		dbRt::fetchList("select id from Queue where name");
-        if (!Property::get("rtPlugin.QueueId")) 
-            {
-                if (dbRt::query("insert into Queues (Name, Description) values (:name, :description)", array(":name"=>"FreeCMDB CIs", ":description"=>"An automatically generated queue listing all configuration items in FreeCMDB, used to track dependencies between CIs and tickets"))) 
-                    {
-                        $id = dbRt::lastInsertId("Queues_id_seq");
-                        Property::set("rtPlugin.QueueId", $id);
-                        message("Created queue with id $id");
-                    }
+        if (!Property::get("rtPlugin.QueueId")) {
+            if (dbRt::query("insert into Queues (Name, Description) values (:name, :description)", array(":name"=>"FreeCMDB CIs", ":description"=>"An automatically generated queue listing all configuration items in FreeCMDB, used to track dependencies between CIs and tickets"))) {
+                $id = dbRt::lastInsertId("Queues_id_seq");
+                Property::set("rtPlugin.QueueId", $id);
+                message("Created queue with id $id");
             }
+        }
     }
 	
     function configure($controller)
@@ -85,7 +228,7 @@ class rtPlugin
 				
             }
     }
-	
+
     function updateRun($controller)
     {
         $property_list = RtPlugin::getPropertyNames();
@@ -160,25 +303,44 @@ Value
 class CiRtMapping
 {
     static $mapping = false;
+    static $reverse_mapping = false;
 	
     function fetchTickets($ci_id) 
     {
         $rt_id = db::fetchItem("select rt_id from ci_rt_mapping where ci_id = :ci_id", array(":ci_id"=>$ci_id));
-        return dbRt::fetchList("select Tickets.id as id, Subject as subject from Links join Tickets on Target = concat('fsck.com-rt://',:rt_name,'/ticket/', Tickets.id) where Links.Base like :id and Links.Type = 'DependsOn'", 
+        return dbRt::fetchList("
+select Tickets.id as id, Subject as subject 
+from Links 
+join Tickets 
+on Target = concat('fsck.com-rt://',:rt_name,'/ticket/', Tickets.id) 
+where Links.Base like :id and Links.Type = 'DependsOn' and Tickets.status != 'closed'", 
                                array(":id"=>"fsck.com-rt://".Property::get("rtPlugin.RtName")."/ticket/" . $rt_id,
                                      ":rt_name"=>Property::get("rtPlugin.RtName")));
     }
-	
+
+    function updateOne($ci) 
+    {
+        $rt_id = db::fetchItem("select rt_id from ci_rt_mapping where ci_id = :id", 
+                               array(":id" => $ci->id));
+        dbRt::query("update Tickets set Subject=:subject where id=:id",
+                    array(":subject"=>$ci->getDescription(),
+                          ":id"=>$ci->id));
+    }
     
+    function removeOne($ci) 
+    {
+        $rt_id = db::fetchItem("select rt_id from ci_rt_mapping where ci_id = :id", 
+                               array(":id" => $ci->id));
+        dbRt::query("delete from Tickets where id = :id",
+                    array(":id"=>$ci->id));
+    }
+        
     function update() 
     {
         foreach( db::fetchList("select id from ci where deleted=false and id not in (select ci_id from ci_rt_mapping)") as $row) 
             {
-                $id = $row['id'];        $param=array();
-                foreach($param_in as $key => $value) {
-                    $param[substr($key,1)] = $value;
-                }
-
+                $id = $row['id'];        
+                
                 $ci = ci::fetch(array("id_arr"=>array($id)));
                 $ci = $ci[$id];
 			
@@ -187,15 +349,16 @@ class CiRtMapping
                 dbRt::query("
 insert into Tickets 
 (
-		queue, type, owner, subject, LastUpdatedBy, LastUpdated, Creator, Created
+	Status, Queue, Type, Owner, Subject, LastUpdatedBy, LastUpdated, Creator, Created
 ) 
-select :queue, 'ticket', id, :subject, id, now(), id, now() 
+select 'new', :queue, 'ticket', id, :subject, id, now(), id, now() 
 from Users 
 where Name=:rt_user 
 ", array(":queue"=>Property::get("rtPlugin.QueueId"),
          ":rt_user"=>Property::get("rtPlugin.RtUser"),
          ":subject"=>"CI: ". $ci->getDescription()));
-			
+                dbRt::query("update Tickets set EffectiveId = id where id = :id", array(":id"=>dbRt::lastInsertId("Tickets_id_seq")));
+                
                 if(dbRt::count())
                     {
                         $rt_id = dbRt::lastInsertId(null);
@@ -233,6 +396,19 @@ values
 		
     }
 	
+    function getRtId($ci_id) 
+    {
+        self::load();
+        return self::$mapping[$ci_id];
+    }
+    
+    function getCiId($rt_id) 
+    {
+        self::load();
+        return self::$reverse_mapping[$rt_id];
+    }
+    
+
     function load()
     {
         if (self::$mapping) 
@@ -242,6 +418,7 @@ values
 		
         foreach( db::fetchList("select ci_id, rt_id from ci_rt_mapping") as $row) {
             self::$mapping[$row['ci_id']] = $row['rt_id'];
+            self::$reverse_mapping[$row['rt_id']] = $row['ci_id'];
         }
     }
 

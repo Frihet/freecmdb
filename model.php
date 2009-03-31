@@ -1149,9 +1149,9 @@ class Event
         
         foreach(db::fetchList('select event_name, class_name from ci_event') as $row) {
             if (!array_key_exists($row['event_name'],self::$data)) {
-                self::$data[$row['event_name']]=array();
+                self::$data[strToLower($row['event_name'])]=array();
             }
-            self::$data[$row['event_name']][] =  $row;
+            self::$data[strToLower($row['event_name'])][] =  $row;
         }
     }
 
@@ -1162,12 +1162,13 @@ class Event
     {
         
         self::_load();
-        $ev = self::$data[$name];
+        $ev = self::$data[strToLower($name)];
+        $param['event'] = $name;
         
         if ($ev) {
             
             foreach($ev as $item) {
-            
+                
                 $class_str = $item['class_name'];
                 
                 $method_str = $name."Handler";
