@@ -52,11 +52,38 @@ owner. The exact list of such properties (called columns in FreeCMDB)
 can be changed in the administration menu of FreeCMDB (see
 below). </p>
 ");
+
+            $this->add("Obtaining the FreeCMDB source code","
+<p> FreeCMDB is open source. Since the project is only just started,
+there still aren't anu stable releases. To obtain the latest version
+of the source, make sure the git command is installed on your system (on ubuntu, run <code>sudo apt-get install git-core</code>), and then run the command <code>git pull
+https://projects.freecode.no/git/freecmdb.git </code>. This should download the latest version of FreeCMDB into your current working  
+</p>
+");
+            
             
             $this->add("Installation","
+<p> FreeCMDB requires the following php packages to run: GraphViz,
+PDO, PDO_PGSQL and json. The GraphViz package is not part of any PHP
+standard release, the other packages should be included in your php
+installation if it is sufficiently new. To install these packages on
+an older php version, you will have to use either the pecl or the pear
+commands. You may need to install these commands as well before using
+them. You will also mostl likely have to update your php.ini file to
+include the correct .so files as extensions. Please refer to the PHP
+documentation for instructions on how to use and install these
+commands. </p>
 
-FreeCMDB requires the following php packages to run: GraphViz, PDO, and json.
-
+<p> After you have a correctly configured php server with the right
+extensions installed, installing FreeCMDB should be as simple as
+fetching the source code (see above), giving the web server write
+permissions on all files in the source folder and finally accessing
+the FreeCMDB software through your web browser. At that point, you
+will be asked to provide database credentials for the database server,
+and the software will install itself. </p>
+<p>
+Good luck!
+</p>
 ");
             
             $this->add("Page layout", "
