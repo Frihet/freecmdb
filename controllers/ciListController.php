@@ -46,7 +46,7 @@ extends Controller
 
 	function viewRun() 
 	{
-		
+            
 		$ci_list = $this->get_ci_list();
 		
 		util::setTitle("View CIs");
@@ -165,10 +165,17 @@ $val
 			$content .= $this->makeChart($filtered?$ci_list:array());
 		}
 		
-		$this->show(array(makeLink("?controller=ci&amp;task=create", "Create new item", null, "Creat an empty new CI")), 
+		$this->show(array(makeLink("?controller=ci&amp;task=create", "Create new item", null),
+                                  makeLink("?task=recentlyDeleted", "View recently deleted items", null)), 
 			    $content);
 
 	}
+
+        function recentlyDeletedRun()
+        {
+            message("Hej");
+        }
+        
 
 	function makeChart($highlight) 
 	{

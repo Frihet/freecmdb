@@ -287,35 +287,50 @@ extends View
 
         if (count($ci->getDependencies())) {
             $need_legend = true;
-            $content .= $this->makeChart("chart.php?id={$ci->id}$revision_str", "Dependencies for this CI");
-
+            $content .= $this->makeChart($ci, false, $revision_id);
         }
             
         if (count($ci->getDependants())) {
             $need_legend = true;
-            $content .= $this->makeChart("chart.php?id={$ci->id}&mode=dependants$revision_str", "Other items that depend on this CI");
-								
+            $content .= $this->makeChart($ci, true, $revision_id);
         }
             
         if ($need_legend) {
-            $content .= $this->makeChart('chart.php?legend=true', "Legend for the above figure(s)");
+            //            $content .= $this->makeChart('chart.php?legend=true', "Legend for the above figure(s)");
         }
 		
         return $content;
     }
 		
-    function makeChart($param, $caption) 
+    function makeChart($ci, $reverse, $revision_id) 
     {
-		$title = htmlEncode($caption);
-		
-        return "
+        require_once("ciChart.php");
+        $revision_str = $revision_id?"&revision_id=$revision_id":"";
+        $caption = $is_dependencies?"Dependencies for this CI":"Other items that depend on this CI";
+        $dep=$reverse?'&mode=dependants':'';
+        $title = htmlEncode($caption);
+
+        $url = "chart.php?id={$ci->id}{$dep}{$revision_str}";
+        
+        $c = new ciChart($ci, 
+                         $reverse,
+                         array(), 
+                         null);
+        
+        $map_name = $c->getName();
+
+        $res =  "
 <div class='figure'>
-<object data='$param' type='image/svg+xml' title='$title'>
-<img src='$param&format=png' alt='$title'/>
+<aobject data='$url' type='image/svg+xml' title='$title'>
+<img src='$url&format=png' alt='$title' usemap='#$map_name'/>
 </object>
 <span class='caption'>".htmlEncode($caption)."</span>
 </div>";
-				
+        
+        $map = $c->render('cmapx');
+        $res .= $map;
+        return $res;
+        
     }
 		
 

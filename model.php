@@ -58,6 +58,31 @@ order by create_time desc',
 		
 
     }
+
+    function fetchRemoves()
+    {
+        return db::fetchList('
+select  ci_log.id, extract (epoch from create_time) as create_time, 
+        ci_log.ci_id, action, 
+        type_id_old, ci_log.column_id, 
+        column_value_old, dependency_id, 
+        cc1.value as dependency_name,
+        cc2.value as dependant_name,
+        ci_log.user_id,
+        ci_user.username
+from ci_log 
+join ci_user
+on ci_log.user_id = ci_user.id
+left join ci_column cc1
+on ci_log.dependency_id = cc1.ci_id and cc1.ci_column_type_id=6
+left join ci_column cc2
+on ci_log.ci_id = cc2.ci_id and cc2.ci_column_type_id=6
+where ci_log.action = :action
+order by create_time desc', 
+                             array(':action'=>CI_ACTION_REMOVE));
+        
+    }
+    
 	
 }
 
@@ -808,8 +833,7 @@ values (:my_id, :other_id)
             foreach(ci::$_revisions[$this->id] as $edit) {
                 $this->apply($edit);
             }
-        }
-        
+        }      
     }
     
     function _loadRevisions()
@@ -917,11 +941,9 @@ from ci_dependency
                 }
             return ci::sortFetchResult($res);
         }
-        else 
-            {
-                return ci::sortFetchResult(ci::fetchUncached($param));
-            }
-		
+        else {
+            return ci::sortFetchResult(ci::fetchUncached($param));
+        }
     }
 
 
@@ -971,7 +993,12 @@ from ci_dependency
 join ci_column cc
 on cc.ci_id = ci_view.id and cc.ci_column_type_id = :column_type
 join ci_column_list cl
-on cast(cc.value as int) = cl.id
+on 
+        case when cc.value != '' and cc.value is not null then 
+                cast(cc.value as int) 
+        else 
+                null 
+        end = cl.id
 ";
                     $column = "cl.name";
 							
@@ -1131,6 +1158,29 @@ class Property
     }
 
 }
+
+class CiGraphCache
+{
+    
+    function get($name) 
+    {
+        return db::fetchItem("select value from ci_graph_cache where key=:key",
+                             array(":key"=>$name));
+    }
+    
+    function set($name, $value) 
+    {
+        db::query("update ci_graph_cache set value=:value where key=:key",
+                  array(":key"=>$name, ":value"=>$value));
+        if( !db::count()) {
+            db::query("insert into ci_graph_cache (key, value) values (:key,:value)",
+                      array(":key"=>$name, ":value"=>$value));
+        }
+                
+
+    }
+}
+
 
 class Event
 {

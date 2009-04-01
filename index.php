@@ -1,5 +1,4 @@
 <?php
-
   /** 
 
    Entry point for all FreeCMDB functinality except the charts,
@@ -194,6 +193,9 @@ skin : "fc"*/
             echo "PDO Exception";
             echo $e->getMessage();
         }
+
+        doRedirect();
+                
         $out = ob_get_contents();
         ob_clean();
 	

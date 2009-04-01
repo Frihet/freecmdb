@@ -9,19 +9,25 @@ class rtPlugin
      */
     function ciListControllerViewHandler($param)
     {
+                
         if(!rtPlugin::initDb()) {
             return;
         }
 		
-		
         if($param['point'] == 'pre') {
             $source = $param["source"];
             $source->addColumn("tickets", "Issue count");
+
+            $ci_list = $source->get_ci_list();
+            if(!count($ci_list)) {
+                return;
+            }
+            
             $param = array();
             $id_list=array();
             $i=0;
             
-            foreach($source->get_ci_list() as $ci) {
+            foreach($ci_list as $ci) {
                 $name = ":dyn_var_" . $i++;
                 
                 $rt_id = CiRtMapping::getRtId($ci->id);
@@ -44,9 +50,8 @@ group by l.Base
             $param[':rt_name'] = Property::get("rtPlugin.RtName");
             
             $counts = dbRt::fetchList($q, $param);
-            
-            $ci_list = $source->get_ci_list();
-            
+
+                        
             foreach($counts as $row) {
                 $stuff = explode("/", $row['base']);
                 $id = CiRtMapping::getCiId($stuff[count($stuff)-1]);
@@ -98,7 +103,6 @@ group by l.Base
         if(!rtPlugin::initDb()) {
             return;
         }
-		
 		
         if($param['point'] == 'post') {
             $source = $param["source"];
@@ -209,7 +213,7 @@ group by l.Base
             if (dbRt::query("insert into Queues (Name, Description) values (:name, :description)", array(":name"=>"FreeCMDB CIs", ":description"=>"An automatically generated queue listing all configuration items in FreeCMDB, used to track dependencies between CIs and tickets"))) {
                 $id = dbRt::lastInsertId("Queues_id_seq");
                 Property::set("rtPlugin.QueueId", $id);
-                message("Created queue with id $id");
+                message("Created message queue in RT with queue id $id");
             }
         }
     }
@@ -235,7 +239,7 @@ group by l.Base
         for ($idx=0;param("name_$idx")!==null;$idx++) {
             Property::set(param("name_$idx"), param("value_$idx"));
         }
-        message("Propertys updated");
+        message("RT plugin properties updated");
         redirect(makeUrl(array()));
     }
 
@@ -324,15 +328,16 @@ where Links.Base like :id and Links.Type = 'DependsOn' and Tickets.status != 'cl
                                array(":id" => $ci->id));
         dbRt::query("update Tickets set Subject=:subject where id=:id",
                     array(":subject"=>$ci->getDescription(),
-                          ":id"=>$ci->id));
+                          ":id"=>$rt_id));
     }
     
     function removeOne($ci) 
     {
         $rt_id = db::fetchItem("select rt_id from ci_rt_mapping where ci_id = :id", 
                                array(":id" => $ci->id));
+        
         dbRt::query("delete from Tickets where id = :id",
-                    array(":id"=>$ci->id));
+                    array(":id"=>$rt_id));
     }
         
     function update() 
@@ -356,12 +361,12 @@ from Users
 where Name=:rt_user 
 ", array(":queue"=>Property::get("rtPlugin.QueueId"),
          ":rt_user"=>Property::get("rtPlugin.RtUser"),
-         ":subject"=>"CI: ". $ci->getDescription()));
-                dbRt::query("update Tickets set EffectiveId = id where id = :id", array(":id"=>dbRt::lastInsertId("Tickets_id_seq")));
+         ":subject"=>$ci->getDescription()));
+                $rt_id = dbRt::lastInsertId("Tickets_id_seq");
+                dbRt::query("update Tickets set EffectiveId = id where id = :id", array(":id"=>$rt_id));
                 
                 if(dbRt::count())
                     {
-                        $rt_id = dbRt::lastInsertId(null);
                         db::begin();
 				
                         if(db::query("

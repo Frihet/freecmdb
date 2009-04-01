@@ -10,10 +10,10 @@ extends Controller
 	function show($content)
 	{
 		Controller::show(
-			array(makeLink("?controller=ciType", "Edit CI types", null),
-			      makeLink("?controller=ciColumn", "Edit CI columns", null),
-			      makeLink("?controller=ciProperty", "Edit properties", null),
-				  makeLink("?controller=plugin", "Edit plugins", null)),
+			array(makeLink("?controller=ciType", "CI types", null),
+			      makeLink("?controller=ciColumn", "CI columns", null),
+			      makeLink("?controller=ciProperty", "Properties", null),
+				  makeLink("?controller=plugin", "Plugins", null)),
 			$content);
 
 	}

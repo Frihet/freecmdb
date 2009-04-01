@@ -35,7 +35,7 @@ class Controller
             $this->$str();
         }
         else {
-            echo "Unknown task: $task";
+            error("Unknown task: $task");
         }
         Event::emit($event_name,array("source"=>$this, "point"=>"post"));
     }

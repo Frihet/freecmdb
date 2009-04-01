@@ -3,6 +3,8 @@ drop view ci_column_view;
 
 drop index ci_dependency_idx;
 
+drop table ci_graph_cache;
+drop table ci_plugin;
 drop table ci_property;
 drop table ci_log;
 drop table ci_dependency;
@@ -110,6 +112,13 @@ create table ci_plugin
 	description varchar(2048) not null,
 	version varchar(16) not null,
 	author varchar(256) not null
+);
+
+create table ci_graph_cache
+(
+	id serial not null primary key,
+	key varchar(40) not null unique,
+	value varchar(32000) not null
 );
 
 

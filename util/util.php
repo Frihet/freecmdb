@@ -5,7 +5,8 @@ class util
 
 	static $ci_html_title="";
 	static $message_str="";
-
+        static $redirect = false;
+        
         function loadClass($name) 
         {
             
@@ -171,6 +172,18 @@ function messageGet()
 
 function redirect($page=null) 
 {
+    util::$redirect = $page;
+    
+}
+
+
+function doRedirect() 
+{
+    if(util::$redirect === false) {
+        return;
+    }
+    $page = util::$redirect;
+
     global $start_time;
     if (!$page) {
         $page = "?";
@@ -191,6 +204,7 @@ function redirect($page=null)
     
     header("Location: $page");
     exit(0);
+    
 }
 
 function makeUrl($v1=null, $v2=null) 

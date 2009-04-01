@@ -58,7 +58,7 @@ class dbMaker
                 if(strstr($dsn, "port") !== false && strstr($dsn, "localhost") !== false) {
                     $dsn = str_replace("localhost", "127.0.0.1", $dsn);
                 }
-                self::$db = new PDO($dsn, $user, $pass/*, array(PDO::ATTR_PERSISTENT => true)*/);
+                self::$db = new PDO($dsn, $user, $pass, array(PDO::ATTR_PERSISTENT => true));
             } else {
                 self::$db = new PDO($dsn, null, null, array(PDO::ATTR_PERSISTENT => true));
             }
@@ -181,7 +181,7 @@ class dbMaker
         $row = $res->fetch();
         self::$last_count = $res->rowCount();
         $res->closeCursor();
-        return $row[0];
+        return $row?$row[0]:null;
     }
 
     /**

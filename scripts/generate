@@ -46,13 +46,21 @@ class ${name}Controller
 class ${name}Plugin
 	extends Plugin
 {
+    function configure(\$controller)
+    {
+    }
 
 }
 
 ?>"
 	 
-	 echo >plugins/"${name}"/event.json "
-[]
+	 echo >plugins/"${name}"/install.json "
+{
+	"description" : "Fancy plugin for doing something",
+	"author"      : "Randy MacSmartyPants",
+	"version"     : "1.0",
+	"events"      : []
+}
 "
 	 
 
