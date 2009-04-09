@@ -28,9 +28,9 @@ class FreeCMDBInstall
 <html>
         <head>
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-                <link rel="stylesheet" href="FreeCMDB.css" type="text/css" media="screen,projection" />
-                <script type="text/javascript" src="prototype.js"></script>
-                <script type="text/javascript" src="FreeCMDB.js"></script>
+                <link rel="stylesheet" href="static/FreeCMDB.css" type="text/css" media="screen,projection" />
+                <script type="text/javascript" src="static/prototype.js"></script>
+                <script type="text/javascript" src="static/FreeCMDB.js"></script>
                 <title>Install FreeCMDB</title>
         </head>
         <body>
@@ -208,7 +208,7 @@ stripe();
         
         
         $config = "<?php
-define('DB_DSN', '".addSlashes(DB_DSN)."');
+define('DB_DSN', '".addSlashes(param('dsn',''))."');
 ?>";
     
         $write_ok = @file_put_contents("./config.php", $config);

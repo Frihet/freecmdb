@@ -212,7 +212,11 @@ skin : "fc"*/
 }
 
 
-db::init(DB_DSN) || die("The site is down. Could not connect to the database.");
+if(!db::init(DB_DSN)) {
+    FreeCMDB::writeMessages();
+    die("The site is down. Could not connect to the database.");
+}
+
 db::query("set client_encoding to \"utf8\"");
 
 ciUser::init() || die("Login error.");

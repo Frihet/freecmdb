@@ -1,6 +1,0 @@
-{
-	"description" : "Integration for the RT ticket handling system",
-	"author"      : "Axel Liljencrantz, FreeCode AS",
-	"version"     : "1.0",
-	"events"      : ["CiControllerView"]
-}

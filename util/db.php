@@ -1,7 +1,5 @@
 <?php
 
-require_once('MDB2.php');
-
   /** Minimal db abstraction. We use a static class like a namespace
    in order to have a single gglobal database connection with minimal
    namespace pollution.
