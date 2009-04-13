@@ -87,7 +87,7 @@ class ciChart
         } else {
             $this->renderInternal($graph, $this->root);
         }
-        
+	
         $key = sha1(file_get_contents($graph->saveParsedGraph()).$format);
         
         $res = CiGraphCache::get($key);

@@ -28,7 +28,6 @@ extends View
         
         $content = "";
 	
-		
         if ($edit) {
             $content .= "<form accept-charset='utf-8' method='post' action='index.php'>";
             $content .= "<input type='hidden' name='controller' value='ci'>";
@@ -65,10 +64,11 @@ extends View
         
         foreach($ci->_ci_column as $key => $value) {
 
-            if (ciColumnType::getType($key) == CI_COLUMN_IFRAME && !$edit && !$revision) 
-			{
-				continue;
-			}
+            if (ciColumnType::getType($key) == CI_COLUMN_IFRAME && 
+		!$edit && 
+		!$revision) {
+		continue;
+	    }
 						
 
             $content .= "<tr>";
@@ -227,7 +227,7 @@ extends View
             }
 						
             $form .= "</select></td><td><button type='submit'>Add</button>\n";
-            $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$controller->id));
+            $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$controller->id, 'dependency_type_id'=>Property::get("ciDependency.default")));
             $content .= "</td></tr>";
         }
 				
@@ -261,8 +261,7 @@ extends View
                 $form .= "<option value='$item_id'>$item_name</option>\n";
             }
             $form .= "</select></td><td><button type='submit'>Add</button>\n";
-            $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependant','id'=>$controller->id));
-						
+            $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependant','id'=>$controller->id, 'dependency_type_id'=>Property::get("ciDependency.default")));
 						
             $content .= "</td></tr>";
         }
@@ -321,7 +320,7 @@ extends View
 
         $res =  "
 <div class='figure'>
-<aobject data='$url' type='image/svg+xml' title='$title'>
+<object data='$url' type='image/svg+xml' title='$title'>
 <img src='$url&format=png' alt='$title' usemap='#$map_name'/>
 </object>
 <span class='caption'>".htmlEncode($caption)."</span>

@@ -16,8 +16,9 @@ extends Controller
     function addDependencyRun()
     {
         $other_id = param('dependency_id');
+        $type_id = param('dependency_type_id');
         $ci = $this->getCi();
-        $ci->addDependency($other_id);
+        $ci->addDependency($other_id, $type_id);
         message("Dependency added");
         redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
@@ -25,9 +26,10 @@ extends Controller
     function addDependantRun()
     {
         $other_id = param('dependant_id');
+        $type_id = param('dependency_type_id');
         $ci_list = ci::fetch(array('id_arr'=>array($other_id)));
         $ci = $ci_list[$other_id];
-        $ci->addDependency($this->id);
+        $ci->addDependency($this->id, $type_id);
         message("Dependant added");
         redirect(makeUrl(array('task'=>null, 'dependant_id'=>null)));
     }

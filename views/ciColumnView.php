@@ -37,9 +37,12 @@ Type
             $form .= "</td><td>";
             $form .= form::makeSelect("type_$idx", ciColumnType::getTypes(), param("type_$idx", ciColumnType::getType($column_id)));
 
+            $form .= "</td><td>";
+            $form .= form::makeSelect("ci_type_$idx", array(""=>"All")+ciType::getTypes(), param("type_$idx", ciColumnType::getCiType($column_id)));
 
-			$checked = param("default",Property::get("ciColumn.default")) == $column_id?"checked":"";
-			
+	    $checked = param("default",Property::get("ciColumn.default")) == $column_id?"checked":"";
+			            ciColumnType::$type_lookup[$row['id']] = $row['type'];
+
             $form .= "</td><td>";
             $form .= "<input type='radio' name='default' value='$column_id' id='default_$idx' $checked><label for='default_$idx'>Default</label>";
             $form .= "</td><td>";
@@ -53,8 +56,9 @@ Type
         $name = htmlEncode(param('name_new',''));
 		
         $shape_select = form::makeSelect('type_new', ciColumnType::getTypes(), param('type_new'));
+	$ci_type_select = form::makeSelect("ci_type_new", array(""=>"All")+ciType::getTypes(), param("type_$idx", null));
 
-		$checked = param("default") == "new"?"checked":"";
+	$checked = param("default") == "new"?"checked":"";
         
         $form .= "
 <tr>
@@ -63,6 +67,8 @@ Type
     </td>
     <td>
       $shape_select
+    </td><td>
+      $ci_type_select
     </td><td>
       <input type='radio' name='default' value='new' id='default_new' $checked><label for='default_new'>Default</label>
     </td>

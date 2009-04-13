@@ -12,13 +12,18 @@ extends adminController
 
         $name = param('name_new');
         $type = param('type_new');
-
+        $ci_type = param('ci_type_new');
+	if ($ci_type == "") 
+	{
+	    $ci_type=null;
+	}
+	
         if (strlen($name) && $type !== null) {
             if (ciColumnType::getId($name) !== null) {
                 error("Another CI type named $name already exists");
                 return false;
             }
-            return ciColumnType::create($name, $type);
+            return ciColumnType::create($name, $type, $ci_type);
         }
         return true;
     }
@@ -33,11 +38,11 @@ extends adminController
         $new_id = $this->createColumn();
         $ok &= ($new_id !== false);
 	
-        
-        for ($idx=0;param("id_$idx")!==null;$idx++) {
+	for ($idx=0;param("id_$idx")!==null;$idx++) {
             $ok &= $this->updateColumn(param("id_$idx"),
                                        param("type_$idx"),
-                                       param("name_$idx"));
+                                       param("name_$idx"),
+                                       param("ci_type_$idx"));
         }
         
         if ($ok) {
@@ -62,44 +67,44 @@ extends adminController
     }
 
 
-    function updateColumn($id, $type, $name)
+    function updateColumn($id, $type, $name, $ci_type)
     {
         if (ciColumnType::getId($name) !== null && ciColumnType::getId($name) != $id) {
             error("Another column named $name already exists");
 			return false;
 		}
         else {
-			if( ciColumnType::getType($id) == $type && ciColumnType::getName($id) == $name) 
-			{
-				
-				return true;
-				
-			}
-            if (!cicolumnType::update($id, $name, $type, 0)) {
+	    if( ciColumnType::getType($id) == $type && 
+		ciColumnType::getName($id) == $name &&
+		ciColumnType::getCiType($id) == $ci_type) 
+	    {
+		return true;
+	    }
+            if (!cicolumnType::update($id, $name, $type, $ci_type, 0)) {
                 error("Column type $type for column $name could not be found, not updated.");
-				return false;
+		return false;
             }
         }
-		return true;
+	return true;
     }
 
     function removeRun()
     {
         $id = param('id');
-		if (!cicolumnType::update($id, null, null, 1)) {
+	if (!cicolumnType::update($id, null, null, null, 1)) {
             error("Column could not be found, not removed.");
-		} else {
-			message("Column removed");
-        }
-
+	} else {
+	    message("Column removed");
+	}
+	
         redirect(makeUrl(array('controller'=>'ciColumn', 'task'=>'view', 'id'=>null)));
     }
     
-
+    
     function viewRun() 
     {
-		$this->render("ciColumn");
-	}
+	$this->render("ciColumn");
+    }
 	
 
 }

@@ -13,9 +13,9 @@ extends Controller
 			array(makeLink("?controller=ciType", "CI types", null),
 			      makeLink("?controller=ciColumn", "CI columns", null),
 			      makeLink("?controller=ciProperty", "Properties", null),
-				  makeLink("?controller=plugin", "Plugins", null)),
+			      makeLink("?controller=ciDependency", "Dependencies", null),
+			      makeLink("?controller=plugin", "Plugins", null)),
 			$content);
-
 	}
 	
 	

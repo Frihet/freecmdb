@@ -399,6 +399,7 @@ class ciColumnType
     static $id_lookup=null;
     static $name_lookup=null;
     static $type_lookup=null;
+    static $ci_type_lookup=null;
 
     function getId($name) 
     {
@@ -407,25 +408,27 @@ class ciColumnType
         
     }
 
-    function create($name, $type) 
+    function create($name, $type, $ci_type) 
     {
-        db::query("insert into ci_column_type (name, type) values (:name, :type)",
-                  array(':name'=>$name, ':type'=>$type));
+        db::query("insert into ci_column_type (name, type, ci_type_id) values (:name, :type, :ci_type)",
+                  array(':name'=>$name, ':type'=>$type, ':ci_type'=>$ci_type));
         return db::count()?db::lastInsertId("ci_column_type_id_seq"):false;
     }
         
-    function update($id, $name, $type, $deleted) 
+    function update($id, $name, $type, $ci_type_id, $deleted) 
     {
         $val = array();
         $param = array(":id"=>$id);
-        foreach(array("name", "type", "deleted") as $key) 
-            {
-                if ($$key !== null) 
-                    {
-                        $val[] = "$key = :$key";
-                        $param[":$key"]=$$key;
-                    }
-            }
+	if($ci_type_id == "") 
+	{
+	    $ci_type_id = null;
+	}
+		
+        foreach(array("name", "type", "ci_type_id", "deleted") as $key) 
+	{
+	    $val[] = "$key = :$key";
+	    $param[":$key"]=$$key;
+	}
 		
         db::query("update ci_column_type set " . implode(", ", $val) . " where id=:id",
                   $param);
@@ -443,6 +446,12 @@ class ciColumnType
     {
         ciColumnType::load();
         return ciColumnType::$type_lookup[$id];
+    }
+
+    function getCiType($id)
+    {
+        ciColumnType::load();
+        return ciColumnType::$ci_type_lookup[$id];
     }
 
     function getColumns($include_none = false)
@@ -475,8 +484,124 @@ class ciColumnType
             ciColumnType::$id_lookup[$row['name']] = $row['id'];
             ciColumnType::$name_lookup[$row['id']] = $row['name'];
             ciColumnType::$type_lookup[$row['id']] = $row['type'];
+            ciColumnType::$ci_type_lookup[$row['id']] = $row['ci_type_id'];
         }
         
+    }
+
+}
+
+class ciDependencyType
+{
+    static $id_lookup=null;
+    static $name_lookup=null;
+    static $reverse_name_lookup=null;
+
+    public $id;
+    public $name;
+    public $reverse_name;
+
+    function __construct($id, $name, $reverse_name) 
+    {
+	$this->id = $id;
+	$this->name = $name;
+	$this->reverse_name = $reverse_name;
+    }
+    
+    
+    function getId($name) 
+    {
+        ciDependencyType::load();
+        return ciDependencyType::$id_lookup[$name];
+    }
+
+    function create($name, $reverse_name) 
+    {
+        db::query("insert into ci_dependency_type (name, reverse_name) values (:name, :reverse_name)",
+                  array(':name'=>$name, ':reverse_name'=>$reverse_name));
+        return db::count()?db::lastInsertId("ci_dependency_type_id_seq"):false;
+    }
+        
+    function update($id, $name, $reverse_name, $deleted) 
+    {
+        $val = array();
+        $param = array(":id"=>$id);
+        foreach(array("name", "reverse_name", "deleted") as $key) 
+            {
+                if ($$key !== null) 
+                    {
+                        $val[] = "$key = :$key";
+                        $param[":$key"]=$$key;
+                    }
+            }
+		
+        db::query("update ci_dependency_type set " . implode(", ", $val) . " where id=:id",
+                  $param);
+        return !!db::count();
+    }
+	
+    
+    function getName($id)
+    {
+        ciDependencyType::load();
+        return ciDependencyType::$name_lookup[$id];
+    }
+
+    function getReverseName($id)
+    {
+        ciDependencyType::load();
+        return ciDependencyType::$reverse_name_lookup[$id];
+    }
+
+    function getDependencies()
+    {
+	$res = array();
+	
+        ciDependencyType::load();
+	
+        foreach( ciDependencyType::$name_lookup as $id => $name) 
+	{
+	    $res[] = new ciDependencyType($id, 
+					  self::$name_lookup[$id],
+					  self::$reverse_name_lookup[$id]);
+	}
+	
+	return $res;
+	
+    }
+        
+    function getDependencyNames($include_none = false)
+    {
+        ciDependencyType::load();
+        if ( $include_none) {
+	    return array(-1 => 'Any') +ciDependencyType::$name_lookup;
+	}
+	
+        return ciDependencyType::$name_lookup;
+    }
+        
+    function getDependencyReverseNames($include_none = false)
+    {
+        ciDependencyType::load();
+        if ( $include_none) {
+	    return array(-1 => 'Any') +ciDependencyType::$reverse_name_lookup;
+	}
+	
+        return ciDependencyType::$reverse_name_lookup;
+    }
+        
+    function load()
+    {
+        if (ciDependencyType::$id_lookup != null) {
+            return;
+        }
+        
+        foreach(db::fetchList("select * from ci_dependency_type where deleted=false order by name") as $row) {
+            ciDependencyType::$id_lookup[$row['name']] = $row['id'];
+            ciDependencyType::$id_lookup[$row['reverse_name']] = $row['id'];
+            ciDependencyType::$name_lookup[$row['id']] = $row['name'];
+            ciDependencyType::$reverse_name_lookup[$row['id']] = $row['reverse_name'];
+	}
     }
 
 }
@@ -629,21 +754,23 @@ and ci_id = :my_id";
         $delete_arr = array(":my_id" => $this->id, ":other_id" => $other_id);
         $res = db::query($delete_query, $delete_arr);
         
-        if ($res->rowCount()) {
+        if ($res && $res->rowCount()) {
             log::add($this->id, CI_ACTION_REMOVE_DEPENDENCY, $other_id);
         }
     }
     
-    function addDependency($other_id) 
+    function addDependency($other_id,$type_id) 
     {
-        $arr = array(':my_id' => $this->id, ':other_id' => $other_id);
+        $arr = array(':my_id' => $this->id, 
+		     ':other_id' => $other_id,
+		     ':type_id'=>$type_id);
         
         $res = db::query("
 insert into ci_dependency 
-(ci_id, dependency_id) 
-values (:my_id, :other_id)
+(ci_id, dependency_id, ci_dependency_type_id) 
+values (:my_id, :other_id, :type_id)
 ", $arr);
-        if ($res->rowCount()) {
+        if ($res && $res->rowCount()) {
             log::add($this->id, CI_ACTION_ADD_DEPENDENCY, $other_id);
         }
     }
@@ -651,9 +778,9 @@ values (:my_id, :other_id)
     function getDependencies() 
     {
         if($this->_dependencies === null) 
-            {
-                $this->_dependencies = ci::_getDependencies(array($this->id), true);
-            }
+	{
+	    $this->_dependencies = ci::_getDependencies(array($this->id), true);
+	}
 			
         return $this->_dependencies;
     }

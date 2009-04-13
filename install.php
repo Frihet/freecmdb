@@ -206,7 +206,6 @@ stripe();
         db::query("insert into ci_user (username, fullname, password) values (:name, 'Admin', :passwd)",
                   array(":name"=>$admin_username,":passwd"=>$admin_password));
         
-        
         $config = "<?php
 define('DB_DSN', '".addSlashes(param('dsn',''))."');
 ?>";

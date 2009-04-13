@@ -8,6 +8,7 @@ drop table ci_plugin;
 drop table ci_property;
 drop table ci_log;
 drop table ci_dependency;
+drop table ci_dependency_type;
 drop table ci_column;
 drop table ci;
 drop table ci_column_list;
@@ -46,6 +47,7 @@ create table ci_column_type
 	id serial not null primary key,
 	type int not null default 0,
 	name varchar(64) not null,
+	ci_type_id int references ci_type(id),
 	deleted boolean not null default false
 );
 
@@ -71,11 +73,20 @@ create table ci_column
 	value varchar(16000) not null
 );
 
+create table ci_dependency_type
+(
+	id serial not null primary key,
+	name varchar(64) not null,
+	reverse_name varchar(64) not null,
+	deleted boolean not null default false
+);
+
 create table ci_dependency
 (
 	id serial not null primary key,
 	ci_id int not null references ci(id),
-	dependency_id int not null references ci(id)
+	dependency_id int not null references ci(id),
+	ci_dependency_type_id int not null references ci_dependency_type(id)
 );
 
 create table ci_log
@@ -138,22 +149,42 @@ create view ci_column_view as
 select c.id, cct.name, cct.id as column_type_id, cc.value
 from ci c
 join ci_column_type cct
-on 1=1
+on cct.ci_type_id is null or c.ci_type_id = cct.ci_type_id
 left join ci_column cc
 on c.id = cc.ci_id and cc.ci_column_type_id = cct.id
 where c.deleted=false and cct.deleted=false;
 
-insert into ci_type (name) values ('Server');
-insert into ci_type (name) values ('Virtual Server');
-insert into ci_type (name) values ('Service');
-insert into ci_type (name) values ('Project');
-insert into ci_type (name) values ('Firewall');
-insert into ci_type (name) values ('Router');
+insert into ci_type (name,shape) values ('Server','octagon');
+insert into ci_type (name,shape) values ('Virtual Server','doubleoctagon');
+insert into ci_type (name,shape) values ('Service','ellipse');
+insert into ci_type (name,shape) values ('Project','house');
+insert into ci_type (name,shape) values ('Firewall','triangle');
+insert into ci_type (name,shape) values ('Router','triangle');
 
-insert into ci_column_type (name) values ('Uri');
-insert into ci_column_type (name) values ('Description');
-insert into ci_column_type (name) values ('Service owner');
-insert into ci_column_type (name) values ('Service responsible');
-insert into ci_column_type (name) values ('Links');
-insert into ci_column_type (name) values ('Name');
+insert into ci_column_type (name,type) values ('Uri',0);
+insert into ci_column_type (name,type) values ('Description',1);
+insert into ci_column_type (name,type) values ('Service owner',2);
+insert into ci_column_type (name,type) values ('Service responsible',2);
+insert into ci_column_type (name,type) values ('Links',0);
+insert into ci_column_type (name,type) values ('Name',0);
+insert into ci_column_type (name,type) values ('External information',4);
+
+insert into ci_dependency_type(name, reverse_name) 
+values ('Depends on','Depended on by');
+
+insert into ci_dependency_type(name, reverse_name) 
+values ('Owner of','Owned by');
+
+insert into ci_dependency_type(name, reverse_name) 
+values ('Responsible for','Responsibility of');
+
+insert into ci_property (name, value) 
+select 'ciColumn.default', id 
+from ci_column_type 
+where name='Name';
+
+insert into ci_property (name, value) 
+select 'ciDependency.default', id 
+from ci_dependency_type 
+where name='Depends on';
 
