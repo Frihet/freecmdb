@@ -78,6 +78,7 @@ create table ci_dependency_type
 	id serial not null primary key,
 	name varchar(64) not null,
 	reverse_name varchar(64) not null,
+	color varchar(16) not null,
 	deleted boolean not null default false
 );
 
@@ -86,7 +87,7 @@ create table ci_dependency
 	id serial not null primary key,
 	ci_id int not null references ci(id),
 	dependency_id int not null references ci(id),
-	ci_dependency_type_id int not null references ci_dependency_type(id)
+	dependency_type_id int not null references ci_dependency_type(id)
 );
 
 create table ci_log
@@ -99,6 +100,7 @@ create table ci_log
 	column_id int references ci_column_type(id),
 	column_value_old varchar(16000),
 	dependency_id int references ci(id),
+	dependency_type_id int references ci_dependency_type(id),
 	user_id int not null references ci_user(id)
 );
 
@@ -132,6 +134,9 @@ create table ci_graph_cache
 	value varchar(32000) not null
 );
 
+create table ci_graph_dependency_type
+(
+	id serial not null primary key,
 
 create unique index ci_dependency_idx on ci_dependency (ci_id, dependency_id);
 create index ci_session_user_idx on ci_session (user_id);
@@ -142,8 +147,7 @@ create view ci_view as
 select c.*, ct.name as type_name 
 from ci as c
 join ci_type as ct on
-c.ci_type_id = ct.id
-where c.deleted=false and ct.deleted=false;
+c.ci_type_id = ct.id;
 
 create view ci_column_view as
 select c.id, cct.name, cct.id as column_type_id, cc.value
@@ -152,7 +156,7 @@ join ci_column_type cct
 on cct.ci_type_id is null or c.ci_type_id = cct.ci_type_id
 left join ci_column cc
 on c.id = cc.ci_id and cc.ci_column_type_id = cct.id
-where c.deleted=false and cct.deleted=false;
+where cct.deleted=false;
 
 insert into ci_type (name,shape) values ('Server','octagon');
 insert into ci_type (name,shape) values ('Virtual Server','doubleoctagon');
@@ -169,14 +173,20 @@ insert into ci_column_type (name,type) values ('Links',0);
 insert into ci_column_type (name,type) values ('Name',0);
 insert into ci_column_type (name,type) values ('External information',4);
 
-insert into ci_dependency_type(name, reverse_name) 
-values ('Depends on','Depended on by');
+insert into ci_dependency_type(name, reverse_name, color) 
+values ('Depends on','Depended on by', 'black');
 
-insert into ci_dependency_type(name, reverse_name) 
-values ('Owner of','Owned by');
+insert into ci_dependency_type(name, reverse_name, color) 
+values ('Owned by','Owner of', 'red');
 
-insert into ci_dependency_type(name, reverse_name) 
-values ('Responsible for','Responsibility of');
+insert into ci_dependency_type(name, reverse_name, color) 
+values ('Responsible for','Responsibility of', 'red');
+
+insert into ci_dependency_type(name, reverse_name, color) 
+values ('Redundant', '', 'green');
+
+insert into ci_dependency_type(name, reverse_name, color) 
+values ('Falls back on', 'Fallback for', 'green');
 
 insert into ci_property (name, value) 
 select 'ciColumn.default', id 

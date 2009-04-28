@@ -198,73 +198,82 @@ extends View
         $my_name = htmlEncode($ci->getDescription(true));
 
         $all_ci_list = ci::fetch();
-              
-        $content .= "<tr><th colspan='3'>Depends on</th></tr>\n";
+
+	foreach(CiDependencyType::getDependencies() as $dependency_type) 
+	{
+	    
+	    $dep = "";
+	    foreach($ci->getDependencies() as $item) {
+		if($ci->getDependencyType($item)->id != $dependency_type->id) 
+		{
+		    continue;		    
+		}
+		$dep .= "<tr>\n<td></td>\n<td>\n";
+		$other_name = htmlEncode($item->getDescription());
+		$dep .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
+		$dep .= "</td><td>\n";
+		if (!$revision && $ci->isDirectDependency($item->id)) {
+		    $dep .= makeLink(array('task'=>'removeDependency', 'dependency_id'=>$item->id), "Remove",'remove', "Remove dependency from $my_name to $other_name", array('onclick'=>'return confirm("Are you sure?");'));
+		}
+		$dep .= "</td>\n</tr>\n";
+	    }	
+	    if( $dep != "") 
+	    {
+		$content .= "<tr><th colspan='3'>".htmlEncode($dependency_type->name)."</th></tr>\n";
+		$content .= $dep;
+	    }
+	    
+	    
+	    $dependants = $ci->getDependants();
+
+	    $dep2 = "";
+			
+	    foreach($dependants as $item) {
+		if($item->getDependencyType($ci)->id != $dependency_type->id) 
+		{
+		    continue;		    
+		}
+		$dep2 .= "<tr>\n<td></td>\n<td>\n";
+		$other_name = htmlEncode($item->getDescription());
+		$dep2 .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
+		$dep2 .= "\n</td><td>\n";
+		if (!$revision && $ci->isDirectDependant($item->id)) {
+		    $dep2 .= makeLink(array('task'=>'removeDependant', 'dependant_id'=>$item->id), "Remove",'remove', "Remove dependency from $other_name to $my_name",array('onclick'=>'return confirm("Are you sure?");'));
+		}
+		$dep2 .= "\n</td></tr>\n";
+	    }
+	    
+	    if($dep2) 
+	    {
+		if(!$dependency_type->isDirected() && !$dep)
+		    $content .= "<tr><th colspan='3'>".htmlEncode($dependency_type->name)."</th></tr>";
+		else if ($dependency_type->isDirected())
+		    $content .= "<tr><th colspan='3'>".htmlEncode($dependency_type->reverse_name)."</th></tr>";
+		$content .= $dep2;
+		
+	    }
+	    
 				
-        foreach($ci->getDependencies() as $item) {
-            $content .= "<tr>\n<td></td>\n<td>\n";
-            $other_name = htmlEncode($item->getDescription());
-            $content .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
-            $content .= "</td><td>\n";
-            if (!$revision && $ci->isDirectDependency($item->id)) {
-                $content .= makeLink(array('task'=>'removeDependency', 'dependency_id'=>$item->id), "Remove",'remove', "Remove dependency from $my_name to $other_name", array('onclick'=>'return confirm("Are you sure?");'));
-            }
-            $content .= "</td>\n</tr>\n";
-        }	
-				
+        }
+
         if (!$revision) {
-            $content .= "<tr><td></td><td>";
-						
-            $form = "<select name='dependency_id'>\n";
+	    $form = "<tr><td>".form::makeSelect('dependency_type_info',CiDependencyType::getDependencyOptions(),property::get(''))."</td><td>";
+	    $arr = array();
             foreach($all_ci_list as $item) {
                 $item_id = $item->id;
-                if ($ci->isDirectDependency($item_id) || $ci->id == $item_id) {
+                /*
+		if ($ci->isDirectDependant($item_id) || $ci->id == $item_id) {
                     continue;
-                }
-								
-                $item_name = htmlEncode($item->getDescription());
-                $form .= "<option value='$item_id'>$item_name</option>\n";
+		    }*/
+		$arr[$item_id] = $item->getDescription();
             }
-						
-            $form .= "</select></td><td><button type='submit'>Add</button>\n";
-            $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$controller->id, 'dependency_type_id'=>Property::get("ciDependency.default")));
-            $content .= "</td></tr>";
+	    $form .= form::makeSelect('dependency_id', $arr, null);
+	    
+            $form .= "</td><td><button type='submit'>Add</button>\n";
+            $form .= "</td></tr>";
+            $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$controller->id));
         }
 				
-        $content .= "<tr><th colspan='3'>Depended on by</th></tr>";
-        $dependants = $ci->getDependants();
-				
-        foreach($dependants as $item) {
-            $content .= "<tr>\n<td></td>\n<td>\n";
-            $other_name = htmlEncode($item->getDescription());
-            $content .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
-            $content .= "\n</td><td>\n";
-            if (!$revision && $ci->isDirectDependant($item->id)) {
-                $content .= makeLink(array('task'=>'removeDependant', 'dependant_id'=>$item->id), "Remove",'remove', "Remove dependency from $other_name to $my_name",array('onclick'=>'return confirm("Are you sure?");'));
-            }
-            $content .= "\n</td></tr>\n";
-        }
-				
-        if (!$revision) {
-						
-            $content .= "<tr><td></td><td>";
-						
-            $form = "<select name='dependant_id'>\n";
-						
-            foreach($all_ci_list as $item) {
-                $item_id = $item->id;
-                if ($ci->isDirectDependant($item_id) || $ci->id == $item_id) {
-                    continue;
-                }
-								
-                $item_name = htmlEncode($item->getDescription());
-                $form .= "<option value='$item_id'>$item_name</option>\n";
-            }
-            $form .= "</select></td><td><button type='submit'>Add</button>\n";
-            $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependant','id'=>$controller->id, 'dependency_type_id'=>Property::get("ciDependency.default")));
-						
-            $content .= "</td></tr>";
-        }
         return $content;
 						
     }

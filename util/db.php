@@ -118,8 +118,7 @@ class dbMaker
         }
         catch (PDOException $e) {
             self::$error = $e->getMessage();
-			
-            error($q . " " . sprint_r($param) . ": ".$e->getMessage());
+            error("Query «" .$q . "» " . (count($param)?" with parameters ".sprint_r($param):"") . ": ".$e->getMessage());
         }
 	
         $t2 = microtime(true);

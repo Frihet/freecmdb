@@ -2,7 +2,6 @@
 
 require_once("controllers/adminController.php");
 
-
 class CiDependencyController
 extends adminController
 {
@@ -12,13 +11,14 @@ extends adminController
 
         $name = param('name_new');
         $reverse_name = param('reverse_name_new');
+        $color = param('color_new');
 
         if (strlen($name) ) {
-            if ((ciDependencyType::getId($name) !== null) ||(ciDependencyType::getId($reverse_name) !== null)) {
+            if ((ciDependencyType::getId($name) !== null) || (ciDependencyType::getId($reverse_name) !== null)) {
                 error("Another CI type named $name already exists");
                 return false;
             }
-            return ciDependencyType::create($name, $reverse_name);
+            return ciDependencyType::create($name, $reverse_name, $color);
         }
         return true;
     }
@@ -36,7 +36,8 @@ extends adminController
         for ($idx=0;param("id_$idx")!==null;$idx++) {
             $ok &= $this->updateDependency(param("id_$idx"),
 					   param("name_$idx"),
-					   param("reverse_name_$idx"));
+					   param("reverse_name_$idx"),
+					   param("color_$idx"));
         }
         
         if ($ok) {
@@ -61,22 +62,24 @@ extends adminController
     }
 
 
-    function updateDependency($id, $name, $reverse_name)
+    function updateDependency($id, $name, $reverse_name, $color)
     {
         if (ciDependencyType::getId($name) !== null && ciDependencyType::getId($name) != $id) {
             error("Error while updating dependecy type with id $id: Another dependency named $name already exists, with id " .ciDependencyType::getId($name));
 	    return false;
 	}
         else if (ciDependencyType::getId($reverse_name) !== null && ciDependencyType::getId($reverse_name) != $id) {
-            error("Error while updating dependecy type with id $id: Another dependency named $name already exists, with id " .ciDependencyType::getId($name));
+            error("Error while updating dependecy type with id $id: Another dependency named $reverse_name already exists, with id " .ciDependencyType::getId($reverse_name));
 	    return false;
 	}
         else {
-	    if( ciDependencyType::getName($id) == $name && ciDependencyType::getReverseName($id) == $reverse_name ) 
+	    if( ciDependencyType::getName($id) == $name && 
+		ciDependencyType::getReverseName($id) == $reverse_name &&
+		ciDependencyType::getColor($id) == $color ) 
 	    {				
 		return true;
 	    }
-            if (!cidependencyType::update($id, $name, $reverse_name, 0)) {
+            if (!cidependencyType::update($id, $name, $reverse_name, $color, 0)) {
                 error("Dependency $name could not be found, not updated.");
 		return false;
             }
@@ -87,7 +90,7 @@ extends adminController
     function removeRun()
     {
         $id = param('id');
-	if (!ciDependencyType::update($id, null, null, 1)) {
+	if (!ciDependencyType::update($id, null, null, null, 1)) {
             error("Dependency could not be found, not removed.");
 	} else {
 	    message("Dependency removed");

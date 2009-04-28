@@ -173,7 +173,7 @@ $val
 
         function recentlyDeletedRun()
         {
-            message("Hej");
+	    $this->render("recentlyDeleted");
         }
         
 

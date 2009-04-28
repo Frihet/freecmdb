@@ -21,6 +21,8 @@ Name of dependency
 </th><th>
 Name of reverse dependency
 </th><th>
+Color
+</th><th>
 </th><th>
 </th></tr>
 ";
@@ -40,7 +42,10 @@ Name of reverse dependency
             $form .= "<input name='reverse_name_$idx'  size='16' length='64' value='".htmlEncode(param("reverse_name_$idx",$dep->reverse_name))."'/>";
             $form .= "</td><td>";
 
-
+            $shape_select = form::makeSelect("color_$idx", ciDependencyType::getColors(), param("color_$idx",ciDependencyType::getColor($dep->id)));
+	    $form .=  $shape_select;
+            $form .= "</td><td>";
+	    
 	    			
 	    $checked = param("default",Property::get("ciDependency.default")) == $dep->id?"checked":"";
             $form .= "<input type='radio' name='default' value='{$dep->id}' id='default_$idx' $checked><label for='default_$idx'>Default</label>";
@@ -55,8 +60,8 @@ Name of reverse dependency
         $name = htmlEncode(param('name_new',''));
         $reverse_name = htmlEncode(param('reverse_name_new',''));
 		
-	
 	$checked = param("default") == "new"?"checked":"";
+	$shape_select = form::makeSelect("color_new", ciDependencyType::getColors(), param("color_$idx","black"));
         
         $form .= "
 <tr>
@@ -64,6 +69,8 @@ Name of reverse dependency
       <input               name='name_new'   value='$name' size='16' length='64'/>
     </td><td>
       <input               name='reverse_name_new'   value='$reverse_name' size='16' length='64'/>
+    </td><td>
+      $shape_select
     </td><td>
       <input type='radio' name='default' value='new' id='default_new' $checked><label for='default_new'>Default</label>
     </td>

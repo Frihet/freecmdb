@@ -16,22 +16,21 @@ extends Controller
     function addDependencyRun()
     {
         $other_id = param('dependency_id');
-        $type_id = param('dependency_type_id');
-        $ci = $this->getCi();
-        $ci->addDependency($other_id, $type_id);
-        message("Dependency added");
+        list($type_id,$reverse) = explode(':',param('dependency_type_info'));
+	if($reverse) 
+	{
+	    $ci_list = ci::fetch(array('id_arr'=>array($other_id)));
+	    $ci = $ci_list[$other_id];
+	    $ci->addDependency($this->id, $type_id);
+	    message("Dependant added ");
+	}
+	else 
+	{
+	    $ci = $this->getCi();
+	    $ci->addDependency($other_id, $type_id);
+	    message("Dependency added");
+	}
         redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
-    }
-
-    function addDependantRun()
-    {
-        $other_id = param('dependant_id');
-        $type_id = param('dependency_type_id');
-        $ci_list = ci::fetch(array('id_arr'=>array($other_id)));
-        $ci = $ci_list[$other_id];
-        $ci->addDependency($this->id, $type_id);
-        message("Dependant added");
-        redirect(makeUrl(array('task'=>null, 'dependant_id'=>null)));
     }
 
     function removeDependencyRun()
@@ -97,7 +96,7 @@ extends Controller
         if ($this->ci != null) {
             return $this->ci;
         }
-        $ci_list = ci::fetch(array('id_arr'=>array($this->id)));
+        $ci_list = ci::fetch(array('id_arr'=>array($this->id), 'deleted'=>true));
         $this->ci = $ci_list[$this->id];
         return $this->ci;
     }

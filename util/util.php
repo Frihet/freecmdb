@@ -230,7 +230,7 @@ function makeUrl($v1=null, $v2=null)
         }
     }
     
-    $filter = array( 'message_str'=>true, 'filter_column'=>true, 'filter_column_value'=>true, 'redirect_query_time'=>true, 'redirect_query_count'=>true);
+    $filter = array( 'message_str'=>true, 'filter_column'=>true, 'filter_column_value'=>true, 'redirect_render_time'=>true, 'redirect_query_time'=>true, 'redirect_query_count'=>true);
 	
     foreach($_GET as $key => $value) 
     {

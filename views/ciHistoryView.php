@@ -31,7 +31,7 @@ class ciHistoryView
         $ci = $controller->getCi();
         $action_links = $controller->getActionMenu();
         util::setTitle("History for " . $ci->getDescription());
-		
+	
         $content = "
 <table class='striped history_table'>
 <tr>
