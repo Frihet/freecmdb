@@ -63,16 +63,18 @@ https://projects.freecode.no/git/freecmdb.git </code>. This should download the 
             
             
             $this->add("Installation","
-<p> FreeCMDB requires the following php packages to run: GraphViz,
-PDO, PDO_PGSQL and json. The GraphViz package is not part of any PHP
-standard release, the other packages should be included in your php
-installation if it is sufficiently new. To install these packages on
-an older php version, you will have to use either the pecl or the pear
-commands. You may need to install these commands as well before using
-them. You will also mostl likely have to update your php.ini file to
-include the correct .so files as extensions. Please refer to the PHP
-documentation for instructions on how to use and install these
-commands. </p>
+<p> FreeCMDB requires a php enabled web server and a PostgreSQL
+database to run. The following php packages are also needed: GraphViz,
+PDO, PDO_PGSQL and json. The GraphViz package is not part of the PHP
+standard release, the other packages should already be included in
+your php installation if it is sufficiently new. To install these
+packages on an older php version, you will have to use either the pecl
+or the pear commands. You may need to install these commands as well
+before using them. You will also mostl likely have to update your
+php.ini file to include the correct .so files as extensions. Please
+refer to the PHP documentation and any operating system specific
+documentation for specific instructions on how to use and install
+these commands. </p>
 
 <p> After you have a correctly configured php server with the right
 extensions installed, installing FreeCMDB should be as simple as
