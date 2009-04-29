@@ -159,6 +159,11 @@ class ciChart
 	    $dt = $this->reverse ? $child->getDependencyType($node) : $node->getDependencyType($child);	    
 	    $arrow = $dt->isDirected()?($this->reverse?'normal':'inv'):'none';
 	    $color = $dt->color;
+	    if($color == "invisible") 
+	    {
+		continue;
+	    }
+	    
 	    $this->renderNode($graph, $child, $done, false, $depth+1);
             $graph->addEdge(array($node->getDescription(true) => $child->getDescription(true)),
 			    array ( 'arrowhead'=>$arrow,

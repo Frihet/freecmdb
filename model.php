@@ -595,7 +595,8 @@ class ciDependencyType
 
     function getColors()
     {
-	return array("black"=>"Black",
+	return array("invisible"=>"Do not show in graph",
+		     "black"=>"Black",
 		     "blue"=>"Blue",
 		     'brown'=>'Brown',
 		     'cyan'=>'Cyan',

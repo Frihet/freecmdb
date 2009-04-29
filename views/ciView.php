@@ -256,7 +256,28 @@ extends View
 				
         }
 
+	$dep_indirect = "";
+	
+	foreach($ci->getDependencies() as $item) {
+	    if (!$ci->isDirectDependency($item->id)) {
+		$dep_indirect .= "<tr>\n<td></td>\n<td>\n";
+		$other_name = htmlEncode($item->getDescription());
+		$dep_indirect .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
+		$dep_indirect .= "</td><td>\n";
+		$dep_indirect .= "</td>\n</tr>\n";
+	    }
+	}	
+	if( $dep_indirect != "") 
+	{
+	    $content .= "<tr><th colspan='3'>Indirect dependencies</th></tr>\n";
+	    $content .= $dep_indirect;
+	}
+	    
+
+
+
         if (!$revision) {
+	    $content .= "<tr><th colspan='3'>Add new dependency</th></tr>\n";
 	    $form = "<tr><td>".form::makeSelect('dependency_type_info',CiDependencyType::getDependencyOptions(),property::get(''))."</td><td>";
 	    $arr = array();
             foreach($all_ci_list as $item) {

@@ -19,9 +19,9 @@ class ciDependencyview
 <th>
 Name of dependency
 </th><th>
-Name of reverse dependency
+Name of dependant
 </th><th>
-Color
+Graph Color
 </th><th>
 </th><th>
 </th></tr>
