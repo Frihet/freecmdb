@@ -6,28 +6,17 @@ makes use of various features, such as SVG rendering and various CSS
 selectors, that are only available in sane browsers. In other words,
 FreeCMDB does not fully work with Internet Explorer. All major
 functionality that uses such features must have a fallback, e.g. when
-svg rendering is not provided, FreeCMDB falls back to a non-clickable
-PNG. Minor visual glitches and some reduced functionality will occur
-in older browsers, though. Firefox 2.0 an onwards should work
-fine. Feedback on other browsers is welcome.
-
-All CIs have the same list of columns. If a column is not applicable
-to a CI type, don't fill in a value. This may change in a future version.
-
-As of yet, it is not possible to track dependencies on roles or people
-unless you turn these into configuration items. Doing so would cause
-any non-trivial CMDB configuration to become huge and very hard to get
-an overview over. Especially the graphs would most likely lose their
-usefulness. Handling this intelligently is planned in a future version.
+svg rendering is not provided, FreeCMDB falls back to a PNG. Minor
+visual glitches and some reduced functionality will occur in older
+browsers, though. Firefox 2.0 an onwards should work fine. Feedback on
+other browsers is welcome.
 
 Generally, FreeCMDB should be snappy, with a page rendering time of
 0.1-0.2 seconds on the slowest pages using intermediate hardware and a
-medium sized database. A normal page view performs 5-15 database
+medium sized database. A normal page view performs 5-20 database
 queries. Usually, PHP is the bottleneck, not the database. There are
 several possible improvements, which could speed things up if
-needed. These include caching the graph generation as well as not
-showing the full list of CI items in the 'add dependency' forms -
-provide a smart form for searching instead.
+needed. 
 
 
 Database schema:
@@ -44,7 +33,8 @@ of a dropdown list, what is stored is actually the id of the column
 item in the ci_column_list table, ergo an integer that references
 another table is stored in a unreferenced varchar column. The major
 benefit of this construction is that it is possible to change column
-types back and forth without destroying data. 
+types back and forth without destroying data. Nonetheless, this will
+beobably be changed in a future version.
 
 FreeCMDB usually avoids deleting data. When data, such as old CIs, is
 removed, a flag on that line in the database is set, and nothing else
@@ -53,11 +43,15 @@ implement. It also means that the database will grow with use. This
 should not be a big problem as deleting and creating CIs is not a
 common operation. If this turns out to be a problem in the future, a
 maximum time before deleted data is _truly_ removed may be
-implemented.
+implemented. After this grace period, it would no longer be possible
+to undelete items.
 
 
 Plans for future work:
 
+* Move image map to external page.
+* Clever filtering interface for adding CIs.
+* filtered graph to only show selected cis
 * Add mandatory columns
 * Use nmap to provide network information on CIs.
 * Allow Anna to upload custom style sheets.
@@ -65,15 +59,4 @@ Plans for future work:
 * Make it possible to reorder the columns in the display.
 * Add possibility to remove some features for some CI types, e.g. CI types that are really assets should not have dependency tracking or RfC handling.
 * License tracking, including showing when a software is used by more users than the license permits.
-
-Thing sfor Feruzi to do:
-
-* IE support.
-* If IE detected, add blurb about reduced functionality.
-
-
-
-
-
-
-
+* Fix broken links and formating for truncated nodes

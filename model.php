@@ -12,6 +12,7 @@ define('CI_COLUMN_TEXT_FORMATED', 1);
 define('CI_COLUMN_LIST', 2);
 define('CI_COLUMN_LINK_LIST', 3);
 define('CI_COLUMN_IFRAME', 4);
+define('CI_COLUMN_EMAIL', 5);
 
 
 class ciAction
@@ -474,6 +475,7 @@ class ciColumnType
         return array(CI_COLUMN_TEXT=>'Unformated text',
                      CI_COLUMN_TEXT_FORMATED=>'Multiline text with formating',
                      CI_COLUMN_LIST=>'List',
+                     CI_COLUMN_EMAIL=>'Email address',
                      CI_COLUMN_IFRAME=>'IFrame'/*
                                                 CI_COLUMN_LINK_LIST=>'List of links'*/);
     }
@@ -672,7 +674,9 @@ extends dbItem
     var $_direct_dependant;
     var $_direct_dependency;
     var $update_time;
-	
+    var $deleted;
+    
+
     static $_cache = array();
 
     function setType($type)

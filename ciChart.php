@@ -145,7 +145,7 @@ class ciChart
                               'fontsize' => '10', 
                               'fontname' => 'sans-serif',  // Re-add font name attribute on every node, since GraphViz seems to ignore the main graph attribute, even though the docs say it should be inherited.
                               'label'=>str_replace(' ','\n',$node->getDescription(true)),
-                              'color' => ($is_root?'green':(array_key_exists($node->id, $this->highlight)?'green':'black'))
+                              'color' => ($is_root?'green':(array_search($node->id, $this->highlight)?'green':'black'))
                               )
                         );
         

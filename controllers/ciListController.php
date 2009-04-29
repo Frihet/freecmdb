@@ -12,26 +12,26 @@ extends Controller
 	{
 		if(!$this->ci_list) 
 		{
-		$arr = array();
-			
-		$filter_type = param('filter_type');
-		$filter_column = param('filter_column');
-		$filter_column_value = param('filter_column_value');
-		$filtered = false;
-			
-		if ($filter_column !== null && $filter_column_value) 
-		{
+		    $arr = array();
+		    
+		    $filter_type = param('filter_type');
+		    $filter_column = param('filter_column');
+		    $filter_column_value = param('filter_column_value');
+		    $filtered = false;
+		    
+		    if ($filter_column !== null && $filter_column_value) 
+		    {
 			$filtered = true;
 			$arr['filter_column'] = array($filter_column,$filter_column_value);
-		}
-
-		if ($filter_type !== null && $filter_type >= 0) 
-		{
+		    }
+		    
+		    if ($filter_type !== null && $filter_type >= 0) 
+		    {
 			$filtered = true;
 			$arr['filter_type'] = $filter_type;
-		}
-		
-		$this->ci_list = ci::fetch($arr);
+		    }
+		    
+		    $this->ci_list = ci::fetch($arr);
 		}
 		
 		return $this->ci_list;
@@ -162,7 +162,7 @@ $val
 		}
 		
 		if (count($ci_list) < (int)Property::get("chart.maxItems")){
-			$content .= $this->makeChart($filtered?$ci_list:array());
+		    $content .= $this->makeChart($ci_list);
 		}
 		
 		$this->show(array(makeLink("?controller=ci&amp;task=create", "Create new item", null),
@@ -182,7 +182,7 @@ $val
 		$highlight_str = "";
 		foreach($highlight as $ci) 
 		{
-			$highlight_str .= "&highlight[]=" . $ci->id;
+		    $highlight_str .= "&highlight[]=" . $ci->id;
 		}
 						
 		return "

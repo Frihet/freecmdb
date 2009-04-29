@@ -11,7 +11,14 @@ extends View
         $edit = param("task", 'view')=='edit';
         $revision_id = param('revision_id');
         $revision = $revision_id !== null;
-
+	if (!$revision) 
+	{
+	    $deleted = !!$ci->deleted;
+	    
+	}
+	
+        $is_readonly = $revision || $deleted;
+	
         $action_links = $controller->getActionMenu($edit);
 
         $action_str = $edit?"Editing":"Viewing";
@@ -23,11 +30,13 @@ extends View
         if ($revision) {
             $content .="<em>This is an old revision of this item. ".makeLink(array('revision_id'=>null),'Click here to view the latest version').".</em>";
         }
-
+	else if ($deleted) 
+	{
+            $content .="<em>This item has been deleted</em>";
+	}
+	
         util::setTitle("$action_str " . $ci->getDescription());
         
-        $content = "";
-	
         if ($edit) {
             $content .= "<form accept-charset='utf-8' method='post' action='index.php'>";
             $content .= "<input type='hidden' name='controller' value='ci'>";
@@ -49,7 +58,7 @@ extends View
         else {
             $content .= $ci->type_name;
             $content .= "</td><td>";
-            if (!$revision) {
+            if (!$is_readonly) {
                 static $type_popup_form_id=0;
                 $type_popup_id = "type_popup_form_$type_popup_form_id";
                 $type_popup_form_id++;
@@ -97,7 +106,7 @@ extends View
                 
                 $content .= "</td><td>";
                 
-                if (!$revision) {
+                if (!$is_readonly) {
                     static $column_popup_form_id=0;
                     $column_popup_id = "column_popup_form_$column_popup_form_id";
                     $column_popup_form_id++;
@@ -112,7 +121,7 @@ extends View
         
         if (!$edit) {
             
-            $content .= $this->makeDependencies($controller);
+            $content .= $this->makeDependencies($controller, $ci, $revision, $is_readonly);
 						
         }
 
@@ -131,7 +140,7 @@ extends View
             
         }
 
-        if (!$edit && !$revision) {
+        if (!$edit && !$is_readonly) {
             $content .= $this->makeIframes($controller);
 						
         }
@@ -187,12 +196,8 @@ extends View
      * This code should be refactored, it does almost exactly the
      * same thing twice, but with no code reuse.
      */
-    function makeDependencies($controller)
+    function makeDependencies($controller, $ci, $revision, $is_readonly)
     {
-				
-        $revision_id = param('revision_id');
-        $revision = $revision_id !== null;
-        $ci = $controller->getCi();
         $content= "";
 
         $my_name = htmlEncode($ci->getDescription(true));
@@ -212,7 +217,7 @@ extends View
 		$other_name = htmlEncode($item->getDescription());
 		$dep .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
 		$dep .= "</td><td>\n";
-		if (!$revision && $ci->isDirectDependency($item->id)) {
+		if (!$is_readonly && $ci->isDirectDependency($item->id)) {
 		    $dep .= makeLink(array('task'=>'removeDependency', 'dependency_id'=>$item->id), "Remove",'remove', "Remove dependency from $my_name to $other_name", array('onclick'=>'return confirm("Are you sure?");'));
 		}
 		$dep .= "</td>\n</tr>\n";
@@ -237,7 +242,7 @@ extends View
 		$other_name = htmlEncode($item->getDescription());
 		$dep2 .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
 		$dep2 .= "\n</td><td>\n";
-		if (!$revision && $ci->isDirectDependant($item->id)) {
+		if (!$is_readonly && $ci->isDirectDependant($item->id)) {
 		    $dep2 .= makeLink(array('task'=>'removeDependant', 'dependant_id'=>$item->id), "Remove",'remove', "Remove dependency from $other_name to $my_name",array('onclick'=>'return confirm("Are you sure?");'));
 		}
 		$dep2 .= "\n</td></tr>\n";
@@ -276,7 +281,7 @@ extends View
 
 
 
-        if (!$revision) {
+        if (!$is_readonly) {
 	    $content .= "<tr><th colspan='3'>Add new dependency</th></tr>\n";
 	    $form = "<tr><td>".form::makeSelect('dependency_type_info',CiDependencyType::getDependencyOptions(),property::get(''))."</td><td>";
 	    $arr = array();
@@ -306,13 +311,10 @@ extends View
     function makeFigures($controller) 
     {
         $revision_id = param('revision_id');
-        $revision = $revision_id !== null;
         $ci = $controller->getCi();
         $content= "";
 				
-				
         $need_legend = false;
-        $revision_str = $revision?"&revision_id=$revision_id":"";
 
         if (count($ci->getDependencies())) {
             $need_legend = true;

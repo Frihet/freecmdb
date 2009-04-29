@@ -84,22 +84,22 @@ class form
         if ($read_only) {
             
             switch($type) {
-            case CI_COLUMN_TEXT_FORMATED:
-                $res = $value; /* We should plug in a filter to disallow weird html here, but it's not a top priority item. */
-                break;
-
-            case CI_COLUMN_IFRAME:
-					if ($value == null || $value == '') 
-					{
-							break;
-					}
-					
-					if ($id == null) 
-					{
-							$id = "form_iframe_" . form::$iframe_id;
-							form::$iframe_id++;
-					}
-					$res = "
+		case CI_COLUMN_TEXT_FORMATED:
+		    $res = $value; /* We should plug in a filter to disallow weird html here, but it's not a top priority item. */
+		    break;
+		    
+		case CI_COLUMN_IFRAME:
+		    if ($value == null || $value == '') 
+		    {
+			break;
+		    }
+		    
+		    if ($id == null) 
+		    {
+			$id = "form_iframe_" . form::$iframe_id;
+			form::$iframe_id++;
+		    }
+		    $res = "
 <iframe
     id='".htmlEncode($id)."' name='".htmlEncode($id)."'
     src='".htmlEncode($value)."'
@@ -107,20 +107,25 @@ class form
     scrolling='no'>
 Iframes not supported by this browser.
 </iframe>";
-					
-                break;
-
-            case CI_COLUMN_LIST:
-                $res = ciColumnList::getName($value);
-                
-                if ($res == null) {
-                    $res = htmlEncode("<invalid value>");
-                }
-                break;
-
-            default:
-                $res = htmlEncode($value);
-                break;
+		    
+		    break;
+		    
+		case CI_COLUMN_LIST:
+		    $res = ciColumnList::getName($value);
+		    
+		    if ($res == null) {
+			$res = htmlEncode("<invalid value>");
+		    }
+		    break;
+		    
+		case CI_COLUMN_EMAIL:
+		    $ev = htmlEncode($value);
+		    $res = "<a href='mailto:$ev'>$ev</a>";
+		    break;
+		
+		default:
+		    $res = htmlEncode($value);
+		    break;
             }
         }
         else {
@@ -130,6 +135,7 @@ Iframes not supported by this browser.
             switch($type) {
             case CI_COLUMN_IFRAME:
             case CI_COLUMN_TEXT:
+            case CI_COLUMN_EMAIL:
 					$res = form::makeText($name, $value, $id);
                 break;
                 
