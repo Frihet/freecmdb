@@ -177,16 +177,29 @@ extends Controller
         $id_new = db::lastInsertId("ci_id_seq");
         
         db::query('
-insert into ci_column (ci_id, ci_column_type_id, value)
+insert into ci_column 
+(
+        ci_id, ci_column_type_id, value
+)
 select :new_id, ci_column_type_id, value from ci_column where ci_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new));
 
         db::query('
-insert into ci_dependency (ci_id, dependency_id)
-select :new_id, dependency_id from ci_dependency where ci_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new));
+insert into ci_dependency 
+(
+        ci_id, dependency_id, dependency_type_id
+)
+select :new_id, dependency_id, dependency_type_id 
+from ci_dependency 
+where ci_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new));
 
         db::query('
-insert into ci_dependency (ci_id, dependency_id)
-select ci_id, :new_id from ci_dependency where dependency_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new));
+insert into ci_dependency 
+(
+        ci_id, dependency_id, dependency_type_id
+)
+select ci_id, :new_id, dependency_type_id 
+from ci_dependency 
+where dependency_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new));
         
         redirect(makeUrl(array('id'=>$id_new, 'task'=>null)));
 	

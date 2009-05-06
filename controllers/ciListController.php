@@ -12,26 +12,32 @@ extends Controller
 	{
 		if(!$this->ci_list) 
 		{
+                    $item_count = Property::get('pager.itemsPerPage', 20);
+                    $offset = $item_count * (param('page',1)-1);
+                    
 		    $arr = array();
-		    
+                    
 		    $filter_type = param('filter_type');
 		    $filter_column = param('filter_column');
 		    $filter_column_value = param('filter_column_value');
 		    $filtered = false;
 		    
-		    if ($filter_column !== null && $filter_column_value) 
-		    {
+		    if ($filter_column !== null && $filter_column_value) {
 			$filtered = true;
 			$arr['filter_column'] = array($filter_column,$filter_column_value);
 		    }
 		    
-		    if ($filter_type !== null && $filter_type >= 0) 
-		    {
+		    if ($filter_type !== null && $filter_type >= 0) {
 			$filtered = true;
 			$arr['filter_type'] = $filter_type;
 		    }
-		    
+                    
+                    $arr['limit'] = $item_count;
+                    $arr['offset'] = $offset;
+                    //message(sprint_r($arr));
+                    
 		    $this->ci_list = ci::fetch($arr);
+		    $this->ci_total_count = ci::fetch($arr + array('count'=>true));
 		}
 		
 		return $this->ci_list;
@@ -51,6 +57,7 @@ extends Controller
 		
 		util::setTitle("View CIs");
 		$form = "";
+
 		
 		$form .= "
 <table class='striped'>
@@ -89,7 +96,9 @@ extends Controller
 			
 		$content .= form::makeForm($form,array('controller'=>'ciList'), 'get');
 		
-	
+                $pager = util::makePager($this->ci_total_count);
+                $content .= $pager;
+                	
 		if (!count($ci_list)) 
 		{
 			$content .= "No CIs matched your criteria!";
@@ -160,7 +169,7 @@ $val
 
 		$content .= "</table>";
 		}
-		
+
 		if (count($ci_list) < (int)Property::get("chart.maxItems")){
 		    $content .= $this->makeChart($ci_list);
 		}

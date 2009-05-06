@@ -13,7 +13,7 @@ define('CI_COLUMN_LIST', 2);
 define('CI_COLUMN_LINK_LIST', 3);
 define('CI_COLUMN_IFRAME', 4);
 define('CI_COLUMN_EMAIL', 5);
-define('CI_COLUMN_DATE', 5);
+define('CI_COLUMN_DATE', 6);
 
 class ciAction
 {
@@ -476,6 +476,7 @@ class ciColumnType
                      CI_COLUMN_TEXT_FORMATED=>'Multiline text with formating',
                      CI_COLUMN_LIST=>'List',
                      CI_COLUMN_EMAIL=>'Email address',
+                     CI_COLUMN_DATE=>'Date picker',
                      CI_COLUMN_IFRAME=>'IFrame'/*
                                                 CI_COLUMN_LINK_LIST=>'List of links'*/);
     }
@@ -1110,6 +1111,10 @@ from ci_dependency
 
     function fetch($param=array()) 
     {
+        if (array_key_exists('count', $param)) {
+            return ci::fetchUncached($param);
+        }
+        
         if (array_key_exists('id_arr', $param)) {
 				
             $id_arr = $param['id_arr'];
@@ -1237,20 +1242,13 @@ on cc.ci_id = ci_view.id and cc.ci_column_type_id = :column_type";
             $where[] = "ci_type_id = :filter_type_id";
             $db_param[':filter_type_id'] = $filter;
         }
-			
-        if (array_key_exists('limit', $param)) {
-            $limit = "limit " . $param['limit'];
-        }
-			
-        if (array_key_exists('offset', $param)) {
-            $limit = "offset " . $param['offset'];
-        }
-			
+		
         $where_str = "";
         if (count($where)) {
             $where_str = "where " . implode(' and ', $where);
         }
-			
+
+	
 	$query = "
 select ci_view.*, extract(epoch from log.update_time) as update_time 
 from ci_view 
@@ -1261,9 +1259,29 @@ left join
 ) log 
 on log.ci_id = ci_view.id 
 $join 
-$where_str 
+$where_str
+order by id";
+        
+        if(array_key_exists('count', $param)) {
+            $query = "select count(*) from ($query) count_me";
+            $res = db::fetchItem($query, $db_param);
+            return $res;
+            
+        }
+        
+
+        if (array_key_exists('limit', $param)) {
+            $limit = "limit " . $param['limit'];
+        }
+			
+        if (array_key_exists('offset', $param)) {
+            $offset = "offset " . $param['offset'];
+        }
+			
+        $query .= "
 $limit 
 $offset";
+        
 	//echo($query);
 	//var_dump($db_param);
 	
@@ -1272,8 +1290,7 @@ $offset";
         if(!count($arr)){
             return array();
         }
-			
-			
+        			
         $col_id_arr = array();
 			
         $out = array();
@@ -1285,15 +1302,15 @@ $offset";
             $out[$row['id']] = $ci;
             $col_id_arr[] = $row['id'];
         }
-			
+	
         list($col_id_arr_param, $col_id_arr_named) = db::in_list($col_id_arr);
-		
+	
         $arr2 = db::fetchList("
 select * 
 from ci_column_view 
 where id in ($col_id_arr_param) 
 order by name", $col_id_arr_named);
-			
+        
         foreach( $arr2 as $row) {
             $out[$row['id']]->_ci_column[$row['column_type_id']] = $row['value'];
             $out[$row['id']]->applyAll();
@@ -1341,11 +1358,14 @@ class Property
         }
     }
 
-    function get($name) 
+    function get($name, $default=null) 
     {
         self::load();
-		
-        return @self::$data[$name];
+
+        if (array_key_exists($name, self::$data)) {
+            return @self::$data[$name];
+        }
+        return $default;
     }
     
     function set($name, $value) 

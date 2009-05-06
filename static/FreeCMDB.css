@@ -40,8 +40,8 @@ button,
 .content .edit,
 .content .remove,
 .content .revision,
+body .dp-choose-date,
 .content .revert
-
 {
     background-color: #35373f;
     border: 1px solid #111;
@@ -61,6 +61,7 @@ button,
 body .content .edit,
 body .content .remove,
 body .content .revision,
+body .dp-choose-date,
 body .content .revert
 {
     text-decoration: none;
@@ -87,6 +88,7 @@ body .content .edit:active,
 body .content .remove:active,
 body .content .revision:active,
 body .content .revert:active,
+body .dp-choose-date:active,
 body button:active
 {
 	background-image: url('../static/button_bg_active.png');
@@ -98,6 +100,7 @@ body button:active
 .content .remove:hover,
 .content .revision:hover,
 .content .revert:hover,
+body .dp-choose-date:hover,
 button:hover
 {
 	background-image: url('../static/button_bg_hover.png');

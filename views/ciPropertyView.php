@@ -19,8 +19,9 @@ Value
 </th></tr>
 ";
         $idx = 0;
-		$property_list = array("chart.maxDepth" => "Maximum dependency depth",
-							   "chart.maxItems" => "Maximum number of matches in List views for which to draw a chart");
+        $property_list = array("chart.maxDepth" => "Maximum dependency depth",
+                               "chart.maxItems" => "Maximum number of matches in List views for which to draw a chart",
+                               "pager.itemsPerPage" => "Maximum number of items per page");
 		
         foreach($property_list as $name => $desc) {
             $value = Property::get($name);

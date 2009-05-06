@@ -99,6 +99,45 @@ class util
             rmdir($path);
         } 
 
+        function makePager($msg_count, $page_var='page') 
+        {
+            
+            $current_page = param($page_var, 1);
+            $item_count = Property::get('pager.itemsPerPage', 20);
+            
+            $pages = floor(($msg_count-1)/$item_count)+1;
+            
+            if ($pages > 1) {
+                
+                if($current_page != '1') {
+                    $pager .= "<a href='".makeUrl($page_var, null)."'>&#x226a;</a>&nbsp;&nbsp;";
+                    $pager .= "<a href='".makeUrl(array($page_var=>$current_page-1))."'>&lt;</a>&nbsp;&nbsp;";
+                }
+                else {
+                    $pager .= "&#x226a;&nbsp;&nbsp;&lt;&nbsp;&nbsp;";
+                }
+                
+                for( $i=1; $i <= $pages; $i++) {
+                    if($i == $current_page) {
+                        $pager .= "$i&nbsp;&nbsp;";
+                    }
+                    else {
+                        $pager .= "<a href='".makeUrl(array($page_var=>$i))."'>$i</a>&nbsp;&nbsp;";
+                    }
+                    
+                }
+                
+                if($current_page != $pages) {
+                    $pager .= "<a href='".makeUrl(array($page_var=>$current_page+1))."'>&gt;</a>&nbsp;&nbsp;";
+                    $pager .= "<a href='".makeUrl(array($page_var=>$pages))."'>&#x226b;</a>&nbsp;&nbsp;";
+                }
+                else {
+                    $pager .= "&gt;&nbsp;&nbsp;&#x226b;&nbsp;&nbsp;";
+                }
+            }
+            return $pager;
+        }
+         
 }
 
 function sprint_r($var)
@@ -301,45 +340,6 @@ $content
     </div>
 ";
      
-}
-
-function makePager($page_var, $msg_count) 
-{
-    $current_page = getParam($page_var, 1);
-    $log_count = PAGER_PAGES;
-   
-    $pages = floor(($msg_count-1)/$log_count)+1;
-
-    if ($pages > 1) {
-
-        if($current_page != '1') {
-            $pager .= "<a href='".makeUrl($page_var, null)."'>&#x226a;</a>&nbsp;&nbsp;";
-            $pager .= "<a href='".makeUrl(array($page_var=>$current_page-1))."'>&lt;</a>&nbsp;&nbsp;";
-        }
-        else {
-            $pager .= "&#x226a;&nbsp;&nbsp;&lt;&nbsp;&nbsp;";
-        }
-        
-        
-        for( $i=1; $i <= $pages; $i++) {
-            if($i == $current_page) {
-                $pager .= "$i&nbsp;&nbsp;";
-            }
-            else {
-                $pager .= "<a href='".makeUrl(array($page_var=>$i))."'>$i</a>&nbsp;&nbsp;";
-            }
-            
-        }
-
-        if($current_page != $pages) {
-            $pager .= "<a href='".makeUrl(array($page_var=>$current_page+1))."'>&gt;</a>&nbsp;&nbsp;";
-            $pager .= "<a href='".makeUrl(array($page_var=>$pages))."'>&#x226b;</a>&nbsp;&nbsp;";
-        }
-        else {
-            $pager .= "&gt;&nbsp;&nbsp;&#x226b;&nbsp;&nbsp;";
-        }
-    }
-    return $pager;
 }
 
 function logMessage()

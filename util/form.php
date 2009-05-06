@@ -31,7 +31,6 @@ class form
         
     }
 
-
     function makeColumnListEditor($column_id, $select_id, $table_id=null) 
     {
         static $column_list_counter=0;
@@ -70,10 +69,11 @@ class form
         
     }
     
-	function makeText($name, $value, $id=null) 
+    function makeText($name, $value, $id=null, $class=null) 
 	{
             $id_str = $id?'id="'.htmlEncode($id).'"':'';
-			return "<input $id_str size='32' name='".htmlEncode($name)."' value='".htmlEncode($value)."'>\n";		
+            $class_str = $class?'class="'.htmlEncode($class).'"':'';
+            return "<input $id_str $class_str size='32' name='".htmlEncode($name)."' value='".htmlEncode($value)."'>\n";		
 	}
 	
     
@@ -136,7 +136,22 @@ Iframes not supported by this browser.
             case CI_COLUMN_IFRAME:
             case CI_COLUMN_TEXT:
             case CI_COLUMN_EMAIL:
-					$res = form::makeText($name, $value, $id);
+                $res = form::makeText($name, $value, $id);
+                break;
+                
+            case CI_COLUMN_DATE:
+                $res = form::makeText($name, $value, $id);
+                $res .= '<script type="text/javascript">
+$(function()
+        {
+                $("#'.htmlEncode($id).'").datePicker(
+                        {
+                                startDate: "1970-01-01"
+                        }
+                );
+        }
+);
+</script>';
                 break;
                 
             case CI_COLUMN_TEXT_FORMATED:

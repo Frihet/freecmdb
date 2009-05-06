@@ -266,3 +266,10 @@ var dynamicIFrame = {
 		div.style.height = (dim[1]+30) + 'px';
 	}
 };
+
+function FreeCMDBInit()
+{
+    Date.format='yyyy-mm-dd';
+}
+
+FreeCMDBInit();
