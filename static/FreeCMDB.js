@@ -34,7 +34,7 @@ function stripe(id) {
 	var even = false;
 		
 	// obtain a reference to the desired tables
-	var table_list = (id != null) ? [$(id)] : $$('.striped');
+	var table_list = (id != null) ? $("#" + id) : $('.striped');
     
 	for(var tab=0; tab<table_list.length;tab++) {
 		
@@ -106,13 +106,13 @@ function submitAndReloadColumnList(task,columnId, rowId, itemId, tableId, select
 	if(task!='removeColumnListItem' || confirm("Are you sure?")){
 		var url = 'index.php?action=form&task=' + encodeURIComponent(task) + 
 			'&column_id=' + encodeURIComponent(columnId) +
-			'&value=' + encodeURIComponent($(itemId).value) +
+			'&value=' + encodeURIComponent($("#"+itemId)[0].value) +
 			'&id=' + encodeURIComponent(rowId);
 		new Ajax.Request(url, {
 			  onSuccess: function(transport) {
 		
 					var lines = transport.responseText.split('\n');
-					var sel = $(selectId);
+					var sel = $("#"+selectId)[0];
 		
 					while(sel.length>0) 
 					{
@@ -132,7 +132,7 @@ function submitAndReloadColumnList(task,columnId, rowId, itemId, tableId, select
 							 '&table_id=' + encodeURIComponent(tableId),
 							 {
 							   onSuccess: function(transport) {
-									 var oldTab = $(tableId);
+									 var oldTab = $("#"+tableId)[0];
 									 var parent = oldTab.parentNode;
 									 parent.removeChild(oldTab);
 									 parent.innerHTML = transport.responseText;
@@ -149,21 +149,21 @@ function installCheckFields() {
     var ok = true;
     fields = ['admin_username','admin_password','dsn'];
     for(var i =0; i<fields.length; i++) {
-	if ($(fields[i]).value == '') {
-	    $(fields[i] + '_error').innerHTML = "No value specified";
+	if ($("#"+fields[i])[0].value == '') {
+	    $("#"+fields[i] + '_error')[0].innerHTML = "No value specified";
 	    ok = false;
 	}
 	else {
-	    $(fields[i] + '_error').innerHTML = "";
+	    $("#"+fields[i] + '_error')[0].innerHTML = "";
 	}
     }
 
-    if ($('admin_password').value != $('admin_password2').value) {
-	$('admin_password2_error').innerHTML = "Passwords don't match";
+    if ($('#admin_password')[0].value != $('#admin_password2')[0].value) {
+	$('#admin_password2_error')[0].innerHTML = "Passwords don't match";
 	ok = false;
     }
     else {
-	$('admin_password2_error').innerHTML = "";
+	$('#admin_password2_error')[0].innerHTML = "";
     }
     return ok;
 }

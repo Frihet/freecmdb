@@ -13,7 +13,7 @@ define('CI_COLUMN_LIST', 2);
 define('CI_COLUMN_LINK_LIST', 3);
 define('CI_COLUMN_IFRAME', 4);
 define('CI_COLUMN_EMAIL', 5);
-
+define('CI_COLUMN_DATE', 5);
 
 class ciAction
 {

@@ -16,6 +16,7 @@ drop table ci_column_type;
 drop table ci_type;
 drop table ci_session;
 drop table ci_user;
+drop table ci_event;
 
 create table ci_user
 (
@@ -133,10 +134,6 @@ create table ci_graph_cache
 	key varchar(40) not null unique,
 	value varchar(32000) not null
 );
-
-create table ci_graph_dependency_type
-(
-	id serial not null primary key,
 
 create unique index ci_dependency_idx on ci_dependency (ci_id, dependency_id);
 create index ci_session_user_idx on ci_session (user_id);
