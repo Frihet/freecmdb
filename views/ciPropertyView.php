@@ -19,7 +19,8 @@ Value
 </th></tr>
 ";
         $idx = 0;
-        $property_list = array("chart.maxDepth" => "Maximum dependency depth",
+        $property_list = array("core.baseUrl"=>"Base URL (Only needed if using search engine friendly URLs)",
+                               "chart.maxDepth" => "Maximum dependency depth",
                                "chart.maxItems" => "Maximum number of matches in List views for which to draw a chart",
                                "pager.itemsPerPage" => "Maximum number of items per page");
 		

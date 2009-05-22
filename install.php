@@ -29,8 +29,8 @@ class FreeCMDBInstall
         <head>
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
                 <link rel="stylesheet" href="static/FreeCMDB.css" type="text/css" media="screen,projection" />
-                <script type="text/javascript" src="static/jquery.js"></script>
-                <script type="text/javascript" src="static/FreeCMDB.js"></script>
+                <script type="text/javascript" src="common/static/jquery.js"></script>
+                <script type="text/javascript" src="common/static/FreeCMDB.js"></script>
                 <title>Install FreeCMDB</title>
         </head>
         <body>

@@ -164,8 +164,6 @@ insert into ci_type (name,shape) values ('Router','triangle');
 
 insert into ci_column_type (name,type) values ('Uri',0);
 insert into ci_column_type (name,type) values ('Description',1);
-insert into ci_column_type (name,type) values ('Service owner',2);
-insert into ci_column_type (name,type) values ('Service responsible',2);
 insert into ci_column_type (name,type) values ('Links',0);
 insert into ci_column_type (name,type) values ('Name',0);
 insert into ci_column_type (name,type) values ('External information',4);
@@ -177,7 +175,7 @@ insert into ci_dependency_type(name, reverse_name, color)
 values ('Owned by','Owner of', 'red');
 
 insert into ci_dependency_type(name, reverse_name, color) 
-values ('Responsible for','Responsibility of', 'red');
+values ('Responsibility of','Responsible for', 'red');
 
 insert into ci_dependency_type(name, reverse_name, color) 
 values ('Redundant', '', 'green');

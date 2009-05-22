@@ -53,7 +53,7 @@ extends adminController
         if ($ok) {
             db::commit();
             message("Dependencies updated");
-            redirect(makeUrl(array('controller'=>'ciDependency','task'=>null)));
+            util::redirect(makeUrl(array('controller'=>'ciDependency','task'=>null)));
         } else {
             db::rollback();
             $this->viewRun();
@@ -96,7 +96,7 @@ extends adminController
 	    message("Dependency removed");
         }
 
-        redirect(makeUrl(array('controller'=>'ciDependency', 'task'=>'view', 'id'=>null)));
+        util::redirect(makeUrl(array('controller'=>'ciDependency', 'task'=>'view', 'id'=>null)));
     }
     
 

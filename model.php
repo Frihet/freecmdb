@@ -180,60 +180,6 @@ limit 10");
 }
 
 
-class dbItem
-{
-
-    /**
-     * Returns an array of all public properties of this object
-     * type. By convention, this is exactly the same as the list of
-     * fields in the database, and also the same thing as all fields
-     * whose name does not begin with an underscore.
-     */
-    function getPublicProperties() {
-        static $cache = null;
-        if (is_null( $cache )) {
-            $cache = array();
-            foreach (get_class_vars( get_class( $this ) ) as $key=>$val) {
-                if (substr( $key, 0, 1 ) != '_') {
-                    $cache[] = $key;
-                }
-            }
-        }
-        return $cache;
-    }
-
-    function initFromArray($arr)
-    {
-        $count = 0;
-        if ($arr) {
-            foreach ($this->getPublicProperties() as $key) {
-                if (array_key_exists($key, $arr)) {
-                    $this->$key = $arr[$key];
-                    $count ++;
-                }
-            }
-        }
-        
-        return $count;
-        
-    }
-    
-    function find($col_name, $col_value, $class_name, $table_name) 
-    {
-        $res = new $class_name();
-        $data = db::fetchRow("select * from $table_name where $col_name=:value",
-                             array(':value'=>$col_value));
-                
-        if (!$data) {
-            return null;
-        }
-        $res->initFromArray($data);
-        
-        return $res;
-    }
-        
-}
-
 class ciType
 {
     static $types=null;
@@ -1174,7 +1120,7 @@ from ci_dependency
                 }
 					
             list($id_arr_param, $id_arr_named) = db::in_list($param['id_arr']);
-            $where[] = "id in ($id_arr_param)";
+            $where[] = "ci_view.id in ($id_arr_param)";
             $db_param = array_merge($db_param, $id_arr_named);
         }
 
@@ -1236,9 +1182,10 @@ on cc.ci_id = ci_view.id and cc.ci_column_type_id = :column_type";
 					
             $db_param[':column_type'] = $filter[0];
         }
+        
         if (array_key_exists('filter_type', $param)) {
             $filter = $param['filter_type'];
-					
+            
             $where[] = "ci_type_id = :filter_type_id";
             $db_param[':filter_type_id'] = $filter;
         }
@@ -1258,10 +1205,15 @@ left join
 		from ci_log group by ci_id
 ) log 
 on log.ci_id = ci_view.id 
+left join ci_column default_column
+on ci_view.id = default_column.ci_id and default_column.ci_column_type_id = :default
 $join 
 $where_str
-order by id";
+order by default_column.value
+";
         
+        $db_param[':default'] = Property::get('ciColumn.default');
+                
         if(array_key_exists('count', $param)) {
             $query = "select count(*) from ($query) count_me";
             $res = db::fetchItem($query, $db_param);

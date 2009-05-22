@@ -57,7 +57,7 @@ extends AdminController
         }
         
         util::rmdir("./plugins/". $plugin_name);
-        redirect(makeUrl(array('task'=>'view' )));
+        util::redirect(makeUrl(array('task'=>'view' )));
 
         
     }
@@ -148,7 +148,7 @@ values
                     else {
                         db::commit();
                         message("No errors encountered!");
-                        redirect(makeUrl(array('task'=>'view' )));
+                        util::redirect(makeUrl(array('task'=>'view' )));
                         return;
                     }
                 }

@@ -17,7 +17,7 @@ extends adminController
 
 		db::commit();
 		message("Propertys updated");
-		redirect(makeUrl(array('controller'=>'ciProperty','task'=>null)));
+		util::redirect(makeUrl(array('controller'=>'ciProperty','task'=>null)));
 		
 	}
 

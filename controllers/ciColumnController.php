@@ -58,7 +58,7 @@ extends adminController
         if ($ok) {
             db::commit();
             message("Columns updated");
-            redirect(makeUrl(array('controller'=>'ciColumn','task'=>null)));
+            util::redirect(makeUrl(array('controller'=>'ciColumn','task'=>null)));
         } else {
             db::rollback();
             $this->viewRun();
@@ -97,7 +97,7 @@ extends adminController
 	    message("Column removed");
 	}
 	
-        redirect(makeUrl(array('controller'=>'ciColumn', 'task'=>'view', 'id'=>null)));
+        util::redirect(makeUrl(array('controller'=>'ciColumn', 'task'=>'view', 'id'=>null)));
     }
     
     

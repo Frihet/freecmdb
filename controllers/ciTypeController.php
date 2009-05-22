@@ -39,7 +39,7 @@ extends adminController
         if ($ok) {
             db::commit();
             message("Types updated");
-            redirect(makeUrl(array('controller'=>'ciType','task'=>null)));
+            util::redirect(makeUrl(array('controller'=>'ciType','task'=>null)));
         } else {
             db::rollback();
             $this->viewRun();
@@ -77,7 +77,7 @@ extends adminController
             error("CI type could not be found, not removed.");
         }
         
-        redirect(makeUrl(array('controller'=>'ciType', 'task'=>null,'id'=>null)));
+        util::redirect(makeUrl(array('controller'=>'ciType', 'task'=>null,'id'=>null)));
     }
     
 

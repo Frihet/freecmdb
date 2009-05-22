@@ -341,7 +341,7 @@ extends View
         $dep=$reverse?'&mode=dependants':'';
         $title = htmlEncode($caption);
 
-        $url = "chart.php?id={$ci->id}{$dep}{$revision_str}";
+        $url = util::getPath()."chart.php?id={$ci->id}{$dep}{$revision_str}";
         
         $c = new ciChart($ci, 
                          $reverse,

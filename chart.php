@@ -4,8 +4,9 @@
   */
 
 require_once("config.php");
-require_once("util/util.php");
-require_once("util/db.php");
+require_once("common/util/util.php");
+require_once("common/util/db.php");
+require_once("common/model.php");
 require_once("model.php");
 require_once("ciChart.php");
 

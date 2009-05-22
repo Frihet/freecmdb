@@ -30,7 +30,7 @@ extends Controller
 	    $ci->addDependency($other_id, $type_id);
 	    message("Dependency added");
 	}
-        redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
+        util::redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
 
     function removeDependencyRun()
@@ -39,7 +39,7 @@ extends Controller
         $ci = $this->getCi();
         $ci->removeDependency($other_id);
         message("Dependency removed");
-        redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
+        util::redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
 
     function removeDependantRun()
@@ -49,7 +49,7 @@ extends Controller
         $ci = $ci_list[$other_id];
         $ci->removeDependency($this->id);
         message("Dependant removed");
-        redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
+        util::redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
     
     function updateField($key, $value)
@@ -76,7 +76,7 @@ extends Controller
         
         message('CI updated');
         
-        redirect(makeUrl(array('task'=>null, 'key'=>null, 'value' => null)));
+        util::redirect(makeUrl(array('task'=>null, 'key'=>null, 'value' => null)));
     }
     
     function createRun()
@@ -88,7 +88,7 @@ extends Controller
         $this->id = $_GET['id'] = $id;
 
         message('CI created');
-        redirect(makeUrl(array('task'=>'edit', 'key'=>null, 'value' => null, 'id' => $id)));
+        util::redirect(makeUrl(array('task'=>'edit', 'key'=>null, 'value' => null, 'id' => $id)));
     }
     
     function getCi() 
@@ -121,7 +121,7 @@ extends Controller
         }
         db::commit();
         message('Fields updated');
-        redirect(makeUrl($arr));
+        util::redirect(makeUrl($arr));
     }
     
     function removeRun()
@@ -134,7 +134,7 @@ extends Controller
             error('Could not remove CI, not found.');
         }
         
-        redirect(makeUrl(array('id'=>null, 'controller'=>'ciList', 'task'=>null)));
+        util::redirect(makeUrl(array('id'=>null, 'controller'=>'ciList', 'task'=>null)));
     }
     
     function makePopupForm($field_name, $input, $input_id, $popup_id)
@@ -201,7 +201,7 @@ select ci_id, :new_id, dependency_type_id
 from ci_dependency 
 where dependency_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new));
         
-        redirect(makeUrl(array('id'=>$id_new, 'task'=>null)));
+        util::redirect(makeUrl(array('id'=>$id_new, 'task'=>null)));
 	
         /*
          FIXME: Update default column with shiny new value, e.g. append (copy) to it or something...
@@ -264,15 +264,15 @@ order by cl2.create_time desc;',
         if ($ok) {
             db::commit();
             if (!$delete) {
-                redirect(makeUrl(array('task'=>null, 'revision_id'=>null)));
+                util::redirect(makeUrl(array('task'=>null, 'revision_id'=>null)));
             }
             else {
-                redirect(makeUrl(array('task'=>null, 'to_revision_id'=>null, 'controller' => 'ciList', 'id'=>null)));
+                util::redirect(makeUrl(array('task'=>null, 'to_revision_id'=>null, 'controller' => 'ciList', 'id'=>null)));
             }
         }
         else {
             db::rollback();
-            redirect(makeUrl(array('task'=>'history','to_revision_id'=>null)));
+            util::redirect(makeUrl(array('task'=>'history','to_revision_id'=>null)));
         }
     }
     

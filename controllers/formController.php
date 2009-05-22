@@ -10,10 +10,7 @@ extends Controller
     {
         $column_id=param('column_id');
         $value=param('value');
-        
-        
         ciColumnList::addItem($column_id, $value);
-                
         $this->viewRun();
     }
 
@@ -36,16 +33,18 @@ extends Controller
     function viewRun()
     {
         ob_end_clean();
+        $foo = new stdClass();
+        $foo->lines = array();
+        
         foreach(ciColumnList::getItems(param('column_id')) as $id => $name) {
-            echo "$id\t$name\n";
+            $it = new stdClass();
+            $it->name = $name;
+            $it->id = $id;
+            $foo->lines[] = $it;
         }
-        exit(0);
-    }
 
-    function fetchListTableRun()
-    {
-        ob_end_clean();
-        echo form::makeColumnListEditor(param('column_id'), param('select_id'), param('table_id'));
+        $foo->table = form::makeColumnListEditor(param('column_id'), param('select_id'), param('table_id'));
+        echo json_encode($foo);
         exit(0);
     }
 

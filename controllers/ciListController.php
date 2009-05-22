@@ -174,10 +174,9 @@ $val
 		    $content .= $this->makeChart($ci_list);
 		}
 		
-		$this->show(array(makeLink("?controller=ci&amp;task=create", "Create new item", null),
-                                  makeLink("?task=recentlyDeleted", "View recently deleted items", null)), 
+		$this->show(array(makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), "Create new item", null),
+                                  makeLink(makeUrl(array("task" => "recentlyDeleted")), "View recently deleted items", null)), 
 			    $content);
-
 	}
 
         function recentlyDeletedRun()
@@ -193,11 +192,12 @@ $val
 		{
 		    $highlight_str .= "&highlight[]=" . $ci->id;
 		}
-						
+
+                $url = util::getPath()."chart.php?full=yes$highlight_str";
 		return "
 <div class='figure'>
-<object data='chart.php?full=yes$highlight_str' type='image/svg+xml'>
-<img src='chart.php?full=yes&format=png$highlight_str'/>
+<object data='$url' type='image/svg+xml'>
+<img src='$url&format=png'/>
 </object>
 <span class='caption'>All CIs and their dependencies</span>
 </div>
