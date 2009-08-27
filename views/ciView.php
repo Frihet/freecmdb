@@ -4,6 +4,175 @@ class ciView
 extends View
 {
 
+    function makeInput($ci_id, $name, $value, $column_id, $read_only=false, $id=null) 
+    {
+        $type = ciColumnType::get($column_id);
+
+        $res = "";
+        
+        if($type->prefix != "")
+            $res .= $type->prefix . "&nbsp;";
+        
+        if ($read_only) {
+            if($value == null) {
+                $res .= "&lt;empty&gt;";    
+            }
+            else {
+                
+            switch($type->type) {
+		case CI_COLUMN_TEXT_FORMATED:
+		    $res .= $value; /* We should plug in a filter to disallow weird html here, but it's not a top priority item. */
+		    break;
+                    
+                case CI_COLUMN_FILE:
+                    $res .= makeLink(makeUrl(array("controller"=>"download", "column_id"=>$column_id, "ci_id" => $ci_id)), $value);
+                    break;
+                    		    
+		case CI_COLUMN_IFRAME:
+		    if ($value == null || $value == '') 
+		    {
+			break;
+		    }
+		    
+		    if ($id == null) 
+		    {
+			$id = "form_iframe_" . form::$iframe_id;
+			form::$iframe_id++;
+		    }
+		    $res .= "
+<iframe class='freecmdb_iframe'
+    id='".htmlEncode($id)."' name='".htmlEncode($id)."'
+    src='".htmlEncode($value)."'
+    onload='dynamicIFrame.resize(\"".htmlEncode($id)."\")'
+    scrolling='no'>
+Iframes not supported by this browser.
+</iframe>";
+		    
+		    break;
+		    
+		case CI_COLUMN_LIST:
+		    if ($res != null) {
+                        $res .= ciColumnList::getName($value);
+		    }
+                    else {
+                        $res = htmlEncode("<invalid value>");
+		    }
+		    break;
+		    
+		case CI_COLUMN_EMAIL:
+		    $ev = htmlEncode($value);
+		    $res .= "<a href='mailto:$ev'>$ev</a>";
+		    break;
+                    
+		default:
+		    $res .= htmlEncode($value);
+		    break;
+            }
+            }
+            
+        }
+        else {
+            
+            $id_str = $id?'id="'.htmlEncode($id).'"':'';
+            
+            switch($type->type) {
+            case CI_COLUMN_IFRAME:
+            case CI_COLUMN_TEXT:
+            case CI_COLUMN_EMAIL:
+                $res .= form::makeText($name, $value, $id);
+                break;
+
+            case CI_COLUMN_FILE:
+                $res .= form::makeFile($name, $id);
+                break;
+                                
+            case CI_COLUMN_DATE:
+                $res .= form::makeText($name, $value, $id);
+                $res .= '<script type="text/javascript">
+$(function()
+        {
+                $("#'.htmlEncode($id).'").datePicker(
+                        {
+                                startDate: "1970-01-01"
+                        }
+                );
+        }
+);
+</script>';
+                break;
+                
+            case CI_COLUMN_TEXT_FORMATED:
+                /*
+                 Put our editor in a div with a hard coded width, and hard code the width here, not in the css. 
+                */
+                $res .= "\n<textarea style='height: 250pt; width: 400pt;' class='rich_edit' cols='64' rows='16' $id_str name='".htmlEncode($name)."'>".htmlEncode($value)."</textarea>";
+                break;
+            case CI_COLUMN_LIST:
+                /*
+                 We _need_ an id here to update the select in the ajax code. Create one if not provided.
+                */
+                if (!$id) {
+                    static $temp_id=0;
+                    $id = "temp_id_" . ($temp_id++);
+                }
+                
+                $res .= form::makeSelect($name, ciColumnList::getItems($column_id), $value, $id);
+                $res .= makePopup("Edit item list", "More...", self::makeColumnListEditor($column_id, $id), "edit" );
+                
+                break;
+                
+            default:
+                $res .= htmlEncode($value);
+                break;
+                
+            }
+        }
+
+        if($type->suffix != "")
+            $res .= "&nbsp;". $type->suffix;
+        return $res;
+    }
+
+
+    function makeColumnListEditor($column_id, $select_id, $table_id=null) 
+    {
+        static $column_list_counter=0;
+
+        if($table_id === null) {
+            $table_id = 'column_list_input_' . ($column_list_counter++);
+        }
+        
+        $res = "<table class='striped' id='$table_id'>
+<tr>
+<th>Name</th>
+<th></th>
+</tr>
+";
+	
+        foreach(ciColumnList::getItems($column_id) as $id => $name) {
+            $item_id = $table_id . "_" . ($column_list_counter++);
+            $remove = "
+<button type='button' onclick='submitAndReloadColumnList(\"removeColumnListItem\",\"$column_id\", $id, \"$item_id\", \"$table_id\", \"$select_id\")'>Remove</button>
+";
+            $update = "
+<button type='button' onclick='submitAndReloadColumnList(\"updateColumnListItem\",\"$column_id\", $id, \"$item_id\", \"$table_id\", \"$select_id\")'>Update</button>
+";
+            $res .= "<tr><td>".self::makeInput($item_id, $name, null, false, $item_id). "</td><td>$update $remove</td></tr>";
+        }
+
+        $item_id = $table_id . "_" . ($column_list_counter++);
+        
+        $add = "
+<button type='button' onclick='submitAndReloadColumnList(\"addColumnListItem\",\"$column_id\", null, \"$item_id\", \"$table_id\", \"$select_id\")'>Add</button>
+";
+        $res .= "<tr><td>".self::makeInput($item_id, '', null, false, $item_id )."</td><td>" . $add . "</td></tr>";
+        
+        $res .= "</table>";
+        return $res;
+        
+    }
+    
+
     function render($controller) 
     {
         $ci = $controller->getCi();
@@ -36,40 +205,35 @@ extends View
 	}
 	
         util::setTitle("$action_str " . $ci->getDescription());
+
+        $form = "";
         
-        if ($edit) {
-            $content .= "<form accept-charset='utf-8' method='post' action='index.php'>";
-            $content .= "<input type='hidden' name='controller' value='ci'>";
-            $content .= "<input type='hidden' name='task' value='saveAll'>";
-            $content .= "<input type='hidden' name='id' value='".$controller->id."'>";
-        }
-				
-        $content .= "
+        $form .= "
 <table class='striped ci_table'>";
 				
-        $content .= "<tr><th>Type</th><td>";
+        $form .= "<tr><th>Type</th><td>";
 				
         $type_select = form::makeSelect('type', ciType::getTypes(), $ci->ci_type_id,'type_select');
 				
         
         if ($edit) {
-            $content .= $type_select;
+            $form .= $type_select;
         }
         else {
-            $content .= $ci->type_name;
-            $content .= "</td><td>";
+            $form .= $ci->type_name;
+            $form .= "</td><td>";
             if (!$is_readonly) {
                 static $type_popup_form_id=0;
                 $type_popup_id = "type_popup_form_$type_popup_form_id";
                 $type_popup_form_id++;
                 
-                $form = $controller->makePopupForm('type',$type_select, 'type_select', $type_popup_id);            
-                $content .= makePopup("Change CI type", "Edit", $form, 'edit', 'Change type of this ci', $type_popup_id);
+                $sub_form = $controller->makePopupForm('type',$type_select, 'type_select', $type_popup_id);            
+                $form .= makePopup("Change CI type", "Edit", $sub_form, 'edit', 'Change type of this ci', $type_popup_id);
             }
             
         }
         
-        $content .= "</td></tr>\n";
+        $form .= "</td></tr>\n";
         
         foreach($ci->_ci_column as $key => $value) {
 
@@ -78,68 +242,70 @@ extends View
 		!$revision) {
 		continue;
 	    }
-						
 
-            $content .= "<tr>";
-            $content .= "<th>";
+            $value = param("value_$key", $value);
+            
+            $form .= "<tr>";
+            $form .= "<th>";
             if ($edit) {
-                $content .= "<label for='value_$key'>";
-                $content .= ciColumnType::getName($key);
-                $content .= "</label>";
+                $form .= "<label for='value_$key'>";
+                $form .= ciColumnType::getName($key);
+                $form .= "</label>";
                 
             }
             else {
-                $content .= ciColumnType::getName($key);
+                $form .= ciColumnType::getName($key);
             }
-            $content .= "</th><td>";
+            $form .= "</th><td>";
             if ($edit) {
-                $content .= form::makeInput("value_$key", $value, $key, false, "value_$key");
+                $form .= self::makeInput($ci->id, "value_$key", $value, $key, false, "value_$key");
             }
             else {
 								
-                if (!$value) {
-                    $content .= "&lt;empty&gt;";
-                }
-                else {
-                    $content .= form::makeInput('value', $value, $key, true, "display_$key");
-                }
-                
-                $content .= "</td><td>";
+                $form .= self::makeInput($ci->id, 'value', $value, $key, true, "display_$key");
+                                
+                $form .= "</td><td>";
                 
                 if (!$is_readonly) {
                     static $column_popup_form_id=0;
                     $column_popup_id = "column_popup_form_$column_popup_form_id";
                     $column_popup_form_id++;
 										
-                    $form = $controller->makePopupForm($key,  form::makeInput('value', $value, $key, false, "value_$key"), "value_$key", $column_popup_id);
-                    $content .= makePopup("Edit " . ciColumnType::getName($key), "Edit", $form, 'edit', 'Edit this CI field', $column_popup_id);
+                    $sub_form = $controller->makePopupForm($key,  self::makeInput($ci->id, 'value', $value, $key, false, "value_$key"), "value_$key", $column_popup_id);
+                    $form .= makePopup("Edit " . ciColumnType::getName($key), "Edit", $sub_form, 'edit', 'Edit this CI field', $column_popup_id);
                 }
             }
             
-            $content .= "</td></tr>";
+            $form .= "</td></tr>";
         }
         
         if (!$edit) {
             
-            $content .= $this->makeDependencies($controller, $ci, $revision, $is_readonly);
-						
-        }
-
-		$content .= implode("",$controller->getContent("ci_table"));
-
-        
-        $content .= "</table>\n";
-    
-        if ($edit) {
-            $content .= "
-<div class='button_list'>
-<button>Save</button>
-</form>
-</div>
-";
+            $form .= $this->makeDependencies($controller, $ci, $revision, $is_readonly);
             
         }
-
+        //echo "lalala" . htmlEncode($form);
+        
+        $form .= implode("",$controller->getContent("ci_table"));
+        
+        $form .= "</table>\n";
+    
+        if ($edit) {
+            $form .= "
+<div class='button_list'>
+<button>Save</button>
+</div>
+";
+            $content .= form::makeForm($form, array('controller' =>'ci',
+                                                    'task'=>'saveAll',
+                                                    'id'=>$controller->id), 
+                                       "post", true);
+            
+        }
+        else {
+            $content .= $form;
+        }
+        
         if (!$edit && !$is_readonly) {
             $content .= $this->makeIframes($controller);
 						
@@ -175,12 +341,11 @@ extends View
                     $iframe_popup_id = "iframe_popup_form_$iframe_popup_form_id";
                     $iframe_popup_form_id++;
 								
-                    $form = $controller->makePopupForm($key,  form::makeInput('value', $value, $key, false, "value_$key"), "value_$key", $iframe_popup_id);
+                    $form = $controller->makePopupForm($key,  self::makeInput($ci->id, 'value', $value, $key, false, "value_$key"), "value_$key", $iframe_popup_id);
                     $content .= makePopup("Edit " . ciColumnType::getName($key), "Edit", $form, 'edit', 'Edit this CI field', $iframe_popup_id);
 								
                     $content .= "</div>\n";
-                    $content .= form::makeInput('value', $value, $key, true, "iframe_$key");
-								
+                    $content .= self::makeInput($ci->id, 'value', $value, $key, true, "iframe_$key");
 								
                 }
         }
@@ -297,6 +462,7 @@ extends View
 	    
             $form .= "</td><td><button type='submit'>Add</button>\n";
             $form .= "</td></tr>";
+            
             $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$controller->id));
         }
 				

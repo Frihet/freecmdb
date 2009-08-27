@@ -34,25 +34,29 @@ extends adminController
         $ok = true;
 	
         db::begin();
+        $default = null;
         
-        $new_id = $this->createColumn();
-        $ok &= ($new_id !== false);
-	
-	for ($idx=0;param("id_$idx")!==null;$idx++) {
-            $ok &= $this->updateColumn(param("id_$idx"),
-                                       param("type_$idx"),
-                                       param("name_$idx"),
-                                       param("ci_type_$idx"));
+        foreach(param("column", array()) as $column) {
+            
+            $obj = new CiColumnType($column);
+            if($obj->ci_type_id == '') {
+                $obj->ci_type_id = null;
+            }
+            
+            if($obj->name != "") {
+                $ok &= $obj->save();
+                
+                if($obj->_default) {
+                    $default = $obj->id;
+                }
+                
+            }
         }
         
-        if ($ok) {
-            $default = param('default');
-            if (($default == 'new' && $new_id !== false && $new_id !== true) || $default >= 0) {
-                Property::set("ciColumn.default",$default=="new"?$new_id:$default);
-            } else {
-                error("Invalid default column");
-                $ok = false;
-            }
+        if ($ok && $default !== null) {
+            message("Set def to $default");
+            
+            Property::set("ciColumn.default",$default);
         }
 	
         if ($ok) {

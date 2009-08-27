@@ -9,7 +9,7 @@ extends Application
     function __construct()
     {
         $this->addScript('static/FreeCMDB.js');
-        //        $this->addStyle('static/FreeCDMB.css');
+        $this->addStyle('static/FreeCDMB.css');
     }
     
     
@@ -64,5 +64,7 @@ util::$path = Property::get("core.baseUrl","");
 
 $app = new MyApp();
 $app->main();
+
+
 
 ?>

@@ -81,11 +81,10 @@ extends AdminController
         }
             
             
-        if(!mkdir("./plugins/". $plugin_name)) {
+        if(!@mkdir("./plugins/". $plugin_name)) {
             error("Could not create new directory for plugin. You probably need to set up the file permissions so that the web server can write to the plugins directory.");
             return;
         }
-            
             
         system("unzip >/dev/null -d plugins/$plugin_name " . escapeshellarg($_FILES['package_file']['tmp_name']), $status);
         if ($status !== 0) {

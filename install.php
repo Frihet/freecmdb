@@ -1,5 +1,16 @@
 <?php
 
+
+class MyInstallApp
+extends InstallApplication
+{
+}
+
+$app = new MyInstallApp();
+$app->main();
+if( false )
+{
+    
   /**
    Protection against bad includes.
   */
@@ -274,5 +285,6 @@ define('DB_DSN', '".addSlashes(param('dsn',''))."');
 
 $cmdb = new FreeCMDBInstall();
 $cmdb->main();
+}
 
 ?>

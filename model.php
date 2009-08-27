@@ -14,6 +14,7 @@ define('CI_COLUMN_LINK_LIST', 3);
 define('CI_COLUMN_IFRAME', 4);
 define('CI_COLUMN_EMAIL', 5);
 define('CI_COLUMN_DATE', 6);
+define('CI_COLUMN_FILE', 7);
 
 class ciAction
 {
@@ -27,7 +28,6 @@ class ciAction
                     CI_ACTION_REMOVE_DEPENDENCY => 'Removed dependency');
         return $desc[$id];
     }
-    
     
 }
 
@@ -107,7 +107,7 @@ values
 (
         now(), :ci_id, :action, :user_id
 )";
-            $param = array(':ci_id'=>$ci_id, ':action'=>$action, ':user_id'=>ciUser::$me->id);
+            $param = array(':ci_id'=>$ci_id, ':action'=>$action, ':user_id'=>ciUser::$_me->id);
             db::query($query, $param);
             break;
             
@@ -120,7 +120,7 @@ insert into ci_log
 select now(), :ci_id, :action, ci_type_id, :user_id
 from ci
 where id = :ci_id";
-            $param = array(':ci_id'=>$ci_id, ':action'=>$action, ':user_id'=>ciUser::$me->id);
+            $param = array(':ci_id'=>$ci_id, ':action'=>$action, ':user_id'=>ciUser::$_me->id);
             db::query($query, $param);
             break;
             
@@ -134,7 +134,7 @@ select now(), :ci_id, :action, :column_id, value, :user_id
 from ci_column_view
 where id = :ci_id and column_type_id = :column_id";
 
-            $param = array(':ci_id'=>$ci_id, ':action'=>$action, ':column_id'=>$arg, ':user_id'=>ciUser::$me->id);
+            $param = array(':ci_id'=>$ci_id, ':action'=>$action, ':column_id'=>$arg, ':user_id'=>ciUser::$_me->id);
             db::query($query, $param);
             
             break;
@@ -155,7 +155,7 @@ values
 			   ':action'=>$action, 
 			   ':dependency_id'=>$arg, 
 			   ':dependency_type_id'=>$arg2, 
-			   ':user_id'=>ciUser::$me->id);
+			   ':user_id'=>ciUser::$_me->id);
             db::query($query, $param);
             break;
         }
@@ -343,26 +343,41 @@ and ci_column_type_id=:column_id";
 
 
 class ciColumnType
+extends dbItem
 {
-    static $id_lookup=null;
-    static $name_lookup=null;
-    static $type_lookup=null;
-    static $ci_type_lookup=null;
+    public $id;
+    public $type;
+    public $name;
+    public $pattern;
+    public $prefix;
+    public $suffix;
+    public $ci_type_id;
+
+    public $_default;
+    
+    static $_id_lookup=null;
+    static $_name_lookup=null;
+
+    function __construct($param=null) 
+    {
+        $this->table = 'ci_column_type';
+        dbItem::__construct($param);
+    }
 
     function getId($name) 
     {
         ciColumnType::load();
-        return ciColumnType::$id_lookup[$name];
+        return ciColumnType::$_name_lookup[$name]->id;
         
     }
-
+    /*
     function create($name, $type, $ci_type) 
     {
         db::query("insert into ci_column_type (name, type, ci_type_id) values (:name, :type, :ci_type)",
                   array(':name'=>$name, ':type'=>$type, ':ci_type'=>$ci_type));
         return db::count()?db::lastInsertId("ci_column_type_id_seq"):false;
     }
-        
+      
     function update($id, $name, $type, $ci_type_id, $deleted) 
     {
         $val = array();
@@ -385,35 +400,48 @@ class ciColumnType
                   $param);
         return !!db::count();
     }
-	
+    */	
     
     function getName($id)
     {
         ciColumnType::load();
-        return ciColumnType::$name_lookup[$id];
+        return ciColumnType::$_id_lookup[$id]->name;
     }
 
     function getType($id)
     {
         ciColumnType::load();
-        return ciColumnType::$type_lookup[$id];
+        return ciColumnType::$_id_lookup[$id]->type;
     }
+
+    function get($id)
+    {
+        ciColumnType::load();
+        return ciColumnType::$_id_lookup[$id];
+    }
+
+
 
     function getCiType($id)
     {
         ciColumnType::load();
-        return ciColumnType::$ci_type_lookup[$id];
+        return ciColumnType::$_id_lookup[$id]->ci_type_id;
     }
 
     function getColumns($include_none = false)
     {
         ciColumnType::load();
-        if ( $include_none) 
-            {
-                return array(-1 => 'Any') +ciColumnType::$name_lookup;
-            }
-		
-        return ciColumnType::$name_lookup;
+        $arr = array();
+        foreach(ciColumnType::$_name_lookup as $id => $it){
+            $arr[$id] = $it->name;
+        }
+        //message($arr);
+        
+        if ($include_none) {
+            return array(-1 => 'Any') +$arr;
+        }
+        
+        return $arr;
     }
     
     function getTypes()
@@ -423,23 +451,23 @@ class ciColumnType
                      CI_COLUMN_LIST=>'List',
                      CI_COLUMN_EMAIL=>'Email address',
                      CI_COLUMN_DATE=>'Date picker',
+                     CI_COLUMN_FILE=>'File',
                      CI_COLUMN_IFRAME=>'IFrame'/*
                                                 CI_COLUMN_LINK_LIST=>'List of links'*/);
     }
     
     function load()
     {
-        if (ciColumnType::$id_lookup != null) {
+        if (ciColumnType::$_id_lookup != null) {
             return;
         }
         
-        foreach(db::fetchList("select * from ci_column_type where deleted=false order by name") as $row) {
-            ciColumnType::$id_lookup[$row['name']] = $row['id'];
-            ciColumnType::$name_lookup[$row['id']] = $row['name'];
-            ciColumnType::$type_lookup[$row['id']] = $row['type'];
-            ciColumnType::$ci_type_lookup[$row['id']] = $row['ci_type_id'];
+        $obj = new CiColumnType();
+
+        foreach($obj->findAll() as $row){
+            ciColumnType::$_id_lookup[$row->id] = $row;
+            ciColumnType::$_name_lookup[$row->name] = $row;
         }
-        
     }
 
 }
@@ -664,6 +692,18 @@ and ci_column_type_id=:key
                 
     function set($key, $value) 
     {
+        $type = ciColumnType::get($key);
+        if ($type->pattern != "") {
+            $p = $type->pattern;
+            if ( preg_match("/$p/", $value) == 0) {
+                error("Value $value illegal for column " . $type->name);
+                return false;
+                
+            }
+            
+        }
+        
+
         db::begin();
         log::add($this->id, CI_ACTION_CHANGE_COLUMN, $key);
 		
@@ -693,6 +733,75 @@ values
             $res = db::query($query, $arr);
             
         }
+        db::commit();
+        return !!db::count();
+        
+    }
+
+    function setFile($key, $value) 
+    {
+        $e = $value['error'];
+        if($e == UPLOAD_ERR_NO_FILE) {
+            //No file specified, not a problem! Just do nothing...
+            return true;            
+        }
+        
+        if($e != UPLOAD_ERR_OK ) {
+            $type = ciColumnType::get($key);
+            $tn = $type->name;
+            error("Invalid file in field $tn!");
+            message($value);
+            
+            return false;
+        }
+        
+        $this->set($key, $value['name']);
+        
+        db::begin();
+        
+        $query = "
+update ci_column_file
+set value=:value, type=:type
+where ci_id=:id
+and ci_column_type_id=:key
+";
+        
+        $fd = fopen($value["tmp_name"],"rb");
+
+        if(!$fd) {
+            error("Could not open sent file");
+            db::rollback();
+            
+            return false;
+        }
+               
+        $arr = array(':key'=>$key,
+                     ':value'=>$fd,
+                     ':type'=>$value["type"], 
+                     ':id'=>$this->id);
+        $res = db::query($query, $arr);
+        $count = db::count();
+        if (!$count) {
+            $query = "
+insert into ci_column_file
+(
+        ci_id,
+        ci_column_type_id,
+        value,
+        type
+)
+values
+(
+        :id,
+        :key,
+        :value,
+        :type
+)";
+            $res = db::query($query, $arr);
+            
+        }
+        
+
         db::commit();
         return !!db::count();
         
@@ -731,6 +840,16 @@ values
     {
         return $this->_ci_column[ciColumnType::getId($name)];
     }
+
+    function getFile($name)
+    {
+        return db::fetchItem("
+select value 
+from ci_column_file 
+where ci_id=:ci_id and ci_column_type_id = :type:id",
+                             array(":ci_id"=>$this->id,
+                                   ":type_id"=>ciColumnType::getId($name)));
+    }
     
     function getDescription($long=true) 
     {
@@ -757,9 +876,9 @@ and ci_id = :my_id";
         if ($res && $res->rowCount()) {
             log::add($this->id, CI_ACTION_REMOVE_DEPENDENCY, $other_id, $type);
         }
-
+        
 	db::commit();
-	
+        
     }
     
     function addDependency($other_id,$type_id) 
@@ -780,9 +899,8 @@ values (:my_id, :other_id, :type_id)
     
     function getDependencies($type=null) 
     {
-        if($this->_dependencies === null) 
-	{
-	    $this->_dependencies = ci::_getDependencies(array($this->id), true);
+        if($this->_dependencies === null) {
+            $this->_dependencies = ci::_getDependencies(array($this->id), true);
 	}
 	$res = $this->_dependencies;
 	if ($type != null )
@@ -1110,7 +1228,6 @@ from ci_dependency
         $limit = "";
         $offset = "";
         $join = "";
-			
         
         if (array_key_exists('id_arr', $param)) {
             if (count($param['id_arr'])==0) 
@@ -1276,22 +1393,66 @@ order by name", $col_id_arr_named);
 class ciUser
 extends dbItem
 {
-    static $me;
+    static $_me;
     var $id;
     var $username;
     var $fullname;
-    var $password;
+    //var $password;
     var $email;
-    var $deleted;
+    //var $deleted;
     
     function init()
     {
-        ciUser::$me = new ciUser();
+        ciUser::$_me = new ciUser();
         $user_list = db::fetchList('select * from ci_user limit 1');
-        ciUser::$me->initFromArray($user_list[0]);
+        ciUser::$_me->initFromArray($user_list[0]);
         return true;
     }
+
+    function __construct($data=null)
+    {
+        $this->table = "ci_user";
+        
+        if($data) {
+            dbItem::__construct($data);
+        }
+    }
     
+    function findAll()
+    {
+        return dbItem::findAll("ciUser","ci_user");
+    }
+        
+}
+
+class ciUserGroup
+extends dbItem
+{
+    var $id;
+    var $name;
+    
+    static $_user_map;
+    
+    function __construct($data=null)
+    {
+        $this->table = "ci_user_group";
+        
+        if($data) {
+            dbItem::__construct($data);
+        }
+    }
+    
+    function findAll()
+    {
+        return dbItem::findAll("ciUserGroup","ci_user_group");
+    }
+    
+    function getMembers()
+    {
+        //        self::load();
+        
+    }
+
 }
 
 
@@ -1400,6 +1561,7 @@ class Event
                 
                 $method_str = $name."Handler";
                 util::loadClass($class_str);
+        
                 
                 eval("$class_str::$method_str(\$param);");
             }

@@ -36,7 +36,7 @@ function main()
     }
 }
 
-db::init(DB_DSN) || die("The site is down. Reason: Could not connect to the database.");
+db::init(FC_DSN_DEFAULT) || die("The site is down. Reason: Could not connect to the database.");
 db::query("set client_encoding to \"utf8\"");
 
 ciUser::init();

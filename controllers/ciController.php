@@ -67,16 +67,29 @@ extends Controller
         }
     }
     
+    function updateFieldFile($key, $value)
+    {
+        $ci = new ci();
+        $ci->id=param('id');
+        if ($value !== null) {
+            return $ci->setFile($key, $value);
+        } else {
+            return $ci->deleteValueFile($key);
+        }
+    }
+    
     function updateFieldRun()
     {
         $key = param('key');
-        $value = param('value');
-        
-        $this->updateField($key, $value);
+        if(array_key_exists('value', $_FILES)){
+            $this->updateFieldFile($key, $_FILES['value']);            
+        } else {
+            $value = param('value');
+            $this->updateField($key, $value);
+        }
         
         message('CI updated');
-        
-        util::redirect(makeUrl(array('task'=>null, 'key'=>null, 'value' => null)));
+        util::redirect(makeUrl(array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'key'=>null, 'value' => null)));
     }
     
     function createRun()
@@ -105,23 +118,45 @@ extends Controller
     {
         $arr = array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'dependency_id'=>null);
         db::begin();
+        $ok = true;
+        
         foreach($_REQUEST as $key => $value) {
             $prefix = substr($key, 0, 6);
             $suffix = substr($key, 6);
             if ($prefix == 'value_') {
-                $this->updateField($suffix, $value);
+                $ok &= $this->updateField($suffix, $value);
                 $arr[$key] = null;
             }
         }
+
+        foreach($_FILES as $key => $value) {
+            $prefix = substr($key, 0, 6);
+            $suffix = substr($key, 6);
+            if ($prefix == 'value_') {
+                $ok &= $this->updateFieldFile($suffix, $value);
+                $arr[$key] = null;
+            }
+        }
+        
+
         $type_id = param('type');
         if ($type_id) {
             db::query('update ci set ci_type_id=:type_id where id=:id',
                       array(':type_id'=>$type_id,':id'=>param('id')));
 
         }
-        db::commit();
-        message('Fields updated');
-        util::redirect(makeUrl($arr));
+        if( $ok) {
+            db::commit();
+            message('Fields updated');
+            util::redirect(makeUrl($arr));
+        }
+        else {
+            db::rollback();
+            error('Fields not updated');
+            $_REQUEST['task'] = 'edit';
+            $this->viewRun();
+        }
+        
     }
     
     function removeRun()
@@ -144,7 +179,7 @@ extends Controller
         $form .= "</p><p><button type='submit'>Save</button> ";
         $form .= "<button type='button' onclick='popupHide(\"$popup_id\")'>Cancel</button></p>";
         
-        return form::makeForm($form, array('task'=>'updateField','controller'=>'ci','id'=>$this->id,'key'=>$field_name));
+        return form::makeForm($form, array('task'=>'updateField','controller'=>'ci','id'=>$this->id,'key'=>$field_name), 'post', true);
     }
     
     function getActionMenu() 
@@ -163,7 +198,7 @@ extends Controller
             $action_links[] = makeLink(array('task'=>'history','revision_id'=>null), "History", null, 'Show the entire revision history for this item.');
         }
         
-        $action_links[] = makeLink("?controller=ci&amp;task=create", "Create new item", null, "Creat an empty new CI");
+        $action_links[] = makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), "Create new item", null, "Creat an empty new CI");
         $action_links[] = makeLink(array('task'=>'remove','revision_id'=>null), "Remove", 'remove', 'Remove this CI', array('onclick'=>'return confirm("Are you sure?");'));
         $action_links[] = makeLink(array('task'=>'copy','revision_id'=>null), "Copy", 'copy', 'Copy this CI');
         return $action_links;

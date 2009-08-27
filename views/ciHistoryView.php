@@ -11,10 +11,10 @@ class ciHistoryView
         
         $type = ciColumnType::getType($column_id);
         if ($type != CI_COLUMN_IFRAME) {
-            $val = form::makeInput(null, $val, $column_id, true);
+            $val = ciView::makeInput(null, $val, $column_id, true);
             $val = strip_tags($val);
         }        
-
+        
         
         if(strlen($val) > 64) {
             $val = substr($val, 0, 60) . "...";

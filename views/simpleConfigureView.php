@@ -1,12 +1,21 @@
 <?php
 
-class ciPropertyView
+class simpleConfigureView
+	extends View
 {
-	
+
     function render($controller)
     {
-        util::setTitle("Properties");
-        $content = "";
+        $form = $this->getPropertiesTable($controller);
+        
+        $content .= form::makeForm($form,array('task'=>'update','plugin'=>'rt', 'controller'=>'configure'));
+        
+        $controller->show($content);
+	
+    }
+    
+    function getPropertiesTable($controller)
+    {
         
         $form = "
 <div class='button_list'><button>Update</button></div>
@@ -18,13 +27,12 @@ Name
 Value
 </th></tr>
 ";
+		
         $idx = 0;
-        $property_list = array("core.baseUrl"=>"Base URL (Only needed if using search engine friendly URLs)",
-                               "chart.maxDepth" => "Maximum dependency depth",
-                               "chart.maxItems" => "Maximum number of matches in List views for which to draw a chart",
-                               "pager.itemsPerPage" => "Maximum number of items per page");
-        
+        $property_list = $controller->getPropertyNames();
+            
         foreach($property_list as $name => $desc) {
+            
             $value = Property::get($name);
             
             $form .= "<tr>";
@@ -32,27 +40,22 @@ Value
             
             $form .= "<input type='hidden' name='name_$idx' value='".htmlEncode($name)."'/>";
             $form .= htmlEncode($desc);
-			
+            
             $form .= "</td><td>";
-			$form .= "<input name='value_$idx' value='".htmlEncode($value)."'/>";
-			
+            $form .= "<input name='value_$idx' value='".htmlEncode($value)."'/>";
+            
             $form .= "</td></tr>";
             
             $idx++;
         }
         
-
         $form .= "</table>";
         $form .= "<div class='button_list'><button>Update</button></div>";
-		
-        $content .= form::makeForm($form,array('task'=>'update','controller'=>'ciProperty'));
-
-        $controller->show($content);
-		
-	}
-	
+        
+        return $form;
+        	
+    }
 
 }
-
 
 ?>

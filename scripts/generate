@@ -2,11 +2,21 @@
 
 type="$1"
 name="$2"
+path="$3"
+if test ! $path; then
+    path=.
+fi
 
 case "$type" in
 
+    package)
+	
+	cd plugins/$name
+	zip ../$name.fpkg *.sql install.json *.php */*.php 
+	;;
+
 	 view)
-	 echo -n >views/"${name}"View.php "<?php
+	 echo -n >$path/views/"${name}"View.php "<?php
 
 class ${name}View
 	extends View
@@ -23,7 +33,7 @@ class ${name}View
 	 ;;
 
 	 controller)
-	 echo -n >controllers/"${name}"Controller.php "<?php
+	 echo -n >$path/controllers/"${name}"Controller.php "<?php
 
 class ${name}Controller
 	extends Controller
@@ -41,29 +51,52 @@ class ${name}Controller
 
 	 plugin)
 	 mkdir plugins/"${name}"
+	 mkdir plugins/"${name}"/controllers
+	 mkdir plugins/"${name}"/views
 	 echo -n >plugins/"${name}"/index.php "<?php
 
 class ${name}Plugin
 	extends Plugin
 {
-    function configure(\$controller)
-    {
-    }
-
 }
 
 ?>"
 	 
 	 echo >plugins/"${name}"/install.json "
 {
-	"description" : "Fancy plugin for doing something",
-	"author"      : "Randy MacSmartyPants",
-	"version"     : "1.0",
-	"events"      : []
+	\"description\" : \"Fancy plugin for doing something\",
+	\"author\"      : \"Randy MacSmartyPants\",
+	\"version\"     : \"1.0\",
+	\"events\"      : []
 }
 "
-	 
 
+	 echo -n >plugins/"${name}"/views/configureView.php "<?php
+
+util::loadClass('simpleConfigureView');
+
+class configureView
+	extends simpleConfigureView
+{
+}
+
+?>"
+	 echo -n >plugins/"${name}"/controllers/configureController.php "<?php
+
+util::loadClass('simpleConfigureController');
+
+class configureController
+	extends simpleConfigureController
+{
+
+    function getPropertyNames()
+    {
+        return array();
+    }
+
+}
+
+?>"
 	 ;;
 
 	 *)

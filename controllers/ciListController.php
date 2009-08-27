@@ -50,16 +50,29 @@ extends Controller
 	}
 	
 
+        function to_json($ci_list, $tot_count, $offset) 
+        {
+            $rs = array('totalResultsAvailable'=>$tot_count,
+                       "totalResultsReturned"=>count($ci_list),
+                       "firstResultPosition"=>$offset,
+                       "Result"=>$ci_list);
+            return json_encode(array("ResultSet"=>$rs));
+            
+        }
+        
 	function viewRun() 
 	{
-            
-		$ci_list = $this->get_ci_list();
+            $ci_list = $this->get_ci_list();
+            if(param('output') == 'json') {
+                echo $this->to_json($ci_list, $this->ci_total_count, param('page', 0));
+                exit(0);
+            }
 		
-		util::setTitle("View CIs");
-		$form = "";
+            util::setTitle("View CIs");
+            $form = "";
 
 		
-		$form .= "
+            $form .= "
 <table class='striped'>
 <tr>
 <th>
@@ -67,11 +80,11 @@ extends Controller
 </th>
 <td>
 ";
-		$form .= form::makeSelect('filter_type',
-					  array(-1=>'None')+ciType::getTypes(), 
-					  param('filter_type', -1),
-					  'filter_type');
-		$form .= "
+            $form .= form::makeSelect('filter_type',
+                                      array(-1=>'None')+ciType::getTypes(), 
+                                      param('filter_type', -1),
+                                      'filter_type');
+            $form .= "
 </td>
 </tr>
 <tr>
@@ -80,30 +93,30 @@ extends Controller
 </th>
 <td>
 ";
-		
-		$form .= form::makeSelect('filter_column',
-					  ciColumnType::getColumns(), 
-					  param('filter_column', -1),
-					  'filter_column');
-		$form .= form::makeText('filter_column_value', 
-					param('filter_column_value', ''));
-		$form .= "
+            
+            $form .= form::makeSelect('filter_column',
+                                      ciColumnType::getColumns(), 
+                                      param('filter_column', -1),
+                                      'filter_column');
+            $form .= form::makeText('filter_column_value', 
+                                    param('filter_column_value', ''));
+            $form .= "
 </td>
 </th>
 </table>
 ";
-		$form .= "<div class='button_list'><button type='submit'>Filter</button></div>";
-			
-		$content .= form::makeForm($form,array('controller'=>'ciList'), 'get');
-		
-                $pager = util::makePager($this->ci_total_count);
-                $content .= $pager;
-                	
-		if (!count($ci_list)) 
+            $form .= "<div class='button_list'><button type='submit'>Filter</button></div>";
+            
+            $content .= form::makeForm($form,array('controller'=>'ciList'), 'get');
+            
+            $pager = util::makePager($this->ci_total_count);
+            $content .= $pager;
+            
+            if (!count($ci_list)) 
 		{
-			$content .= "No CIs matched your criteria!";
+                    $content .= "No CIs matched your criteria!";
 		}
-		else 
+            else 
 		{
 			
 		$content .= "
@@ -175,7 +188,7 @@ $val
 		}
 		
 		$this->show(array(makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), "Create new item", null),
-                                  makeLink(makeUrl(array("task" => "recentlyDeleted")), "View recently deleted items", null)), 
+                                  makeLink(makeUrl(array("controller"=>"ciList", "task" => "recentlyDeleted")), "View recently deleted items", null)), 
 			    $content);
 	}
 
