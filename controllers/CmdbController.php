@@ -31,16 +31,4 @@ extends Controller
 }
 
 
-class CsvController
-extends CmdbController
-{
-    
-    function viewRun()
-    {
-        
-    }
-
-}
-
-
 ?>
