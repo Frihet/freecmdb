@@ -207,10 +207,8 @@ $(function()
 	}
 	else 
 	{
-	    $action_str = sprintf($edit?_("Editing %s"):_("Viewing %s"), $ci->getDescription);    
+	    $action_str = sprintf($edit?_("Editing %s"):_("Viewing %s"), $ci->getDescription());    
 	}
-	
-
         
         $content = "";
         
