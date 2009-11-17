@@ -20,12 +20,12 @@ class ciAction
 {
     function getDescription($id) 
     {
-        $desc=array(CI_ACTION_CREATE => 'CI created',
-                    CI_ACTION_REMOVE => 'CI removed',
-                    CI_ACTION_CHANGE_TYPE => 'CI type changed',
-                    CI_ACTION_CHANGE_COLUMN => 'CI column value changed',
-                    CI_ACTION_ADD_DEPENDENCY => 'Added new dependency',
-                    CI_ACTION_REMOVE_DEPENDENCY => 'Removed dependency');
+        $desc=array(CI_ACTION_CREATE => _('CI created'),
+                    CI_ACTION_REMOVE => _('CI removed'),
+                    CI_ACTION_CHANGE_TYPE => _('CI type changed'),
+                    CI_ACTION_CHANGE_COLUMN => _('CI column value changed'),
+                    CI_ACTION_ADD_DEPENDENCY => _('Added new dependency'),
+                    CI_ACTION_REMOVE_DEPENDENCY => _('Removed dependency'));
         return $desc[$id];
     }
     
@@ -238,13 +238,13 @@ class ciType
 
     function getShapes()
     {
-        return array('box'=>'Box', 
-                     'diamond' => 'Diamond',
-                     'doubleoctagon'=>'Double octagon',
-                     'ellipse'=>'Ellipse', 
-                     'house'=>'House',
-                     'octagon'=>'Octagon',
-                     'triangle' => 'Triangle');
+        return array('box'=>_('Box'), 
+                     'diamond' => _('Diamond'),
+                     'doubleoctagon'=>_('Double octagon'),
+                     'ellipse'=>_('Ellipse'), 
+                     'house'=>_('House'),
+                     'octagon'=>_('Octagon'),
+                     'triangle' => _('Triangle'));
     }
     
     function load()
@@ -433,7 +433,7 @@ extends dbItem
         ciColumnType::load();
         $arr = array();
         foreach(ciColumnType::$_name_lookup as $id => $it){
-            $arr[$id] = $it->name;
+            $arr[$it->id] = $it->name;
         }
         //message($arr);
         
@@ -446,13 +446,13 @@ extends dbItem
     
     function getTypes()
     {
-        return array(CI_COLUMN_TEXT=>'Unformated text',
-                     CI_COLUMN_TEXT_FORMATED=>'Multiline text with formating',
-                     CI_COLUMN_LIST=>'List',
-                     CI_COLUMN_EMAIL=>'Email address',
-                     CI_COLUMN_DATE=>'Date picker',
-                     CI_COLUMN_FILE=>'File',
-                     CI_COLUMN_IFRAME=>'IFrame'/*
+        return array(CI_COLUMN_TEXT=>_('Unformated text'),
+                     CI_COLUMN_TEXT_FORMATED=>_('Multiline text with formating'),
+                     CI_COLUMN_LIST=>_('List'),
+                     CI_COLUMN_EMAIL=>_('Email address'),
+                     CI_COLUMN_DATE=>_('Date picker'),
+                     CI_COLUMN_FILE=>_('File'),
+                     CI_COLUMN_IFRAME=>_('IFrame')/*
                                                 CI_COLUMN_LINK_LIST=>'List of links'*/);
     }
     
@@ -572,14 +572,14 @@ class ciDependencyType
 
     function getColors()
     {
-	return array("invisible"=>"Do not show in graph",
-		     "black"=>"Black",
-		     "blue"=>"Blue",
-		     'brown'=>'Brown',
-		     'cyan'=>'Cyan',
-		     "green"=>"Green", 
-		     "red"=>"Red",
-		     'yellow'=>'yellow'
+	return array("invisible"=>_("Do not show in graph"),
+		     "black"=>_("Black"),
+		     "blue"=>_("Blue"),
+		     'brown'=>_('Brown'),
+		     'cyan'=>_('Cyan'),
+		     "green"=>_("Green"), 
+		     "red"=>_("Red"),
+		     'yellow'=>_('Yellow')
 	    );
     }
     
@@ -856,10 +856,9 @@ where ci_id=:ci_id and ci_column_type_id = :type:id",
         $default_column = Property::get("ciColumn.default");
 	
         $nam = $this->get(ciColumnType::getName($default_column));
-        return ($nam?$nam:'<unnamed>') . ($long?(' <' . $this->type_name. ">"):'');
+        return ($nam?$nam:'<unnamed>') . ($long?(' (' . $this->type_name. ")"):'');
     }
     
-
     function removeDependency($other_id) 
     {
 	db::begin();
@@ -1397,8 +1396,57 @@ extends dbItem
     var $id;
     var $username;
     var $fullname;
-    //var $password;
+    var $password;
     var $email;
+    var $can_view;
+    var $can_edit;
+    var $can_admin;
+
+    function can_view()
+    {
+        return ciUser::$_me->can_view;
+    }
+    
+    function can_edit()
+    {
+        return ciUser::$_me->can_edit;
+    }
+    
+    function can_admin()
+    {
+        return ciUser::$_me->can_admin;
+    }
+
+    function deny()
+    {
+        header('HTTP/1.0 403 Forbidden');            
+        echo "<html><head><title>Permission denied</title></head><body><h1>"._("Permission denied")."</h1><p>"._("You are not authorized to view this page")."</p></body></html>";
+        exit(1);
+    }
+    
+
+    function assert_view()
+    {
+        if (!ciUser::can_view()) {
+            ciUser::deny();            
+        }
+    }
+    
+    function assert_edit()
+    {
+        if (!ciUser::can_edit()) {
+            ciUser::deny();            
+        }
+    }
+    
+    function assert_admin()
+    {
+        if (!ciUser::can_admin()) {
+            ciUser::deny();            
+        }
+    }
+    
+    
     //var $deleted;
     
     function init()
@@ -1417,6 +1465,32 @@ extends dbItem
             dbItem::__construct($data);
         }
     }
+
+    /**
+     Set logged in user to the specified user
+    */
+    function setUser($username, $fullname, $email, $view, $edit, $admin)
+    {
+        $user_data = db::fetchRow('select * from ci_user where username = :u', array(':u'=>$username));        $user = new ciUser();
+        if( $user_data ) {
+            $user->initFromArray($user_data);
+        }
+        else {
+            $user->password='';
+        }
+    
+        $user->initFromArray(array('username'=>$username, 
+                                   'fullname'=>$fullname,
+                                   'email'=>$email,
+                                   'can_view'=>$view,
+                                   'can_edit'=>$edit,
+                                   'can_admin'=>$admin));
+        //message($user);
+        
+        $user->save();
+        ciUser::$_me = $user;
+    }
+    
     
     function findAll()
     {
@@ -1424,37 +1498,6 @@ extends dbItem
     }
         
 }
-
-class ciUserGroup
-extends dbItem
-{
-    var $id;
-    var $name;
-    
-    static $_user_map;
-    
-    function __construct($data=null)
-    {
-        $this->table = "ci_user_group";
-        
-        if($data) {
-            dbItem::__construct($data);
-        }
-    }
-    
-    function findAll()
-    {
-        return dbItem::findAll("ciUserGroup","ci_user_group");
-    }
-    
-    function getMembers()
-    {
-        //        self::load();
-        
-    }
-
-}
-
 
 class Property
 {
@@ -1475,7 +1518,7 @@ class Property
     {
         self::load();
 
-        if (array_key_exists($name, self::$data)) {
+        if (array_key_exists($name, self::$data) && @self::$data[$name]!= null) {
             return @self::$data[$name];
         }
         return $default;
@@ -1548,6 +1591,7 @@ class Event
     */
     function emit($name, $param) 
     {
+        //echo "Emit event " . $name ."<br/>";
         
         self::_load();
         $ev = self::$data[strToLower($name)];
@@ -1556,13 +1600,9 @@ class Event
         if ($ev) {
             
             foreach($ev as $item) {
-                
                 $class_str = $item['class_name'];
-                
                 $method_str = $name."Handler";
                 util::loadClass($class_str);
-        
-                
                 eval("$class_str::$method_str(\$param);");
             }
         }

@@ -1,7 +1,7 @@
 <?php
 
 class CiListController
-extends Controller
+extends CmdbController
 {
 
 	private $ci_list = null;
@@ -16,11 +16,17 @@ extends Controller
                     $offset = $item_count * (param('page',1)-1);
                     
 		    $arr = array();
+
                     
 		    $filter_type = param('filter_type');
 		    $filter_column = param('filter_column');
 		    $filter_column_value = param('filter_column_value');
 		    $filtered = false;
+
+                    if(param('q') !== null) {
+                        $filter_column='4';
+                        $filter_column_value=param('q');
+                    }
 		    
 		    if ($filter_column !== null && $filter_column_value) {
 			$filtered = true;
@@ -28,7 +34,7 @@ extends Controller
 		    }
 		    
 		    if ($filter_type !== null && $filter_type >= 0) {
-			$filtered = true;
+                        $filtered = true;
 			$arr['filter_type'] = $filter_type;
 		    }
                     
@@ -52,10 +58,18 @@ extends Controller
 
         function to_json($ci_list, $tot_count, $offset) 
         {
+            $ci_list_transformed = array();
+            foreach($ci_list as $it) {
+                $ci_list_transformed[] = array('name'=>$it->getDescription(false),
+                                               'description'=>$it->getDescription(true),
+                                               'url'=>makeUrl(array("controller"=>"ci", "task"=>"view",'id'=>$it->id)));
+            }
+            
+
             $rs = array('totalResultsAvailable'=>$tot_count,
                        "totalResultsReturned"=>count($ci_list),
                        "firstResultPosition"=>$offset,
-                       "Result"=>$ci_list);
+                       "Result"=>$ci_list_transformed);
             return json_encode(array("ResultSet"=>$rs));
             
         }
@@ -66,7 +80,15 @@ extends Controller
             if(param('output') == 'json') {
                 echo $this->to_json($ci_list, $this->ci_total_count, param('page', 0));
                 exit(0);
+            } else if (param('output') == 'autocomplete') {
+                foreach($ci_list as $it) {
+                    echo $it->id ." - " .$it->getDescription(true);
+                    echo "\n";
+                    
+                }
+                exit(0);
             }
+            
 		
             util::setTitle("View CIs");
             $form = "";
@@ -171,12 +193,15 @@ $val
 		
 
 			$content .= "<td>";
-			$content .= util::date_format($ci->update_time);
+			$content .= FreeCMDB::dateTime($ci->update_time);
 			$content .= "</td><td>";
-
-			$content .= makeLink(array('controller' => 'ci', 'id' => $ci->id,'task'=>'remove'),
-								 'Remove', 'remove', "Remove the CI " . $ci->getDescription(),
-								 array('onclick'=>'return confirm("Are you sure?");'));
+                        if(ciUser::can_edit()) {
+                            
+                            $content .= makeLink(array('controller' => 'ci', 'id' => $ci->id,'task'=>'remove'),
+                                                 'Remove', 'remove', "Remove the CI " . $ci->getDescription(),
+                                                 array('onclick'=>'return confirm("Are you sure?");'));
+                        }
+                        
 			$content .= "</td></tr>";
 		}
 
@@ -187,9 +212,15 @@ $val
 		    $content .= $this->makeChart($ci_list);
 		}
 		
-		$this->show(array(makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), "Create new item", null),
-                                  makeLink(makeUrl(array("controller"=>"ciList", "task" => "recentlyDeleted")), "View recently deleted items", null)), 
-			    $content);
+                $actions = array();
+                if(ciUser::can_edit()) {
+                    $actions[] = makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), _("Create new item"), null);
+                }
+                $actions[] = makeLink(makeUrl(array("controller"=>"ciList", "task" => "recentlyDeleted")), _("View recently deleted items"), null);
+                
+
+		$this->show( $actions,
+                             $content);
 	}
 
         function recentlyDeletedRun()

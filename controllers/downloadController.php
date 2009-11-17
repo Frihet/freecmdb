@@ -1,7 +1,7 @@
 <?php
 
 class downloadController
-	extends Controller
+	extends CmdbController
 {
 
     function viewRun()

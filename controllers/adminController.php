@@ -4,23 +4,24 @@
  have a common, simple action menu, defined in this class.
  */
 class adminController
-extends Controller
+extends CmdbController
 {
 
     function show($content)
     {
+        ciUser::assert_admin();
         Controller::show($this->getActionMenu(), $content);
     }
     
     function getActionMenu() 
     {
-        return array(makeLink(makeUrl(array("controller"=>"ciType")), "CI types", null),
-                     makeLink(makeUrl(array("controller"=>"ciColumn")), "CI columns", null),
-                     makeLink(makeUrl(array("controller"=>"ciProperty")), "Properties", null),
-                     makeLink(makeUrl(array("controller"=>"ciDependency")), "Dependencies", null),
-                     makeLink(makeUrl(array("controller"=>"plugin")), "Plugins", null),
-                     makeLink(makeUrl(array("controller"=>"userAdmin")), "Users", null),
-                     makeLink(makeUrl(array("controller"=>"userGroupAdmin")), "User groups", null));
+        return array(makeLink(makeUrl(array("controller"=>"ciType")), _("CI types"), null),
+		     makeLink(makeUrl(array("controller"=>"ciColumn")), _("CI columns"), null),
+		     makeLink(makeUrl(array("controller"=>"ciProperty")), _("Properties"), null),
+                     makeLink(makeUrl(array("controller"=>"ciDependency")), _("Dependencies"), null),
+                     makeLink(makeUrl(array("controller"=>"plugin")), _("Plugins"), null),
+                     makeLink(makeUrl(array("controller"=>"userAdmin")), _("Users"), null),
+                     makeLink(makeUrl(array("controller"=>"userGroupAdmin")), _("User groups"), null));
     }
     
     function viewRun()

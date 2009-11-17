@@ -100,7 +100,7 @@ Changed by
             }
             if (!$noop) {
                 $username = makeLink(array('controller'=>'user','id'=>$edit['user_id']), $edit['username']);
-                $time = util::date_format($edit['create_time']);
+                $time = FreeCMDB::dateTime($edit['create_time']);
                 $buttons =  makeLink(array('task'=>'view', 'revision_id' => $edit['id']),'Show', 'revision');
                 $buttons .= makeLink(array('task'=>'revert', 'target_revision_id' => $edit['id']),'Revert', 'revert');
                 $content.= "

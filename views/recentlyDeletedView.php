@@ -24,7 +24,7 @@ Deleted by
 ";
 	    
 	    foreach(history::fetchRemoves() as $rem) {
-                $time = util::date_format($rem['create_time']);
+                $time = FreeCMDB::dateTime($rem['create_time']);
                 $username = makeLink(array('controller'=>'user','id'=>$rem['user_id']), $rem['username']);
 		
 		$buttons =  makeLink(array('controller'=>'ci','task'=>'view','id'=>$rem['ci_id']),'Show', 'revision');

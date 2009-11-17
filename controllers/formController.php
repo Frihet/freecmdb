@@ -4,7 +4,7 @@
  Ajax-controller for updating the contrnts of list-style columns.
  */
 class formController
-extends Controller
+extends CmdbController
 {
     function addColumnListItemRun() 
     {

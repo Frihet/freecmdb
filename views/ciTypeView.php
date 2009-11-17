@@ -7,18 +7,17 @@ extends View
     function render($controller)
     {
         $ci_type_list = ciType::getTypes();	
-        util::setTitle("CI types");
-		            
+        util::setTitle(_("CI types"));		            
                             
 
         $content .= "
-<button>Update</button>
+<button>"._("Update")."</button>
 <table class='striped'>";
         $content .= "<tr>";
         $content .= "<th>";
-        $content .= "Name";
+        $content .= _("Name");
         $content .= "</th><th>";
-        $content .= "Graph shape";
+        $content .= _("Graph shape");
         $content .= "</th><th>";
             
         $content .= "</th></tr>";
@@ -63,7 +62,7 @@ extends View
 </tr>";
             
         $content .= "</table>
-<button>Update</button>
+<button>"._("Update")."</button>
 ";
         $content = form::makeForm($content, array('task'=>'update','controller'=>'ciType'));
                     

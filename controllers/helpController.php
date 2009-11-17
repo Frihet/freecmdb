@@ -4,7 +4,7 @@
  The help page
  */
 class helpController
-extends Controller
+extends CmdbController
 {
 	
     private $content="";

@@ -25,7 +25,10 @@ create table ci_user
         fullname varchar(64) not null, 
         password varchar(64) not null,
         email varchar(64),
-        deleted boolean not null default false
+        deleted boolean not null default false,
+	can_view boolean not null default false,
+	can_edit boolean not null default false,
+	can_admin boolean not null default false
 );
 
 create table ci_session 
@@ -49,6 +52,9 @@ create table ci_column_type
 	type int not null default 0,
 	name varchar(64) not null,
 	ci_type_id int references ci_type(id),
+	prefix varchar(64) not null,
+	suffix varchar(64) not null,
+	pattern varchar(64) not null,
 	deleted boolean not null default false
 );
 

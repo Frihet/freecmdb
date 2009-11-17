@@ -18,7 +18,9 @@ extends adminController
             Property::set(param("name_$idx"), param("value_$idx"));
         }
         message("Plugin properties updated");
-        util::redirect(makeUrl(array('task'=>null)));
+        util::redirect(makeUrl(array('task'=>'view', 
+                                     'plugin'=>param('plugin'),
+                                     'controller'=>param('controller'))));
     }
     
 }

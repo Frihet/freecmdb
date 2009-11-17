@@ -6,28 +6,28 @@ class ciColumnview
     function render($controller)
     {
 
-        util::setTitle("CI columns");
+        util::setTitle(_("CI columns"));
         $content = "";
 	
         $hidden = array('task'=>'update','controller'=>'ciColumn');
             
             
         $form = "
-<div class='button_list'><button>Update</button></div>
+<div class='button_list'><button>"._("Update")."</button></div>
 <table class='striped'>
 <tr>
 <th>
-Name
+".("Name")."
 </th><th>
-Type
+".("Type")."
 </th><th>
-CI
+".("CI")."
 </th><th>
-Pattern
+".("Pattern")."
 </th><th>
-Prefix
+".("Prefix")."
 </th><th>
-Suffix
+".("Suffix")."
 </th><th>
 </th><th>
 </th></tr>
@@ -85,7 +85,7 @@ Suffix
             $form .= "</td><td>";
                 
             if($column !== null)
-                $form .= makeLink(array('controller' => 'ciColumn', 'id' => $column->id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $column->name, array('onclick'=>'return confirm("Are you sure?");'));
+                $form .= makeLink(array('controller' => 'ciColumn', 'id' => $column->id,'task'=>'remove'),_('Remove'), 'remove', _("Remove the column"), array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\\').'");'));
             
             $form .= "</td></tr>";
             
@@ -93,7 +93,7 @@ Suffix
         }
         
         $form .= "</table>";
-        $form .= "<div class='button_list'><button>Update</button></div>";
+        $form .= "<div class='button_list'><button>"._("Update")."</button></div>";
         
         $content .= form::makeForm($form,$hidden);
                     

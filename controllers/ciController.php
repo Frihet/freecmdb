@@ -3,7 +3,7 @@
    Controller for ci objects
   */
 class CiController
-extends Controller
+extends CmdbController
 {
     var $id;
  
@@ -15,6 +15,7 @@ extends Controller
 
     function addDependencyRun()
     {
+        ciUser::assert_edit();
         $other_id = param('dependency_id');
         list($type_id,$reverse) = explode(':',param('dependency_type_info'));
 	if($reverse) 
@@ -22,33 +23,35 @@ extends Controller
 	    $ci_list = ci::fetch(array('id_arr'=>array($other_id)));
 	    $ci = $ci_list[$other_id];
 	    $ci->addDependency($this->id, $type_id);
-	    message("Dependant added ");
+	    message(_("Dependant added"));
 	}
 	else 
 	{
 	    $ci = $this->getCi();
 	    $ci->addDependency($other_id, $type_id);
-	    message("Dependency added");
+	    message(_("Dependency added"));
 	}
         util::redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
 
     function removeDependencyRun()
     {
+        ciUser::assert_edit();
         $other_id = param('dependency_id');
         $ci = $this->getCi();
         $ci->removeDependency($other_id);
-        message("Dependency removed");
+        message(_("Dependency removed"));
         util::redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
 
     function removeDependantRun()
     {
+        ciUser::assert_edit();
         $other_id = param('dependant_id');
         $ci_list = ci::fetch(array('id_arr'=>array($other_id)));
         $ci = $ci_list[$other_id];
         $ci->removeDependency($this->id);
-        message("Dependant removed");
+        message(_("Dependant removed"));
         util::redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
     
@@ -80,6 +83,7 @@ extends Controller
     
     function updateFieldRun()
     {
+        ciUser::assert_edit();
         $key = param('key');
         if(array_key_exists('value', $_FILES)){
             $this->updateFieldFile($key, $_FILES['value']);            
@@ -88,19 +92,20 @@ extends Controller
             $this->updateField($key, $value);
         }
         
-        message('CI updated');
+        message(_('CI updated'));
         util::redirect(makeUrl(array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'key'=>null, 'value' => null)));
     }
     
     function createRun()
     {
+        ciUser::assert_edit();
         db::query("insert into ci (ci_type_id) select id from ci_type where deleted=false limit 1");
         $id = db::lastInsertId("ci_id_seq");
         
         log::add($id, CI_ACTION_CREATE);
         $this->id = $_GET['id'] = $id;
 
-        message('CI created');
+        message(_('CI created'));
         util::redirect(makeUrl(array('task'=>'edit', 'key'=>null, 'value' => null, 'id' => $id)));
     }
     
@@ -116,6 +121,7 @@ extends Controller
 
     function saveAllRun() 
     {
+        ciUser::assert_edit();
         $arr = array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'dependency_id'=>null);
         db::begin();
         $ok = true;
@@ -147,12 +153,12 @@ extends Controller
         }
         if( $ok) {
             db::commit();
-            message('Fields updated');
+            message(_('Fields updated'));
             util::redirect(makeUrl($arr));
         }
         else {
             db::rollback();
-            error('Fields not updated');
+            error(_('Fields not updated'));
             $_REQUEST['task'] = 'edit';
             $this->viewRun();
         }
@@ -161,12 +167,13 @@ extends Controller
     
     function removeRun()
     {
+        ciUser::assert_edit();
         $ci = $this->getCi();
         if ($ci->delete()) {
-            message('CI removed');
+            message(_('CI removed'));
         }
         else {
-            error('Could not remove CI, not found.');
+            error(_('Could not remove CI, not found.'));
         }
         
         util::redirect(makeUrl(array('id'=>null, 'controller'=>'ciList', 'task'=>null)));
@@ -188,25 +195,33 @@ extends Controller
 	
         $task = param('task','view');
                 
+        $action_links[] = makeLink(makeUrl(array("controller"=>"ciList")), _("View all"));
+
         if($task!='view') {
-            $action_links[] = makeLink(array('task'=>'view','revision_id'=>null), "View", 'view', 'Go back to read-only view of this CI');
-        }
-        if ($task != 'edit') {
-            $action_links[] = makeLink(array('task'=>'edit','revision_id'=>null), "Edit", 'edit',  'Edit all fields of this CI');
-        }
-        if($task != 'history') {
-            $action_links[] = makeLink(array('task'=>'history','revision_id'=>null), "History", null, 'Show the entire revision history for this item.');
+            $action_links[] = makeLink(array('task'=>'view','revision_id'=>null), _("View"), 'view', _('Go back to read-only view of this CI'));
         }
         
-        $action_links[] = makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), "Create new item", null, "Creat an empty new CI");
-        $action_links[] = makeLink(array('task'=>'remove','revision_id'=>null), "Remove", 'remove', 'Remove this CI', array('onclick'=>'return confirm("Are you sure?");'));
-        $action_links[] = makeLink(array('task'=>'copy','revision_id'=>null), "Copy", 'copy', 'Copy this CI');
+
+        if ($task != 'edit' && ciUser::can_edit()) {
+            $action_links[] = makeLink(array('task'=>'edit','revision_id'=>null), _("Edit"), 'edit',  _('Edit all fields of this CI'));
+        }
+        if($task != 'history') {
+            $action_links[] = makeLink(array('task'=>'history','revision_id'=>null), _("History"), null, _('Show the entire revision history for this item.'));
+        }
+
+        if(ciUser::can_edit()) {
+            $action_links[] = makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), _("Create new item"), null, _("Creat an empty new CI"));
+            $action_links[] = makeLink(array('task'=>'remove','revision_id'=>null), _("Remove"), 'remove', _('Remove this CI'), array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\\').'");'));
+            $action_links[] = makeLink(array('task'=>'copy','revision_id'=>null), _("Copy"), 'copy', _('Copy this CI'));
+        }
+        
         return $action_links;
         
     }
     
     function copyRun()
     {
+        ciUser::assert_edit();
         $id_orig = param('id');
         db::query('insert into ci (ci_type_id) select ci_type_id from ci where id=:id', array(':id'=>$id_orig));
         $id_new = db::lastInsertId("ci_id_seq");
@@ -245,11 +260,13 @@ where dependency_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new)
 	
     function editRun()
     {
+        ciUser::assert_edit();
         $this->viewRun();
     }
     
     function revertRun()
     {
+        ciUser::assert_edit();
         $ci = $this->getCi();
         $revision_id = param('target_revision_id');
         

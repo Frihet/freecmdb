@@ -4,6 +4,12 @@ class ciView
 extends View
 {
 
+    function em($str)
+    {
+	return "<em>".$str."</em>";
+    }
+    
+
     function makeInput($ci_id, $name, $value, $column_id, $read_only=false, $id=null) 
     {
         $type = ciColumnType::get($column_id);
@@ -44,8 +50,7 @@ extends View
     id='".htmlEncode($id)."' name='".htmlEncode($id)."'
     src='".htmlEncode($value)."'
     onload='dynamicIFrame.resize(\"".htmlEncode($id)."\")'
-    scrolling='no'>
-Iframes not supported by this browser.
+    scrolling='no'>"._("Iframes not supported by this browser.")."
 </iframe>";
 		    
 		    break;
@@ -55,7 +60,7 @@ Iframes not supported by this browser.
                         $res .= ciColumnList::getName($value);
 		    }
                     else {
-                        $res = htmlEncode("<invalid value>");
+                        $res = htmlEncode(_("<invalid value>"));
 		    }
 		    break;
 		    
@@ -117,7 +122,7 @@ $(function()
                 }
                 
                 $res .= form::makeSelect($name, ciColumnList::getItems($column_id), $value, $id);
-                $res .= makePopup("Edit item list", "More...", self::makeColumnListEditor($column_id, $id), "edit" );
+                $res .= makePopup(_("Edit item list"), "More...", self::makeColumnListEditor($column_id, $id), "edit" );
                 
                 break;
                 
@@ -144,7 +149,7 @@ $(function()
         
         $res = "<table class='striped' id='$table_id'>
 <tr>
-<th>Name</th>
+<th>"._("Name")."</th>
 <th></th>
 </tr>
 ";
@@ -178,6 +183,13 @@ $(function()
         $ci = $controller->getCi();
         
         $edit = param("task", 'view')=='edit';
+
+        if($edit) {
+            ci_user::assert_edit();
+        }
+        
+
+
         $revision_id = param('revision_id');
         $revision = $revision_id !== null;
 	if (!$revision) 
@@ -186,32 +198,38 @@ $(function()
 	    
 	}
 	
-        $is_readonly = $revision || $deleted;
-	
+        $is_readonly = $revision || $deleted || !ciUser::can_edit();
         $action_links = $controller->getActionMenu($edit);
-
-        $action_str = $edit?"Editing":"Viewing";
-        $action_str = $revision?"Viewing revision $revision_id of":$action_str;
+        
+	if ($revision) 
+	{
+	    $action_str = sprintf(_("Viewing revision %s of %s"),$revision_id, $ci->getDescription());
+	}
+	else 
+	{
+	    $action_str = sprintf($edit?_("Editing %s"):_("Viewing %s"), $ci->getDescription);    
+	}
+	
 
         
         $content = "";
         
         if ($revision) {
-            $content .="<em>This is an old revision of this item. ".makeLink(array('revision_id'=>null),'Click here to view the latest version').".</em>";
+            $content .=$this->em( _("This is an old revision of this item.")." ".makeLink(array('revision_id'=>null),_('Click here to view the latest version'))).".";
         }
 	else if ($deleted) 
 	{
-            $content .="<em>This item has been deleted</em>";
+            $content .=$this->em(_("This item has been deleted"));
 	}
 	
-        util::setTitle("$action_str " . $ci->getDescription());
+        util::setTitle($action_str);
 
         $form = "";
         
         $form .= "
 <table class='striped ci_table'>";
 				
-        $form .= "<tr><th>Type</th><td>";
+        $form .= "<tr><th>"._("Type")."</th><td>";
 				
         $type_select = form::makeSelect('type', ciType::getTypes(), $ci->ci_type_id,'type_select');
 				
@@ -228,7 +246,7 @@ $(function()
                 $type_popup_form_id++;
                 
                 $sub_form = $controller->makePopupForm('type',$type_select, 'type_select', $type_popup_id);            
-                $form .= makePopup("Change CI type", "Edit", $sub_form, 'edit', 'Change type of this ci', $type_popup_id);
+                $form .= makePopup(_("Change CI type"), _("Edit"), $sub_form, 'edit', _('Change type of this CI'), $type_popup_id);
             }
             
         }
@@ -272,7 +290,7 @@ $(function()
                     $column_popup_form_id++;
 										
                     $sub_form = $controller->makePopupForm($key,  self::makeInput($ci->id, 'value', $value, $key, false, "value_$key"), "value_$key", $column_popup_id);
-                    $form .= makePopup("Edit " . ciColumnType::getName($key), "Edit", $sub_form, 'edit', 'Edit this CI field', $column_popup_id);
+                    $form .= makePopup(sprintf(_("Edit %s"), ciColumnType::getName($key)), _("Edit"), $sub_form, 'edit', _('Edit this CI field'), $column_popup_id);
                 }
             }
             
@@ -293,7 +311,7 @@ $(function()
         if ($edit) {
             $form .= "
 <div class='button_list'>
-<button>Save</button>
+<button>"._("Save")."</button>
 </div>
 ";
             $content .= form::makeForm($form, array('controller' =>'ci',
@@ -342,7 +360,7 @@ $(function()
                     $iframe_popup_form_id++;
 								
                     $form = $controller->makePopupForm($key,  self::makeInput($ci->id, 'value', $value, $key, false, "value_$key"), "value_$key", $iframe_popup_id);
-                    $content .= makePopup("Edit " . ciColumnType::getName($key), "Edit", $form, 'edit', 'Edit this CI field', $iframe_popup_id);
+                    $content .= makePopup(sprintf(_("Edit %s"), ciColumnType::getName($key)), _("Edit"), $form, 'edit', _('Edit this CI field'), $iframe_popup_id);
 								
                     $content .= "</div>\n";
                     $content .= self::makeInput($ci->id, 'value', $value, $key, true, "iframe_$key");
@@ -380,10 +398,10 @@ $(function()
 		}
 		$dep .= "<tr>\n<td></td>\n<td>\n";
 		$other_name = htmlEncode($item->getDescription());
-		$dep .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
+		$dep .= makeLink(array('id'=>$item->id), $item->getDescription(), null, sprintf(_("View all information on %s"), $other_name));
 		$dep .= "</td><td>\n";
 		if (!$is_readonly && $ci->isDirectDependency($item->id)) {
-		    $dep .= makeLink(array('task'=>'removeDependency', 'dependency_id'=>$item->id), "Remove",'remove', "Remove dependency from $my_name to $other_name", array('onclick'=>'return confirm("Are you sure?");'));
+		    $dep .= makeLink(array('task'=>'removeDependency', 'dependency_id'=>$item->id), _("Remove"),'remove', sprintf(_("Remove dependency from %s to %s"), $my_name, $other_name), array('onclick'=>'return confirm("' .addcslashes(_("Are you sure?"),'"\\').'");'));
 		}
 		$dep .= "</td>\n</tr>\n";
 	    }	
@@ -405,10 +423,10 @@ $(function()
 		}
 		$dep2 .= "<tr>\n<td></td>\n<td>\n";
 		$other_name = htmlEncode($item->getDescription());
-		$dep2 .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
+		$dep2 .= makeLink(array('id'=>$item->id), $item->getDescription(), null, sprintf(_("View all information on %s"),$other_name));
 		$dep2 .= "\n</td><td>\n";
 		if (!$is_readonly && $ci->isDirectDependant($item->id)) {
-		    $dep2 .= makeLink(array('task'=>'removeDependant', 'dependant_id'=>$item->id), "Remove",'remove', "Remove dependency from $other_name to $my_name",array('onclick'=>'return confirm("Are you sure?");'));
+		    $dep2 .= makeLink(array('task'=>'removeDependant', 'dependant_id'=>$item->id), _("Remove"),'remove', sprintf(_("Remove dependency from %s to %s"), $other_name, $my_name),array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\\').'");'));
 		}
 		$dep2 .= "\n</td></tr>\n";
 	    }
@@ -432,14 +450,14 @@ $(function()
 	    if (!$ci->isDirectDependency($item->id)) {
 		$dep_indirect .= "<tr>\n<td></td>\n<td>\n";
 		$other_name = htmlEncode($item->getDescription());
-		$dep_indirect .= makeLink(array('id'=>$item->id), $item->getDescription(), null, "View all information on $other_name");
+		$dep_indirect .= makeLink(array('id'=>$item->id), $item->getDescription(), null, sprintf(_("View all information on %s"), $other_name));
 		$dep_indirect .= "</td><td>\n";
 		$dep_indirect .= "</td>\n</tr>\n";
 	    }
 	}	
 	if( $dep_indirect != "") 
 	{
-	    $content .= "<tr><th colspan='3'>Indirect dependencies</th></tr>\n";
+	    $content .= "<tr><th colspan='3'>"._("Indirect dependencies")."</th></tr>\n";
 	    $content .= $dep_indirect;
 	}
 	    
@@ -447,8 +465,8 @@ $(function()
 
 
         if (!$is_readonly) {
-	    $content .= "<tr><th colspan='3'>Add new dependency</th></tr>\n";
-	    $form = "<tr><td>".form::makeSelect('dependency_type_info',CiDependencyType::getDependencyOptions(),property::get(''))."</td><td>";
+	    $content .= "<tr><th colspan='3'>"._("Add new dependency")."</th></tr>\n";
+	    $form = "<tr><td>".form::makeSelect('dependency_type_info', CiDependencyType::getDependencyOptions(),property::get(''))."</td><td>";
 	    $arr = array();
             foreach($all_ci_list as $item) {
                 $item_id = $item->id;
@@ -460,7 +478,7 @@ $(function()
             }
 	    $form .= form::makeSelect('dependency_id', $arr, null);
 	    
-            $form .= "</td><td><button type='submit'>Add</button>\n";
+            $form .= "</td><td><button type='submit'>"._("Add")."</button>\n";
             $form .= "</td></tr>";
             
             $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$controller->id));
@@ -503,7 +521,7 @@ $(function()
     {
         require_once("ciChart.php");
         $revision_str = $revision_id?"&revision_id=$revision_id":"";
-        $caption = $is_dependencies?"Dependencies for this CI":"Other items that depend on this CI";
+        $caption = $is_dependencies?_("Dependencies for this CI"):_("Other items that depend on this CI");
         $dep=$reverse?'&mode=dependants':'';
         $title = htmlEncode($caption);
 

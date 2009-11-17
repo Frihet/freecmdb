@@ -8,7 +8,7 @@ class simpleConfigureView
     {
         $form = $this->getPropertiesTable($controller);
         
-        $content .= form::makeForm($form,array('task'=>'update','plugin'=>'rt', 'controller'=>'configure'));
+        $content .= form::makeForm($form,array('task'=>'update','plugin'=>param('plugin'), 'controller'=>param('controller')));
         
         $controller->show($content);
 	
@@ -17,14 +17,15 @@ class simpleConfigureView
     function getPropertiesTable($controller)
     {
         
+		
         $form = "
-<div class='button_list'><button>Update</button></div>
+<div class='button_list'><button>"._("Update")."</button></div>
 <table class='striped'>
 <tr>
 <th>
-Name
+"._("Name")."
 </th><th>
-Value
+"._("Value")."
 </th></tr>
 ";
 		
@@ -42,7 +43,7 @@ Value
             $form .= htmlEncode($desc);
             
             $form .= "</td><td>";
-            $form .= "<input name='value_$idx' value='".htmlEncode($value)."'/>";
+            $form .= $this->generateFormElement($name, "value_" . $idx, $value);
             
             $form .= "</td></tr>";
             
@@ -50,10 +51,15 @@ Value
         }
         
         $form .= "</table>";
-        $form .= "<div class='button_list'><button>Update</button></div>";
+        $form .= "<div class='button_list'><button>"._("Update")."</button></div>";
         
         return $form;
         	
+    }
+
+    function generateFormElement($prop_name, $form_name, $value) 
+    {
+        return "<input name='".htmlEncode($form_name)."' value='".htmlEncode($value)."'/>";
     }
 
 }

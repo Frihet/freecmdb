@@ -8,20 +8,20 @@ class ciDependencyview
 		
 
         $ci_dependency_list = ciDependencyType::getDependencies();
-        util::setTitle("CI dependencies");
+        util::setTitle(_("CI dependencies"));
 		$content = "";
 		
 
         $form = "
-<div class='button_list'><button>Update</button></div>
+<div class='button_list'><button>"._("Update")."</button></div>
 <table class='striped'>
 <tr>
 <th>
-Name of dependency
+"._("Name of dependency")."
 </th><th>
-Name of dependant
+"._("Name of dependant")."
 </th><th>
-Graph Color
+"._("Graph Color")."
 </th><th>
 </th><th>
 </th></tr>
@@ -51,7 +51,7 @@ Graph Color
             $form .= "<input type='radio' name='default' value='{$dep->id}' id='default_$idx' $checked><label for='default_$idx'>Default</label>";
             $form .= "</td><td>";
             
-            $form .= makeLink(array('controller' => 'ciDependency', 'id' => $dep->id,'task'=>'remove'),'Remove', 'remove', "Remove the dependency " . $dep->name, array('onclick'=>'return confirm("Are you sure?");'));
+            $form .= makeLink(array('controller' => 'ciDependency', 'id' => $dep->id,'task'=>'remove'),_('Remove'), 'remove', _("Remove the dependency"), array('onclick'=>'return confirm("Are you sure?");'));
             $form .= "</td></tr>";
             
             $idx++;
@@ -80,10 +80,10 @@ Graph Color
         
 
         $form .= "</table>";
-        $form .= "<div class='button_list'><button>Update</button></div>";
+        $form .= "<div class='button_list'><button>"._("Update")."</button></div>";
 		
         $content .= form::makeForm($form,array('task'=>'update','controller'=>'ciDependency'));
-        
+
 		
         $controller->show($content);
 		
