@@ -1,0 +1,484 @@
+# Translation to Swedish for the FreeCMDB software.
+# Copyright (C) 2009
+# This file is distributed under the same license as the FreeCMDB package.
+# Axel Liljencrantz <axel.liljencrantz@freecode.no>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-09 09:55+0000\n"
+"PO-Revision-Date: 2009-11-10 11:11+1\n"
+"Last-Translator: Axel Liljencrantz <axel.liljencrantz@freecode.no>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: controllers/adminController.php:18 views/ciTypeView.php:10
+msgid "CI types"
+msgstr "CI-typer"
+
+#: controllers/adminController.php:19 views/ciColumnView.php:9
+msgid "CI columns"
+msgstr "CI-kolumner"
+
+#: controllers/adminController.php:20 views/ciPropertyView.php:8
+msgid "Properties"
+msgstr "Egenskaper"
+
+#: controllers/adminController.php:21
+msgid "Dependencies"
+msgstr "Beroenden"
+
+#: controllers/adminController.php:22
+msgid "Plugins"
+msgstr "Insticksmoduler"
+
+#: controllers/adminController.php:23
+msgid "Users"
+msgstr "Användare"
+
+#: controllers/adminController.php:24
+msgid "User groups"
+msgstr "Användargrupper"
+
+#: controllers/ciController.php:26
+msgid "Dependant added"
+msgstr "Ett beroende på denna CI har lagts till"
+
+#: controllers/ciController.php:32
+msgid "Dependency added"
+msgstr "Ett beroende från denna CI har lagts till"
+
+#: controllers/ciController.php:43
+msgid "Dependency removed"
+msgstr "Ett beroende från denna CI har tagits bort"
+
+#: controllers/ciController.php:54
+msgid "Dependant removed"
+msgstr "Ett beroende på denna CI har tagits bort"
+
+#: controllers/ciController.php:95
+msgid "CI updated"
+msgstr "CI uppdaterad"
+
+#: controllers/ciController.php:108 model.php:23
+msgid "CI created"
+msgstr "CI har skapats"
+
+#: controllers/ciController.php:156
+msgid "Fields updated"
+msgstr "Fälten har uppdaterats"
+
+#: controllers/ciController.php:161
+msgid "Fields not updated"
+msgstr "Fälten har inte uppdaterats"
+
+#: controllers/ciController.php:173 model.php:24
+msgid "CI removed"
+msgstr "CI borttagen"
+
+#: controllers/ciController.php:176
+msgid "Could not remove CI, not found."
+msgstr "Kunde inte ta bort CI, den existerar inte."
+
+#: controllers/ciController.php:198
+msgid "View all"
+msgstr "Visa alla"
+
+#: controllers/ciController.php:201
+msgid "View"
+msgstr "Visa"
+
+#: controllers/ciController.php:201
+msgid "Go back to read-only view of this CI"
+msgstr "Gå tillbaka till skrivskyddad visning av denna CI"
+
+#: controllers/ciController.php:206 views/ciView.php:249 views/ciView.php:293
+#: views/ciView.php:363
+msgid "Edit"
+msgstr "Redigera"
+
+#: controllers/ciController.php:206
+msgid "Edit all fields of this CI"
+msgstr "Redigera alla fält för denna CI"
+
+#: controllers/ciController.php:209
+msgid "History"
+msgstr "Historik"
+
+#: controllers/ciController.php:209
+msgid "Show the entire revision history for this item."
+msgstr "Visa hela revisionshistoriken för denna sak."
+
+#: controllers/ciController.php:213 controllers/ciListController.php:217
+msgid "Create new item"
+msgstr "Skapa ny sak"
+
+#: controllers/ciController.php:213
+msgid "Creat an empty new CI"
+msgstr "Skapa tom ny CI"
+
+#: controllers/ciController.php:214 views/ciColumnView.php:88
+#: views/ciDependencyView.php:54 views/ciView.php:404 views/ciView.php:429
+#: views/pluginView.php:15
+msgid "Remove"
+msgstr "Ta bort"
+
+#: controllers/ciController.php:214
+msgid "Remove this CI"
+msgstr "Ta bort denna CI"
+
+#: controllers/ciController.php:214 views/ciColumnView.php:88
+#: views/ciView.php:404 views/ciView.php:429
+msgid "Are you sure?"
+msgstr "Är du säker?"
+
+#: controllers/ciController.php:215
+msgid "Copy"
+msgstr "Kopiera"
+
+#: controllers/ciController.php:215
+msgid "Copy this CI"
+msgstr "Kopiera denna CI"
+
+#: controllers/ciListController.php:219
+msgid "View recently deleted items"
+msgstr "Visa nyligen raderade saker"
+
+#: model.php:25
+msgid "CI type changed"
+msgstr "CI-typ har ändrats"
+
+#: model.php:26
+msgid "CI column value changed"
+msgstr "CI-kolumns värde ändrat"
+
+#: model.php:27
+msgid "Added new dependency"
+msgstr "Lade till nytt beroende"
+
+#: model.php:28
+msgid "Removed dependency"
+msgstr "Tog bort beroendet"
+
+#: model.php:241
+msgid "Box"
+msgstr "Låda"
+
+#: model.php:242
+msgid "Diamond"
+msgstr "Diamant"
+
+#: model.php:243
+msgid "Double octagon"
+msgstr "Dubbel åttahörning"
+
+#: model.php:244
+msgid "Ellipse"
+msgstr "Elips"
+
+#: model.php:245
+msgid "House"
+msgstr "Hus"
+
+#: model.php:246
+msgid "Octagon"
+msgstr "Åttahörning"
+
+#: model.php:247
+msgid "Triangle"
+msgstr "Triangel"
+
+#: model.php:449
+msgid "Unformated text"
+msgstr "Oformaterad text"
+
+#: model.php:450
+msgid "Multiline text with formating"
+msgstr "Flerradig text med formatering"
+
+#: model.php:451
+msgid "List"
+msgstr "Lista"
+
+#: model.php:452
+msgid "Email address"
+msgstr "Epostadress"
+
+#: model.php:453
+msgid "Date picker"
+msgstr "Datumväljare"
+
+#: model.php:454
+msgid "File"
+msgstr "Fil"
+
+#: model.php:455
+msgid "IFrame"
+msgstr "Iframe"
+
+#: model.php:575
+msgid "Do not show in graph"
+msgstr "Visa inte i graf"
+
+#: model.php:576
+msgid "Black"
+msgstr "Svart"
+
+#: model.php:577
+msgid "Blue"
+msgstr "Blå"
+
+#: model.php:578
+msgid "Brown"
+msgstr "Brun"
+
+#: model.php:579
+msgid "Cyan"
+msgstr "Cyan"
+
+#: model.php:580
+msgid "Green"
+msgstr "Grön"
+
+#: model.php:581
+msgid "Red"
+msgstr "Röd"
+
+#: model.php:582
+msgid "Yellow"
+msgstr "Gul"
+
+#: model.php:1423
+msgid "Permission denied"
+msgstr "Förbjudet"
+
+#: model.php:1423
+msgid "You are not authorized to view this page"
+msgstr "Du har inte tillåtelse att se denna sida"
+
+#: plugins/drilldown/controllers/configureController.php:11
+msgid "Root node for drilldown"
+msgstr "Rotnod för nedborrning"
+
+#: plugins/loginTuit/controllers/configureController.php:11
+msgid "Group required for viewing CMDB"
+msgstr "Grupptillhörighet som krävs för att att se saker i CMDBn"
+
+#: plugins/loginTuit/controllers/configureController.php:12
+msgid "Group required for editing CMDB"
+msgstr "Grupptillhörighet som krävs för att att redigera saker i CMDBn"
+
+#: plugins/loginTuit/controllers/configureController.php:13
+msgid "Group required for administrating CMDB"
+msgstr "Grupptillhörighet som krävs för att att administrera CMDBn"
+
+#: plugins/loginTuit/index.php:47
+#, php-format
+msgid "User"
+msgstr "Användare"
+
+#: plugins/loginTuit/index.php:47
+#, php-format
+msgid "Log out"
+msgstr "Logga ut"
+
+#: views/adminView.php:9
+msgid "CMDB Administration"
+msgstr "CMDB-administration"
+
+#: views/adminView.php:12
+msgid ""
+"This is the adminitration section of FreeCMDB. Use it to change what types "
+"of CI to model, and what data should be available for each CI."
+msgstr ""
+"Detta är administrationssektionen av FreeCMDB. Använd den för att ändra "
+"vilka typer av CIs som skall modeleras och vilken information som skall "
+"finnas om varje CI."
+
+#: views/ciColumnView.php:16 views/ciColumnView.php:96
+#: views/ciDependencyView.php:16 views/ciDependencyView.php:83
+#: views/ciPropertyView.php:12 views/ciPropertyView.php:48
+#: views/ciTypeView.php:14 views/ciTypeView.php:65
+#: views/simpleConfigureView.php:22 views/simpleConfigureView.php:54
+msgid "Update"
+msgstr "Uppdatera"
+
+#: views/ciColumnView.php:88
+msgid "Remove the column"
+msgstr "Ta bort denna kolumn"
+
+#: views/ciDependencyView.php:11
+msgid "CI dependencies"
+msgstr "CI-Beroenden"
+
+#: views/ciDependencyView.php:20
+msgid "Name of dependency"
+msgstr "Namn på beroendetyp"
+
+#: views/ciDependencyView.php:22
+msgid "Name of dependant"
+msgstr "Namn på omvänd beroendetyp"
+
+#: views/ciDependencyView.php:24
+msgid "Graph Color"
+msgstr "Graffärg"
+
+#: views/ciDependencyView.php:54
+msgid "Remove the dependency"
+msgstr "Ta bort beroendet"
+
+#: views/ciPropertyView.php:22
+msgid "Base URL (Only needed if using search engine friendly URLs)"
+msgstr "Bas-URL (Bara nödvändig om sökmotorvänliga URL:er är aktiverade)"
+
+#: views/ciPropertyView.php:23
+msgid "Maximum dependency depth"
+msgstr "Maximalt beroendedjup"
+
+#: views/ciPropertyView.php:24
+msgid "Date format"
+msgstr "Datumformat"
+
+#: views/ciPropertyView.php:25
+msgid "Combined date and time format"
+msgstr "Datum- och tidsformat"
+
+#: views/ciPropertyView.php:26
+msgid "User interface language"
+msgstr "Språk på användargränssnittet"
+
+#: views/ciPropertyView.php:26
+msgid "Maximum number of matches in List views for which to draw a chart"
+msgstr ""
+"Maximalt antal matchningar vid vilken fortfarande en beroendegraf skall "
+"genereras"
+
+#: views/ciPropertyView.php:27
+msgid "Maximum number of items per page"
+msgstr "Maximalt antal saker per sida"
+
+#: views/ciTypeView.php:18 views/ciView.php:152
+#: views/simpleConfigureView.php:26
+msgid "Name"
+msgstr "Namn"
+
+#: views/ciTypeView.php:20
+msgid "Graph shape"
+msgstr "Grafform"
+
+#: views/ciView.php:53
+msgid "Iframes not supported by this browser."
+msgstr "Denna läsare stöder inte iframes"
+
+#: views/ciView.php:63
+msgid "<invalid value>"
+msgstr "<ogiltigt värde>"
+
+#: views/ciView.php:125
+msgid "Edit item list"
+msgstr "Redigera saklista"
+
+#: views/ciView.php:206
+#, php-format
+msgid "Viewing revision %s of %s"
+msgstr "Ser på revision %s av %s"
+
+#: views/ciView.php:210
+#, php-format
+msgid "Editing %s"
+msgstr "Redigerar %s"
+
+#: views/ciView.php:210
+#, php-format
+msgid "Viewing %s"
+msgstr "Ser på %s"
+
+#: views/ciView.php:218
+msgid "This is an old revision of this item."
+msgstr "Detta är en äldre revisionav denna sak."
+
+#: views/ciView.php:218
+msgid "Click here to view the latest version"
+msgstr "Klicka här för att se den senaste versionen"
+
+#: views/ciView.php:222
+msgid "This item has been deleted"
+msgstr "Denna sak har raderats"
+
+#: views/ciView.php:232
+msgid "Type"
+msgstr "Typ"
+
+#: views/ciView.php:249
+msgid "Change CI type"
+msgstr "Byt CI-typ"
+
+#: views/ciView.php:249
+msgid "Change type of this CI"
+msgstr "Ändra typ på denna CI"
+
+#: views/ciView.php:293 views/ciView.php:363
+#, php-format
+msgid "Edit %s"
+msgstr "Redigera %s"
+
+#: views/ciView.php:293 views/ciView.php:363
+msgid "Edit this CI field"
+msgstr "Redigera detta CI-fält"
+
+#: views/ciView.php:314
+msgid "Save"
+msgstr "Spara"
+
+#: views/ciView.php:401 views/ciView.php:426 views/ciView.php:453
+#, php-format
+msgid "View all information on %s"
+msgstr "Visa all information om %s"
+
+#: views/ciView.php:404 views/ciView.php:429
+#, php-format
+msgid "Remove dependency from %s to %s"
+msgstr "Ta bort beroende från %s till %s"
+
+#: views/ciView.php:460
+msgid "Indirect dependencies"
+msgstr "Indirekt beroende"
+
+#: views/ciView.php:468
+msgid "Add new dependency"
+msgstr "Lägg till nytt beroende"
+
+#: views/ciView.php:481
+msgid "Add"
+msgstr "Lägg till"
+
+#: views/ciView.php:524
+msgid "Dependencies for this CI"
+msgstr "Beroenden för denna CI"
+
+#: views/ciView.php:524
+msgid "Other items that depend on this CI"
+msgstr "Andra saker som beror på denna CI"
+
+#: views/pluginView.php:8
+msgid "Installed FreeCMDB plugins"
+msgstr "Installerade insticksmoduler för FreeCMDB"
+
+#: views/pluginView.php:15
+msgid "Remove the Plugin"
+msgstr "Ta bort denna insticksmodul"
+
+#: views/pluginView.php:19
+msgid "Send this file"
+msgstr "Skicka denna fil"
+
+#: views/pluginView.php:20
+msgid "Install plugin"
+msgstr "Installera insticksmodul"
+
+#: views/simpleConfigureView.php:28
+msgid "Value"
+msgstr "Värde"
