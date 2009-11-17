@@ -1,0 +1,7 @@
+{
+	"description" : "Single signon via tuit",
+	"author"      : "Axel Liljencrantz",
+	"version"     : "1.0",
+	"events"      : ["Startup"]
+}
+
