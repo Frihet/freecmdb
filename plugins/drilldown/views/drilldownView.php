@@ -40,9 +40,9 @@ $(document).ready(function(){
 </script>
       <?php
 
-      $link = makeLink(array('plugin'=>null,'controller'=>ci,'id'=>$node->id),$node->getDescription());
-	    $root_id = htmlEncode($controller->embedPoint());
-	    echo "<div id='$root_id'><div class='drilldown_expand expanded'></div>$link</div>";
+        $link = makeLink(array('plugin'=>null,'controller'=>ci,'id'=>$node->id),$node->getDescription());
+        $root_id = htmlEncode($controller->embedPoint());
+        echo "<div id='$root_id'><div class='drilldown_expand expanded'></div></div>";
 
         $content = ob_get_contents();
         ob_end_clean();

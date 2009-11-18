@@ -184,7 +184,7 @@ extends CmdbController
         
         $form = "<p><label for='$input_id'>New value:</label></p><p>" . $input;
         $form .= "</p><p><button type='submit'>Save</button> ";
-        $form .= "<button type='button' onclick='popupHide(\"$popup_id\")'>Cancel</button></p>";
+        $form .= "<button type='button' onclick='popupHide(\"$popup_id\")'>"._("Cancel")."</button></p>";
         
         return form::makeForm($form, array('task'=>'updateField','controller'=>'ci','id'=>$this->id,'key'=>$field_name), 'post', true);
     }

@@ -15,7 +15,7 @@ function freecmdbDrilldownItem(main, id, name)
     $(select).text(name);
     if (drilldownIsEmbeded) 
     {
-	select.type='button';
+	//	select.type='button';
 	select.onclick=function(event) {
 	    $('#'+drilldownUpdateTarget)[0].value += "" + id + " - " + name + "\n";	    
 	    return false;
@@ -32,7 +32,7 @@ function freecmdbDrilldownItem(main, id, name)
 function freecmdbDrilldownAdd(ci_id, node, skip)
 {
     var ci_data = drilldownData[""+ci_id];
-
+    
     function addChild(node, child_id) 
     {
 	var child_data = drilldownData[""+child_id];
@@ -58,7 +58,7 @@ function freecmdbDrilldownAdd(ci_id, node, skip)
 	main.appendChild(expand);
 	expand.innerHTML = "";
 	expand.className="drilldown_expand expanded";
-	expand.type='button';
+	//expand.type='button';
 	expand.onclick=function() {return false;};
 
 	if (has_good_children) {

@@ -98,7 +98,7 @@ extends CmdbController
 <table class='striped'>
 <tr>
 <th>
-<label for='filter_type'>Filter on type</label>
+<label for='filter_type'>"._("Filter on type")."</label>
 </th>
 <td>
 ";
@@ -111,7 +111,7 @@ extends CmdbController
 </tr>
 <tr>
 <th>
-<label for='filter_column'>Filter on column value</label>
+<label for='filter_column'>"._("Filter on column value")."</label>
 </th>
 <td>
 ";
@@ -145,10 +145,10 @@ extends CmdbController
 <table class='striped ci_list_table'>
 <tr>
 <th>
-Item
+"._("Item")."
 </th>
 <th>
-Type
+"._("Type")."
 </th>";
 		
 		foreach($this->extra_column as $column) 
@@ -163,7 +163,7 @@ $desc
 
 		$content .= "
 <th>
-Last updated
+"._("Last updated")."
 </th>
 <th>
 </th>
@@ -198,8 +198,8 @@ $val
                         if(ciUser::can_edit()) {
                             
                             $content .= makeLink(array('controller' => 'ci', 'id' => $ci->id,'task'=>'remove'),
-                                                 'Remove', 'remove', "Remove the CI " . $ci->getDescription(),
-                                                 array('onclick'=>'return confirm("Are you sure?");'));
+                                                 _('Remove'), 'remove', sprintf(_("Remove the CI %s"), $ci->getDescription()),
+                                                 array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\'').'");'));
                         }
                         
 			$content .= "</td></tr>";
