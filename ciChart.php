@@ -137,9 +137,10 @@ class ciChart
 				
         $revision_id = param('revision_id');
         $revision_str = $revision_id !== null? "&revision_id=$revision_id":"";
-        
+        util::$path = Property::get("core.baseUrl","");
+
         $graph->addNode($node->getDescription(true),
-                        array('URL' => 'index.php?action=ci&id='.$node->id.$revision_str,
+                        array('URL' => makeUrl(array('controller'=>'ci','task'=>'view','id'=>$node->id,'revision_id'=>$revision_id)),
                               'target' => '_parent',
                               'shape' => ciType::getShape($node->ci_type_id),
                               'fontsize' => '10', 
