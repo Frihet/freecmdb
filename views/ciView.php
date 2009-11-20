@@ -185,7 +185,7 @@ $(function()
         $edit = param("task", 'view')=='edit';
 
         if($edit) {
-            ci_user::assert_edit();
+            ciUser::assert_edit();
         }
         
 
