@@ -9,9 +9,13 @@ class loginTuitPlugin
         $session_id = $_COOKIE['sessionid'];
         
         $ch = curl_init();
-        $host = $_SERVER['SERVER_ADDR'];
+        $server_host = $_SERVER['SERVER_ADDR'];
+        $browser_host = $_SERVER['HTTP_HOST'];
+        $request_uri = $_SERVER['REQUEST_URI'];
+//	message($_SERVER);
+	
         
-        curl_setopt($ch, CURLOPT_URL, "http://" .$host ."/tuit/account/session");
+        curl_setopt($ch, CURLOPT_URL, "http://" .$server_host ."/tuit/account/session");
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -19,7 +23,7 @@ class loginTuitPlugin
         $res = curl_exec($ch);
         $info = curl_getinfo($ch);
         curl_close($ch);
-//        message($_SERVER);
+        //message($_SERVER);
 //	message($info);
 	
         if ($res !== false) {
@@ -59,9 +63,9 @@ class loginTuitPlugin
             
         }
         
-        util::redirect("http://" .$host ."/tuit/account/login");
+        util::redirect("http://" .$browser_host ."/tuit/account/login/?next=" . urlencode($request_uri));
 
-	//echo "WOO HOOO!";
+	echo "WOO HOOO!";
     }
     
     function configure($controller)
