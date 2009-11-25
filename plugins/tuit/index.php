@@ -37,11 +37,17 @@ class tuitPlugin
             $id_list = implode(", ", $id_list);
             
             $q = "select
-ci_id, count(issue_id) as count
-from ticket_cidependency
-where ci_id in ($id_list)
-group by ci_id
+    d.ci_id, 
+    count(d.issue_id) as count
+from ticket_cidependency d
+join ticket_issue i
+    on d.issue_id = i.id 
+where d.ci_id in ($id_list)
+    and i.current_status_id <> :closed_status
+group by d.ci_id
 ";
+            $param[':closed_status'] = Property::get('plugin.tuit.closedId');
+            
             $counts = dbTuit::fetchList($q, $param);
                         
             foreach($counts as $row) {
@@ -205,11 +211,15 @@ class CiTuitMapping
     function fetchTickets($ci_id) 
     {
         return dbTuit::fetchList("
-select i.id, i.subject 
+select 
+    i.id, 
+    i.subject 
 from ticket_cidependency as d
 join ticket_issue as i
-on d.issue_id = i.id
-where ci_id= :ci_id", array(":ci_id"=>$ci_id));
+    on d.issue_id = i.id
+where ci_id= :ci_id
+    and i.current_status_id <> :closed_status
+", array(":ci_id"=>$ci_id, ':closed_status' => Property::get('plugin.tuit.closedId')));
     }
 
     function updateCi($ci) 
