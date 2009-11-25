@@ -10,7 +10,6 @@ extends CmdbController
     function __construct() 
     {
         $this->id = param('id');
-        
     }
 
     function addDependencyRun()

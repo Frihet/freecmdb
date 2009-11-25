@@ -24,7 +24,8 @@ class ciPropertyView
                                "core.dateFormat" => _("Date format"),
 			       "core.dateTimeFormat" => _("Combined date and time format"),
 			       "core.locale" => _("User interface language"),			       "chart.maxItems" => _("Maximum number of matches in List views for which to draw a chart"),
-			       "pager.itemsPerPage" => _("Maximum number of items per page"));
+			       "pager.itemsPerPage" => _("Maximum number of items per page"),
+                               'core.baseURL' => _('Base URL for site'));
         
         foreach($property_list as $name => $desc) {
             $value = Property::get($name);

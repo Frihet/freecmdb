@@ -11,6 +11,8 @@ extends Application
     {
         $this->addScript('static/FreeCMDB.js');
         $this->addStyle('static/FreeCDMB.css');
+        $this->enableDatePicker();
+        $this->enableTinyMce();        
     }
     
     

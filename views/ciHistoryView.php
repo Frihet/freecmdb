@@ -4,14 +4,15 @@ class ciHistoryView
 {
 
     function formatHistoryValue($val, $column_id) 
-    {
+    { 
+       
         if ($val ==null) {
             return "<em class='value'>&lt;empty&gt;</em>";
         }
         
         $type = ciColumnType::getType($column_id);
         if ($type != CI_COLUMN_IFRAME) {
-            $val = ciView::makeInput(null, $val, $column_id, true);
+            $val = ciView::makeInput(null, null, $val, $column_id, true);
             $val = strip_tags($val);
         }        
         
@@ -20,8 +21,10 @@ class ciHistoryView
             $val = substr($val, 0, 60) . "...";
         }
         
-        return "<em class='value'>«".htmlEncode($val)."»</em>";
+        $res = "<em class='value'>«".htmlEncode($val)."»</em>";
 
+        return $res;
+        
     }
 
 
@@ -36,13 +39,13 @@ class ciHistoryView
 <table class='striped history_table'>
 <tr>
 <th>
-Description of change
+"._("Description of change")."
 </th>
 <th>
-Time
+"._("Time")."
 </th>
 <th>
-Changed by
+"._("Changed by")."
 </th>
 <th>
 </th>
@@ -76,13 +79,15 @@ Changed by
                 break;
 
             case CI_ACTION_CHANGE_COLUMN:
+            
                 $old = $edit['column_value_old'];
                 $new = $ci->get(ciColumnType::getName($edit['column_id']));
+                
                 if ($old == $new) 
                     $noop = true;
                 $old = $this->formatHistoryValue($old, $edit['column_id']);
                 $new = $this->formatHistoryValue($new, $edit['column_id']);
-                    
+                
                 $desc = "Changed value of column " . ciColumnType::getName($edit['column_id']) . " from " . $old . " to " . $new;
                 break;
                     
@@ -101,8 +106,8 @@ Changed by
             if (!$noop) {
                 $username = makeLink(array('controller'=>'user','id'=>$edit['user_id']), $edit['username']);
                 $time = FreeCMDB::dateTime($edit['create_time']);
-                $buttons =  makeLink(array('task'=>'view', 'revision_id' => $edit['id']),'Show', 'revision');
-                $buttons .= makeLink(array('task'=>'revert', 'target_revision_id' => $edit['id']),'Revert', 'revert');
+                $buttons =  makeLink(array('task'=>'view', 'revision_id' => $edit['id']),_('Show'), 'revision');
+                $buttons .= makeLink(array('task'=>'revert', 'target_revision_id' => $edit['id']),_('Revert'), 'revert');
                 $content.= "
 <tr>
 <td>$desc</td>
