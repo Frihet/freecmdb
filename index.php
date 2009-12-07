@@ -1,11 +1,39 @@
 <?php
-
 require_once('common/index.php');
 require_once("model.php");
 
+/**
+ Default, simple dropdown list for selecting a CI
+ */
+class DefaultCiSelector
+{
+    function make($name, $selected)
+    {
+        $arr = array();
+        $all_ci_list = ci::fetch();
+
+        foreach($all_ci_list as $item) {
+            $item_id = $item->id;
+            /*
+             if ($ci->isDirectDependant($item_id) || $ci->id == $item_id) {
+             continue;
+             }*/
+            $arr[$item_id] = $item->getDescription();
+        }
+        return form::makeSelect($name, $arr, null);
+    }
+
+}
+
+/**
+ App class for FreeCMDB
+ */
 class MyApp 
 extends Application
 {
+
+    private $ci_selector;
+    
 
     function __construct()
     {
@@ -13,8 +41,19 @@ extends Application
         $this->addStyle('static/FreeCDMB.css');
         $this->enableDatePicker();
         $this->enableTinyMce();        
+        
+        $this->setCiSelector(new DefaultCiSelector());
     }
     
+    function makeCiSelector($name, $selected)
+    {
+        return $this->ci_selector->make($name, $selected);
+    }
+
+    function setCiSelector($s)
+    {
+        $this->ci_selector = $s;
+    }
     
     /**
      Write out the top menu.
