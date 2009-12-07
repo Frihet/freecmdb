@@ -1,6 +1,9 @@
 <?php
   /**
    Print dependency graphs for a selection of CIs.
+
+   Fixme: This should be a regular controller - no reason for a
+   special path for charts. Just leads to a bunch of code repetition and bugs. :-/
   */
 
 require_once("config.php");
