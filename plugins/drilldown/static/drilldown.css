@@ -27,11 +27,27 @@
 .drilldown_subtree button:hover,
 .drilldown_subtree button:active
 {
-    border: none;
+    border: 1px solid white;
     background-color: white;
     background-image: none;
     margin: none;
     padding: none;
     color: black;
     cursor:pointer;
+}
+
+button.drilldown_selected,
+button.drilldown_selected:hover,
+button.drilldown_selected:active
+{
+    background-color: #eee;
+    border: 1px solid #aaaaaa;
+}
+
+#ci_picker_root
+{
+    background: white;
+    border: 1px solid #888;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
 }

@@ -465,16 +465,7 @@ $(function()
         if (!$is_readonly) {
 	    $content .= "<tr><th colspan='3'>"._("Add new dependency")."</th></tr>\n";
 	    $form = "<tr><td>".form::makeSelect('dependency_type_info', CiDependencyType::getDependencyOptions(),property::get(''))."</td><td>";
-	    $arr = array();
-            foreach($all_ci_list as $item) {
-                $item_id = $item->id;
-                /*
-		if ($ci->isDirectDependant($item_id) || $ci->id == $item_id) {
-                    continue;
-		    }*/
-		$arr[$item_id] = $item->getDescription();
-            }
-	    $form .= form::makeSelect('dependency_id', $arr, null);
+            $form .= $controller->getApplication()->makeCiSelector('dependency_id', null);
 	    
             $form .= "</td><td><button type='submit'>"._("Add")."</button>\n";
             $form .= "</td></tr>";

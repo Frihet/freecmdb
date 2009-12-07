@@ -1,38 +1,53 @@
 <?php
   /**
-   Controller for ci objects
+   Controller for ci objects. Main controller of FreeCMDB.
   */
 class CiController
 extends CmdbController
 {
     var $id;
  
-    function __construct() 
+    function __construct($app) 
     {
+        parent::__construct($app);
         $this->id = param('id');
     }
 
+    /**
+     Add a CI dependency
+     */
     function addDependencyRun()
     {
         ciUser::assert_edit();
-        $other_id = param('dependency_id');
+        $other_id_list = explode("\n", param('dependency_id'));
         list($type_id,$reverse) = explode(':',param('dependency_type_info'));
-	if($reverse) 
-	{
-	    $ci_list = ci::fetch(array('id_arr'=>array($other_id)));
-	    $ci = $ci_list[$other_id];
-	    $ci->addDependency($this->id, $type_id);
-	    message(_("Dependant added"));
-	}
-	else 
-	{
-	    $ci = $this->getCi();
-	    $ci->addDependency($other_id, $type_id);
-	    message(_("Dependency added"));
-	}
-        util::redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
+        foreach($other_id_list as $other_id) {
+            $other_id = trim($other_id);
+            if($other_id == '')
+                continue;
+            message('Trying to add dependency ' . $other_id);
+            
+            if($reverse) {
+                $ci_list = ci::fetch(array('id_arr'=>array($other_id)));
+                $ci = $ci_list[$other_id];
+                $ci->addDependency($this->id, $type_id);
+            } else {
+                $ci = $this->getCi();
+                $ci->addDependency($other_id, $type_id);
+            }
+        }
+        if ($reverse) {
+            message(_("Dependants added"));
+        } else {
+            message(_("Dependencies added"));
+        }
+        
+        util::redirect(makeUrl(array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'dependency_id'=>null)));
     }
 
+    /**
+     Remove a CI dependency
+     */
     function removeDependencyRun()
     {
         ciUser::assert_edit();
@@ -43,6 +58,9 @@ extends CmdbController
         util::redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
 
+    /**
+     Remove a CI dependant
+     */
     function removeDependantRun()
     {
         ciUser::assert_edit();
@@ -54,6 +72,9 @@ extends CmdbController
         util::redirect(makeUrl(array('task'=>null, 'dependency_id'=>null)));
     }
     
+    /**
+     Update a single CI field
+    */
     function updateField($key, $value)
     {
         $ci = new ci();
@@ -69,6 +90,9 @@ extends CmdbController
         }
     }
     
+    /**
+     Update a single CI field of file type
+    */
     function updateFieldFile($key, $value)
     {
         $ci = new ci();
@@ -80,6 +104,11 @@ extends CmdbController
         }
     }
     
+    /**
+     Handler for the updateField action.
+
+     Update the value of a single field.
+    */
     function updateFieldRun()
     {
         ciUser::assert_edit();
@@ -95,6 +124,11 @@ extends CmdbController
         util::redirect(makeUrl(array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'key'=>null, 'value' => null)));
     }
     
+    /**
+     Handler for the create action.
+
+     Create new CI.
+    */
     function createRun()
     {
         ciUser::assert_edit();
@@ -108,6 +142,9 @@ extends CmdbController
         util::redirect(makeUrl(array('task'=>'edit', 'key'=>null, 'value' => null, 'id' => $id)));
     }
     
+    /**
+     Returns the CI we are controlling.
+    */
     function getCi() 
     {
         if ($this->ci != null) {
@@ -118,6 +155,11 @@ extends CmdbController
         return $this->ci;
     }
 
+    /**
+     Handler for the saveAll action.
+
+     Save all fields of the current CI.
+    */
     function saveAllRun() 
     {
         ciUser::assert_edit();
@@ -164,6 +206,11 @@ extends CmdbController
         
     }
     
+    /**
+     Handler for the remove action.
+
+     Removes a CI.
+    */
     function removeRun()
     {
         ciUser::assert_edit();
@@ -178,6 +225,9 @@ extends CmdbController
         util::redirect(makeUrl(array('id'=>null, 'controller'=>'ciList', 'task'=>null)));
     }
     
+    /**
+     Create a popup form
+    */
     function makePopupForm($field_name, $input, $input_id, $popup_id)
     {
         
@@ -188,6 +238,10 @@ extends CmdbController
         return form::makeForm($form, array('task'=>'updateField','controller'=>'ci','id'=>$this->id,'key'=>$field_name), 'post', true);
     }
     
+    /**
+     Returns the action menu for this controller.
+    */
+
     function getActionMenu() 
     {
         $action_links = array();
@@ -218,6 +272,11 @@ extends CmdbController
         
     }
     
+    /**
+     Handler for the copy action.
+
+     Makes an identical copy of a CI
+    */
     function copyRun()
     {
         ciUser::assert_edit();
@@ -257,12 +316,22 @@ where dependency_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new)
         */
     }
 	
+    /**
+     Handler for the edit action.
+     
+     Display an edit form.
+    */
     function editRun()
     {
         ciUser::assert_edit();
         $this->viewRun();
     }
     
+    /**
+     Handler for the revert action.
+     
+     Revert a CI to a previous version.
+    */
     function revertRun()
     {
         ciUser::assert_edit();
@@ -332,11 +401,21 @@ order by cl2.create_time desc;',
         return history::fetch($this->id);
     }
 	    
+    /**
+     Handler for the history action.
+     
+     Display all revisions of a CI.
+    */
     function historyRun()
     {
         $this->render("ciHistory");
     }
 	
+    /**
+     Handler for the view action.
+     
+     Display an CI in all its glory.
+    */
     function viewRun()
     {
         $this->render("ci");

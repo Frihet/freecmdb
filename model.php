@@ -1590,7 +1590,7 @@ class Event
         self::$data=array();
         
         foreach(db::fetchList('select event_name, class_name from ci_event') as $row) {
-            if (!array_key_exists($row['event_name'],self::$data)) {
+            if (!array_key_exists(strToLower($row['event_name']),self::$data)) {
                 self::$data[strToLower($row['event_name'])]=array();
             }
             self::$data[strToLower($row['event_name'])][] =  $row;
