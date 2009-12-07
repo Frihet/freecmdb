@@ -2,10 +2,13 @@
 
 require_once("controllers/adminController.php");
 
+/** A very simple controller for displaying a minimal configuration
+ interface.
+ */
 class simpleConfigureController
 extends adminController
 {
-
+    
     function viewRun()
     {
         $this->render("configure");
