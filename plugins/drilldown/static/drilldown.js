@@ -1,11 +1,18 @@
 
 Array.prototype.exists = function(o) {
-    for(var i = 0; i < this.length; i++)
-	if(this[i] === o)
+    for(var i = 0; i < this.length; i++) {
+	if(this[i] === o) {
 	    return true;
+	}
+    }
     return false;
 };
 
+function freecmdbDrilldownStrip(haystack, needle)
+{
+    var pattern = new RegExp("^"+needle+"$","gm");
+    return haystack.replace(pattern,"");
+}
 
 function freecmdbDrilldownItem(main, id, name)
 {
@@ -15,9 +22,24 @@ function freecmdbDrilldownItem(main, id, name)
     $(select).text(name);
     if (drilldownIsEmbeded) 
     {
+	select.stat=false;
 	//	select.type='button';
 	select.onclick=function(event) {
-	    $('#'+drilldownUpdateTarget)[0].value += "" + id + " - " + name + "\n";	    
+	    select.state = !select.state;
+	    var target = $('#'+drilldownUpdateTarget)[0];
+	    if (target.type == 'hidden') {
+		if(select.state) {
+		    target.value += "" + id + "\n";	    
+		    select.className = 'drilldown_selected';
+		}
+		else {
+		    target.value = freecmdbDrilldownStrip(target.value, ""+id);
+		    select.className = '';
+		}
+	    }
+	    else {
+		target.value += "" + id + " - " + name + "\n";	    
+	    }
 	    return false;
 	};
 		
@@ -66,7 +88,7 @@ function freecmdbDrilldownAdd(ci_id, node, skip)
 	    expand.className="drilldown_expand";
 	    expand.onclick=function() {
 		var my_skip = skip.slice(0);
-		my_skip.push(""+ci_id)
+		my_skip.push(""+ci_id);
 		
 		freecmdbDrilldownAdd(child_id, main, my_skip);
 		expand.onclick = "";
@@ -88,4 +110,16 @@ function freecmdbDrilldownAdd(ci_id, node, skip)
 	
 	addChild(node, child_id);
     }
+
+    /*
+      Add orphans to root
+    */
+    if (skip.length === 0) {
+	$.each(drilldownData, function(id, ci){
+		if (ci.children.length === 0) {
+		    addChild(node, ci.id);
+		}
+	    });
+    }
+
 }
