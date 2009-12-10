@@ -28,7 +28,7 @@ class drilldownPlugin
         $app->setCiSelector(new DrilldownCiSelector());        
 
         $param['source']->addContent('action_menu_pre',"<li>".makeLink(makeUrl(array('plugin'=>'drilldown','controller'=>'drilldown','id'=>null)),
-                                                                             _("Drilldown"))
+                                                                       _("Drilldown"))
                                      . "</li><li><hr/></li>");
         
                 

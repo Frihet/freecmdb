@@ -12,7 +12,6 @@ class DrilldownView
     function render($controller)
     {
 	
-        $action_links = array();
 	$d = json_encode($controller->getDrilldownInfo());
 	$node = $controller->getRoot();
 	
@@ -52,7 +51,7 @@ $(document).ready(function(){
 	    exit(0);
 	}
 	
-	$controller->show($action_links, $content);
+	$controller->show($controller->getActionMenu(), $content);
         
     }
 

@@ -37,6 +37,20 @@ extends CmdbController
     }
 
     /**
+     Returns the action menu for this controller.
+    */
+    function getActionMenu() 
+    {
+        $action_links = array();
+        if(ciUser::can_edit()) {
+            $action_links[] = makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), _("Create new item"), null, _("Creat an empty new CI"));
+        }
+        return $action_links;
+        
+    }
+
+
+    /**
      Returns a drilldown tree of all CIs
     */
     function getDrilldownInfo()
