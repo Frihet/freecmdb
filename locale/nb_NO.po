@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-09 09:55+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2009-11-27 11:59+0000\n"
+"PO-Revision-Date: 2009-11-27 11:59+0000\n"
 "Last-Translator: Anja Winther-Ruud <anja.winther-ruud@freecode.no>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -43,105 +43,138 @@ msgstr "Brukere"
 msgid "User groups"
 msgstr "Brukergrupper"
 
-#: controllers/ciController.php:26
-msgid "Dependant added"
+#: controllers/ciController.php:37
+#, fuzzy
+msgid "Dependants added"
 msgstr "Tillagt avhengighet"
 
-#: controllers/ciController.php:32
-msgid "Dependency added"
+#: controllers/ciController.php:39
+#, fuzzy
+msgid "Dependencies added"
 msgstr "Binding lagt til"
 
-#: controllers/ciController.php:43
+#: controllers/ciController.php:51
 msgid "Dependency removed"
 msgstr "Binding fjernet"
 
-#: controllers/ciController.php:54
+#: controllers/ciController.php:62
 msgid "Dependant removed"
 msgstr "Avhengighet fjernet"
 
-#: controllers/ciController.php:95
+#: controllers/ciController.php:103
 msgid "CI updated"
 msgstr "CI oppdatert"
 
-#: controllers/ciController.php:108 model.php:23
+#: controllers/ciController.php:116 model.php:23
 msgid "CI created"
 msgstr "CI skapt"
 
-#: controllers/ciController.php:156
+#: controllers/ciController.php:164
 msgid "Fields updated"
 msgstr "Felt oppdatert"
 
-#: controllers/ciController.php:161
+#: controllers/ciController.php:169
 msgid "Fields not updated"
 msgstr "Felt ikke oppdatert"
 
-#: controllers/ciController.php:173 model.php:24
+#: controllers/ciController.php:181 model.php:24
 msgid "CI removed"
 msgstr "CI fjernet"
 
-#: controllers/ciController.php:176
+#: controllers/ciController.php:184
 msgid "Could not remove CI, not found."
 msgstr "Kunne ikke fjerne CI, ikke funnet."
 
-#: controllers/ciController.php:198
+#: controllers/ciController.php:195
+#, fuzzy
+msgid "Cancel"
+msgstr "Turkis"
+
+#: controllers/ciController.php:206
 msgid "View all"
 msgstr "Vis alle"
 
-#: controllers/ciController.php:201
+#: controllers/ciController.php:209
 msgid "View"
 msgstr "Vis"
 
-#: controllers/ciController.php:201
+#: controllers/ciController.php:209
 msgid "Go back to read-only view of this CI"
 msgstr "Gå tilbake til bare-lese visning av denne CI"
 
-#: controllers/ciController.php:206 views/ciView.php:249 views/ciView.php:293
-#: views/ciView.php:363
+#: controllers/ciController.php:214 views/ciView.php:247 views/ciView.php:291
+#: views/ciView.php:361
 msgid "Edit"
 msgstr "Forandre"
 
-#: controllers/ciController.php:206
+#: controllers/ciController.php:214
 msgid "Edit all fields of this CI"
 msgstr "Forandre alle felt av denne CI"
 
-#: controllers/ciController.php:209
+#: controllers/ciController.php:217
 msgid "History"
 msgstr "Historie"
 
-#: controllers/ciController.php:209
+#: controllers/ciController.php:217
 msgid "Show the entire revision history for this item."
 msgstr "Vis hele revisjon historien for dette elementet"
 
-#: controllers/ciController.php:213 controllers/ciListController.php:217
+#: controllers/ciController.php:221 controllers/ciListController.php:217
 msgid "Create new item"
 msgstr "Skap nytt element"
 
-#: controllers/ciController.php:213
+#: controllers/ciController.php:221
 msgid "Creat an empty new CI"
 msgstr "Skap en tom ny CI"
 
-#: controllers/ciController.php:214 views/ciColumnView.php:88
-#: views/ciDependencyView.php:54 views/ciView.php:404 views/ciView.php:429
-#: views/pluginView.php:15
+#: controllers/ciController.php:222 controllers/ciListController.php:201
+#: views/ciColumnView.php:88 views/ciDependencyView.php:54
+#: views/ciView.php:402 views/ciView.php:427 views/pluginView.php:15
 msgid "Remove"
 msgstr "Fjern"
 
-#: controllers/ciController.php:214
+#: controllers/ciController.php:222
 msgid "Remove this CI"
 msgstr "Fjern denne CI"
 
-#: controllers/ciController.php:214 views/ciColumnView.php:88
-#: views/ciView.php:404 views/ciView.php:429
+#: controllers/ciController.php:222 controllers/ciListController.php:202
+#: views/ciColumnView.php:88 views/ciView.php:402 views/ciView.php:427
 msgid "Are you sure?"
 msgstr "Er du sikker?"
 
-#: controllers/ciController.php:215
+#: controllers/ciController.php:223
 msgid "Copy"
 msgstr "Kopier"
 
-#: controllers/ciController.php:215
+#: controllers/ciController.php:223
 msgid "Copy this CI"
 msgstr "Kopier denne CI"
+
+#: controllers/ciListController.php:101
+msgid "Filter on type"
+msgstr ""
+
+#: controllers/ciListController.php:114
+msgid "Filter on column value"
+msgstr ""
+
+#: controllers/ciListController.php:148
+msgid "Item"
+msgstr ""
+
+#: controllers/ciListController.php:151 views/ciView.php:230
+msgid "Type"
+msgstr "Type"
+
+#: controllers/ciListController.php:166
+#, fuzzy
+msgid "Last updated"
+msgstr "CI oppdatert"
+
+#: controllers/ciListController.php:201
+#, fuzzy, php-format
+msgid "Remove the CI %s"
+msgstr "Fjern denne CI"
 
 #: controllers/ciListController.php:219
 msgid "View recently deleted items"
@@ -263,6 +296,10 @@ msgstr "Du er ikke autorisert til å se denne siden"
 msgid "Root node for drilldown"
 msgstr "Rotnod for nedborring"
 
+#: plugins/ggg/index.php:19 plugins/tuit/index.php:19
+msgid "Issue count"
+msgstr ""
+
 #: plugins/loginTuit/controllers/configureController.php:11
 msgid "Group required for viewing CMDB"
 msgstr "Gruppe nødvendig for å se CMDB"
@@ -275,15 +312,27 @@ msgstr "Gruppe nødvendig for å forandre CMDB"
 msgid "Group required for administrating CMDB"
 msgstr "Gruppe nødvendig for administrering av CMDB"
 
-#: plugins/loginTuit/index.php:47
+#: plugins/loginTuit/index.php:51
 #, php-format
 msgid "User"
 msgstr "Bruker"
 
-#: plugins/loginTuit/index.php:47
+#: plugins/loginTuit/index.php:51
 #, php-format
 msgid "Log out"
 msgstr "Logg ut"
+
+#: plugins/tuit/controllers/configureController.php:11
+msgid "DSN for TUIT database"
+msgstr ""
+
+#: plugins/tuit/controllers/configureController.php:12
+msgid "Status id for closed issues"
+msgstr ""
+
+#: plugins/tuit/index.php:159
+msgid "Open issues associated with this CI"
+msgstr ""
 
 #: views/adminView.php:9
 msgid "CMDB Administration"
@@ -293,13 +342,14 @@ msgstr "CMDB Administrasjon"
 msgid ""
 "This is the adminitration section of FreeCMDB. Use it to change what types "
 "of CI to model, and what data should be available for each CI."
-msgstr "Dette er administrasjonsseksjonen for FreeCMDB. Bruk den for å forandre "
-"hvilke typer av CI å modellere,og hvilke data som bør være tilgjengelig for hver CI."
-
+msgstr ""
+"Dette er administrasjonsseksjonen for FreeCMDB. Bruk den for å forandre "
+"hvilke typer av CI å modellere,og hvilke data som bør være tilgjengelig for "
+"hver CI."
 
 #: views/ciColumnView.php:16 views/ciColumnView.php:96
 #: views/ciDependencyView.php:16 views/ciDependencyView.php:83
-#: views/ciPropertyView.php:12 views/ciPropertyView.php:48
+#: views/ciPropertyView.php:12 views/ciPropertyView.php:49
 #: views/ciTypeView.php:14 views/ciTypeView.php:65
 #: views/simpleConfigureView.php:22 views/simpleConfigureView.php:54
 msgid "Update"
@@ -329,6 +379,28 @@ msgstr "Graf farge"
 msgid "Remove the dependency"
 msgstr "Fjern bindingen"
 
+#: views/ciHistoryView.php:42
+msgid "Description of change"
+msgstr ""
+
+#: views/ciHistoryView.php:45
+msgid "Time"
+msgstr ""
+
+#: views/ciHistoryView.php:48
+#, fuzzy
+msgid "Changed by"
+msgstr "Forandre CI-typer"
+
+#: views/ciHistoryView.php:109
+msgid "Show"
+msgstr ""
+
+#: views/ciHistoryView.php:110
+#, fuzzy
+msgid "Revert"
+msgstr "Fjern"
+
 #: views/ciPropertyView.php:22
 msgid "Base URL (Only needed if using search engine friendly URLs)"
 msgstr "Basis URL (Trengs bare hvis enkel URL søkemotor brukes)"
@@ -356,6 +428,10 @@ msgstr "Maksimum antall treff i Listevisning for å tegne et diagram "
 #: views/ciPropertyView.php:27
 msgid "Maximum number of items per page"
 msgstr "Maksimum antall elementer per side"
+
+#: views/ciPropertyView.php:28
+msgid "Base URL for site"
+msgstr ""
 
 #: views/ciTypeView.php:18 views/ciView.php:152
 #: views/simpleConfigureView.php:26
@@ -393,70 +469,66 @@ msgstr "Forandre %s"
 msgid "Viewing %s"
 msgstr "Vis %s"
 
-#: views/ciView.php:218
+#: views/ciView.php:216
 msgid "This is an old revision of this item."
 msgstr "Dette er en gammel revisjon av dette elementet"
 
-#: views/ciView.php:218
+#: views/ciView.php:216
 msgid "Click here to view the latest version"
 msgstr "Klikk her for å se den siste versonen"
 
-#: views/ciView.php:222
+#: views/ciView.php:220
 msgid "This item has been deleted"
 msgstr "Dette elementet har blitt slettet"
 
-#: views/ciView.php:232
-msgid "Type"
-msgstr "Type"
-
-#: views/ciView.php:249
+#: views/ciView.php:247
 msgid "Change CI type"
 msgstr "Forandre CI-typer"
 
-#: views/ciView.php:249
+#: views/ciView.php:247
 msgid "Change type of this CI"
 msgstr "Forandre denne CI typen"
 
-#: views/ciView.php:293 views/ciView.php:363
+#: views/ciView.php:291 views/ciView.php:361
 #, php-format
 msgid "Edit %s"
 msgstr "Forandre %s"
 
-#: views/ciView.php:293 views/ciView.php:363
+#: views/ciView.php:291 views/ciView.php:361
 msgid "Edit this CI field"
 msgstr "Endre dette CI feltet"
 
-#: views/ciView.php:314
+#: views/ciView.php:312
 msgid "Save"
 msgstr "Lagre"
 
-#: views/ciView.php:401 views/ciView.php:426 views/ciView.php:453
+#: views/ciView.php:399 views/ciView.php:424 views/ciView.php:451
 #, php-format
 msgid "View all information on %s"
 msgstr "Vis all informasjon på %s"
 
-#: views/ciView.php:404 views/ciView.php:429
+#: views/ciView.php:402 views/ciView.php:427
 #, php-format
 msgid "Remove dependency from %s to %s"
 msgstr "Fjern binding fra %s til %s"
 
-#: views/ciView.php:460
+#: views/ciView.php:458
 msgid "Indirect dependencies"
 msgstr "Indirekte bindinger"
 
-#: views/ciView.php:468
+#: views/ciView.php:466
 msgid "Add new dependency"
 msgstr "Legg til ny binding"
 
-#: views/ciView.php:481
+#: views/ciView.php:470
 msgid "Add"
 msgstr "Legg til"
 
-#: views/ciView.php:524
+#: views/ciView.php:513
 msgid "Dependencies for this CI"
 msgstr "Binding for denne CI"
 
-#: views/ciView.php:524
+#: views/ciView.php:513
 msgid "Other items that depend on this CI"
 msgstr "Andre elementer som avhenger av denne CI"
 
