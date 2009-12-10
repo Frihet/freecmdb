@@ -3,7 +3,9 @@
 class loginTuitPlugin
 	extends Plugin
 {
-
+    /**
+     Check login credits, add login info to sidebar
+     */
     function startupHandler($param)
     {
         $session_id = $_COOKIE['sessionid'];
@@ -48,7 +50,7 @@ class loginTuitPlugin
                 //message("view: $can_view, edit: $can_edit, admin: $can_admin");
 
                 ciUser::setUser($msg->username,$msg->first_name . " " . $msg->last_name, $msg->email, $can_view, $can_edit, $can_admin);
-                $param['source']->addContent('action_menu_pre',sprintf("<li>"._("User").": <a href='/tuit/account/%s'>%s - %s</a></li>\n<li><a href='/tuit/account/logout'>"._("Log out")."</a></li>\n",
+                $param['source']->addContent('action_menu_pre',sprintf("<li>"._("User").": <a href='/tuit/account/%s'>%s - %s</a></li>\n<li><a href='/tuit/account/logout'>"._("Log out")."</a></li><li><hr/></li>\n",
                                                                        ciUser::$_me->username,
                                                                        ciUser::$_me->username,
                                                                        ciUser::$_me->fullname));
@@ -64,13 +66,8 @@ class loginTuitPlugin
         }
         
         util::redirect("http://" .$browser_host ."/tuit/account/login/?next=" . urlencode($request_uri));
-
-	echo "WOO HOOO!";
     }
     
-    function configure($controller)
-    {
-    }
 
 }
 
