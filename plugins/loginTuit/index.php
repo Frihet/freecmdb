@@ -8,6 +8,8 @@ class loginTuitPlugin
      */
     function startupHandler($param)
     {
+        if (true) {
+            
         $session_id = $_COOKIE['sessionid'];
         
         $ch = curl_init();
@@ -66,9 +68,16 @@ class loginTuitPlugin
         }
         
         util::redirect("http://" .$browser_host ."/tuit/account/login/?next=" . urlencode($request_uri));
+        else {
+            
+        $username = $_SERVER['REMOTE_USER'];	
+        if($username) {
+                ciUser::loginUser($username);
+	}
+        }
+        
     }
     
-
 }
 
 ?>

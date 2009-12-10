@@ -1452,8 +1452,6 @@ extends dbItem
     function init()
     {
         ciUser::$_me = new ciUser();
-        $user_list = db::fetchList('select * from ci_user limit 1');
-        ciUser::$_me->initFromArray($user_list[0]);
         return true;
     }
 
@@ -1466,12 +1464,25 @@ extends dbItem
         }
     }
 
+
+    function loginUser($username)
+    {
+	$user_data = db::fetchRow('select * from ci_user where username = :u', array(':u'=>$username));
+        if( $user_data ) {
+            $user = new ciUser();
+            $user->initFromArray($user_data);
+            ciUser::$_me = $user;
+	    return true;
+        }
+	return false;
+    }
     /**
      Set logged in user to the specified user
     */
     function setUser($username, $fullname, $email, $view, $edit, $admin)
     {
-        $user_data = db::fetchRow('select * from ci_user where username = :u', array(':u'=>$username));        $user = new ciUser();
+        $user_data = db::fetchRow('select * from ci_user where username = :u', array(':u'=>$username));        
+        $user = new ciUser();
         if( $user_data ) {
             $user->initFromArray($user_data);
         }
