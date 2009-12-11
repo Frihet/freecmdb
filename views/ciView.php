@@ -314,7 +314,7 @@ $(function()
         if ($edit) {
             $form .= "
 <div class='button_list'>
-<button>"._("Save")."</button>
+<button type='submit'>"._("Save")."</button>
 </div>
 ";
             $content .= form::makeForm($form, array('controller' =>'ci',
