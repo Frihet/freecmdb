@@ -131,6 +131,24 @@ extends CmdbController
     */
     function createRun()
     {
+	$type_id = param('type');
+	if( $type_id !== null )
+	{
+	    $this->ci = new ci();
+	    $arr = db::fetchList("
+select id 
+from ci_column_type
+where ci_type_id = :type_id or ci_type_id is null
+order by name", array(':type_id'=>$type_id));
+        
+	    foreach( $arr as $row) {
+		$this->ci->_ci_column[$row['id']] = null;
+	    }
+	}
+	
+
+	$this->editRun();
+/*	
         ciUser::assert_edit();
         db::query("insert into ci (ci_type_id) select id from ci_type where deleted=false limit 1");
         $id = db::lastInsertId("ci_id_seq");
@@ -140,7 +158,9 @@ extends CmdbController
 
         message(_('CI created'));
         util::redirect(makeUrl(array('task'=>'edit', 'key'=>null, 'value' => null, 'id' => $id)));
+*/
     }
+
     
     /**
      Returns the CI we are controlling.
@@ -150,9 +170,16 @@ extends CmdbController
         if ($this->ci != null) {
             return $this->ci;
         }
-        $ci_list = ci::fetch(array('id_arr'=>array($this->id), 'deleted'=>true));
-        $this->ci = $ci_list[$this->id];
-        return $this->ci;
+        if( param("task", 'view')=='create') 
+	{
+	    $this->ci = new ci();
+	}
+	else 
+	{
+	    $ci_list = ci::fetch(array('id_arr'=>array($this->id), 'deleted'=>true));
+	    $this->ci = $ci_list[$this->id];
+	}
+	return $this->ci;
     }
 
     /**
@@ -163,8 +190,20 @@ extends CmdbController
     function saveAllRun() 
     {
         ciUser::assert_edit();
-        $arr = array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'dependency_id'=>null);
+	
         db::begin();
+	if($this->id == null) 
+	{
+	    db::query("insert into ci (ci_type_id) select id from ci_type where deleted=false limit 1");
+	    $id = $_REQUEST['id'] = db::lastInsertId("ci_id_seq");
+	    message("Created ci with id " . $id);	    
+	    log::add($id, CI_ACTION_CREATE);
+	    $this->id = $id;
+	    $ci_list = ci::fetch(array('id_arr'=>array($this->id), 'deleted'=>true));
+	    $this->ci = $ci_list[$this->id];
+	}
+	
+        $arr = array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'dependency_id'=>null);
         $ok = true;
         
         foreach($_REQUEST as $key => $value) {

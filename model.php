@@ -807,8 +807,6 @@ values
         
     }
 
-
-
     function count()
     {
         $res = db::fetchList("select count(*) cnt from $table");
@@ -856,7 +854,9 @@ where ci_id=:ci_id and ci_column_type_id = :type:id",
         $default_column = Property::get("ciColumn.default");
 	
         $nam = $this->get(ciColumnType::getName($default_column));
-        return ($nam?$nam:'<unnamed>') . ($long?(' (' . $this->type_name. ")"):'');
+	$has_type = $this->type_name;
+	
+        return ($nam?$nam:'<unnamed>') . ($long && $has_type?(' (' . $this->type_name. ")"):'');
     }
     
     function removeDependency($other_id) 

@@ -182,13 +182,15 @@ $(function()
     {
         $ci = $controller->getCi();
         
-        $edit = param("task", 'view')=='edit';
+        $edit = param("task", 'view')=='edit' ||
+	    param("task", 'view')=='create';
+
+	$create = (param("task", 'view')=='create') && 
+	    (param("type")==null) ;
 
         if($edit) {
             ciUser::assert_edit();
         }
-        
-
 
         $revision_id = param('revision_id');
         $revision = $revision_id !== null;
@@ -250,7 +252,9 @@ $(function()
         }
         
         $form .= "</td></tr>\n";
-        
+        if($ci->_ci_column) 
+	{
+	    
         foreach($ci->_ci_column as $key => $value) {
 
             if (ciColumnType::getType($key) == CI_COLUMN_IFRAME && 
@@ -294,7 +298,8 @@ $(function()
             
             $form .= "</td></tr>";
         }
-        
+        }
+	
         if (!$edit) {
             
             $form .= $this->makeDependencies($controller, $ci, $revision, $is_readonly);
@@ -313,7 +318,7 @@ $(function()
 </div>
 ";
             $content .= form::makeForm($form, array('controller' =>'ci',
-                                                    'task'=>'saveAll',
+                                                    'task'=>$create?'create':'saveAll',
                                                     'id'=>$controller->id), 
                                        "post", true);
             
