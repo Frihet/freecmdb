@@ -55,7 +55,7 @@ function freecmdbDrilldownAdd(ci_id, node, skip)
 {
     var ci_data = drilldownData[""+ci_id];
     
-    function addChild(node, child_id) 
+    function addChild(node, child_id, is_root) 
     {
 	var child_data = drilldownData[""+child_id];
 
@@ -83,7 +83,7 @@ function freecmdbDrilldownAdd(ci_id, node, skip)
 	//expand.type='button';
 	expand.onclick=function() {return false;};
 
-	if (has_good_children) {
+	if (has_good_children && !is_root) {
 	    expand.innerHTML = '+';
 	    expand.className="drilldown_expand";
 	    expand.onclick=function() {
@@ -100,24 +100,47 @@ function freecmdbDrilldownAdd(ci_id, node, skip)
 	
 	freecmdbDrilldownItem(main, child_id, child_data.name);
 	node.appendChild(main);
+	return main;
+	
     }
 
+    if (skip.length === 0 && drilldownIsEmbeded) 
+    {
+	node = addChild(node, ci_id, true);	
+    }
+    
     for(var i=0; i<ci_data.children.length; i++) 
     {
 	var child_id = ci_data.children[i];
 	if (skip.exists(""+child_id))
 	    continue;
 	
-	addChild(node, child_id);
+	addChild(node, child_id, false);
     }
 
     /*
       Add orphans to root
     */
     if (skip.length === 0) {
+	var marked = {};
+	
+	function mark_recursive(id) 
+	{
+	    if(marked[""+id])
+		return;
+	    marked[""+id]=true;
+	    
+	    var child_data = drilldownData[""+id];
+
+	    for(var i=0; i<child_data.children.length; i++) {
+		mark_recursive(child_data.children[i]);
+	    }
+	}
+	mark_recursive(ci_id);
+	
 	$.each(drilldownData, function(id, ci){
-		if (ci.children.length === 0) {
-		    addChild(node, ci.id);
+		if (!marked[''+id]) {
+		    addChild(node, ci.id, false);		    
 		}
 	    });
     }

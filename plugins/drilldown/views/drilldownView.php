@@ -33,7 +33,6 @@ var drilldownUpdateTarget = <?=json_encode($controller->updateTarget())?>;
       require('plugins/drilldown/static/drilldown.js');
 ?>
 $(document).ready(function(){
-	
 	freecmdbDrilldownAdd(<?=$node->id?>, $('#<?= $controller->embedPoint() ?>')[0],[]);
 });
 </script>
