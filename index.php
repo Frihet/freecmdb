@@ -38,7 +38,7 @@ extends Application
     function __construct()
     {
         $this->addScript('static/FreeCMDB.js');
-        $this->addStyle('static/FreeCDMB.css');
+        $this->addStyle('static/FreeCMDB.css');
         $this->enableDatePicker();
         $this->enableTinyMce();        
         

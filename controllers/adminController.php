@@ -19,9 +19,9 @@ extends CmdbController
 		     makeLink(makeUrl(array("controller"=>"ciColumn")), _("CI columns"), null),
 		     makeLink(makeUrl(array("controller"=>"ciProperty")), _("Properties"), null),
                      makeLink(makeUrl(array("controller"=>"ciDependency")), _("Dependencies"), null),
-                     makeLink(makeUrl(array("controller"=>"plugin")), _("Plugins"), null),
+                     makeLink(makeUrl(array("controller"=>"plugin")), _("Plugins"), null)/*,
                      makeLink(makeUrl(array("controller"=>"userAdmin")), _("Users"), null),
-                     makeLink(makeUrl(array("controller"=>"userGroupAdmin")), _("User groups"), null));
+                     makeLink(makeUrl(array("controller"=>"userGroupAdmin")), _("User groups"), null)*/);
     }
     
     function viewRun()

@@ -9,7 +9,7 @@ class ciPropertyView
         $content = "";
         
         $form = "
-<div class='button_list'><button>"._("Update")."</button></div>
+<div class='button_list'><button type='submit'>"._("Update")."</button></div>
 <table class='striped'>
 <tr>
 <th>
@@ -46,7 +46,7 @@ class ciPropertyView
         
 
         $form .= "</table>";
-        $form .= "<div class='button_list'><button>"._("Update")."</button></div>";
+        $form .= "<div class='button_list'><button type='submit'>"._("Update")."</button></div>";
 		
         $content .= form::makeForm($form,array('task'=>'update','controller'=>'ciProperty'));
 

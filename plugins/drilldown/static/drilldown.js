@@ -91,9 +91,18 @@ function freecmdbDrilldownAdd(ci_id, node, skip)
 		my_skip.push(""+ci_id);
 		
 		freecmdbDrilldownAdd(child_id, main, my_skip);
-		expand.onclick = "";
-		expand.innerHTML="";
-		expand.className="drilldown_expand expanded";
+		expand.expanded= true;
+		expand.onclick = function(){
+		    expand.expanded = !expand.expanded;
+		    expand.innerHTML = expand.expanded?'-':'+';
+		    if(expand.expanded){
+			$('>.drilldown_subtree', main).show();
+		    }else {
+			$('>.drilldown_subtree', main).hide();
+		    }
+		    return false;
+		};
+		expand.innerHTML="-";
 		return false;
 	    };
 	}

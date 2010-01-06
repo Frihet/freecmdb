@@ -135,6 +135,8 @@ extends CmdbController
 	if( $type_id !== null )
 	{
 	    $this->ci = new ci();
+            $this->ci->ci_type_id = $type_id;
+            
 	    $arr = db::fetchList("
 select id 
 from ci_column_type

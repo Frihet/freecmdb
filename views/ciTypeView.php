@@ -11,7 +11,7 @@ extends View
                             
 
         $content .= "
-<button>"._("Update")."</button>
+<button type='submit'>"._("Update")."</button>
 <table class='striped'>";
         $content .= "<tr>";
         $content .= "<th>";

@@ -13,7 +13,7 @@ class ciColumnview
             
             
         $form = "
-<div class='button_list'><button>"._("Update")."</button></div>
+<div class='button_list'><button type='submit'>"._("Update")."</button></div>
 <table class='striped'>
 <tr>
 <th>
@@ -48,7 +48,7 @@ class ciColumnview
             if($column !== null)
                 $hidden["column[$idx][id]"] = $column->id;
                 
-            $form .= "<input name='column[$idx][name]'  size='16' length='64' value='".htmlEncode(coalesce($old[name],$column->name))."'/>";
+            $form .= "<input name='column[$idx][name]'  size='12' length='64' value='".htmlEncode(coalesce($old[name],$column->name))."'/>";
             $form .= "</td><td>";
             $form .= form::makeSelect("column[$idx][type]", 
                                       ciColumnType::getTypes(), 
@@ -93,7 +93,7 @@ class ciColumnview
         }
         
         $form .= "</table>";
-        $form .= "<div class='button_list'><button>"._("Update")."</button></div>";
+        $form .= "<div class='button_list'><button type='submit'>"._("Update")."</button></div>";
         
         $content .= form::makeForm($form,$hidden);
                     
