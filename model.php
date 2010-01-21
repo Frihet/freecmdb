@@ -15,6 +15,7 @@ define('CI_COLUMN_IFRAME', 4);
 define('CI_COLUMN_EMAIL', 5);
 define('CI_COLUMN_DATE', 6);
 define('CI_COLUMN_FILE', 7);
+define('CI_COLUMN_URI', 8);
 
 class ciAction
 {
@@ -366,7 +367,7 @@ extends dbItem
 
     function getId($name) 
     {
-        ciColumnType::load();
+        ciColumnType::loadAll();
         return ciColumnType::$_name_lookup[$name]->id;
         
     }
@@ -401,22 +402,32 @@ extends dbItem
         return !!db::count();
     }
     */	
+
+    function delete()
+    {
+        $param = array(":id"=>$this->id);
+        
+        db::query("update ci_column_type set deleted=true where id=:id",
+                  $param);
+        return true;
+    }
+    
     
     function getName($id)
     {
-        ciColumnType::load();
+        ciColumnType::loadAll();
         return ciColumnType::$_id_lookup[$id]->name;
     }
 
     function getType($id)
     {
-        ciColumnType::load();
+        ciColumnType::loadAll();
         return ciColumnType::$_id_lookup[$id]->type;
     }
 
     function get($id)
     {
-        ciColumnType::load();
+        ciColumnType::loadAll();
         return ciColumnType::$_id_lookup[$id];
     }
 
@@ -424,18 +435,17 @@ extends dbItem
 
     function getCiType($id)
     {
-        ciColumnType::load();
+        ciColumnType::loadAll();
         return ciColumnType::$_id_lookup[$id]->ci_type_id;
     }
 
     function getColumns($include_none = false)
     {
-        ciColumnType::load();
+        ciColumnType::loadAll();
         $arr = array();
         foreach(ciColumnType::$_name_lookup as $id => $it){
             $arr[$it->id] = $it->name;
         }
-        //message($arr);
         
         if ($include_none) {
             return array(-1 => 'Any') +$arr;
@@ -452,11 +462,12 @@ extends dbItem
                      CI_COLUMN_EMAIL=>_('Email address'),
                      CI_COLUMN_DATE=>_('Date picker'),
                      CI_COLUMN_FILE=>_('File'),
-                     CI_COLUMN_IFRAME=>_('IFrame')/*
+                     CI_COLUMN_IFRAME=>_('IFrame'),
+                     CI_COLUMN_URI=>_('URI')/*
                                                 CI_COLUMN_LINK_LIST=>'List of links'*/);
     }
     
-    function load()
+    function loadAll()
     {
         if (ciColumnType::$_id_lookup != null) {
             return;
@@ -470,9 +481,17 @@ extends dbItem
         }
     }
 
+    function hasSoftDelete()
+    {
+        return true;
+    }
+    
+
+
 }
 
 class ciDependencyType
+extends dbItem
 {
     static $id_lookup=null;
     static $name_lookup=null;
@@ -484,19 +503,10 @@ class ciDependencyType
     public $reverse_name;
     public $color;
 
-    function __construct($id, $name=null, $reverse_name=null, $color = null) 
+    function __construct($param=null)
     {
-	if( $name == null) 
-	{
-	    $name = self::getName($id);
-	    $reverse_name = self::getReverseName($id);
-	    $color = self::getColor($id);
-	}
-	
-	$this->id = $id;
-	$this->name = $name;
-	$this->reverse_name = $reverse_name;
-	$this->color = $color;
+        $this->table = 'ci_dependency_type';
+        dbItem::__construct($param);
     }
 
     function isDirected()
@@ -508,7 +518,7 @@ class ciDependencyType
     
     function getId($name) 
     {
-        ciDependencyType::load();
+        ciDependencyType::loadAll();
         return ciDependencyType::$id_lookup[$name];
     }
 
@@ -540,19 +550,19 @@ class ciDependencyType
     
     function getName($id)
     {
-        ciDependencyType::load();
+        ciDependencyType::loadAll();
         return ciDependencyType::$name_lookup[$id];
     }
 
     function getColor($id)
     {
-        ciDependencyType::load();
+        ciDependencyType::loadAll();
         return ciDependencyType::$color_lookup[$id];
     }
 
     function getReverseName($id)
     {
-        ciDependencyType::load();
+        ciDependencyType::loadAll();
         return ciDependencyType::$reverse_name_lookup[$id];
     }
 
@@ -560,7 +570,7 @@ class ciDependencyType
     {
 	$res = array();
 	
-        ciDependencyType::load();
+        ciDependencyType::loadAll();
 	
         foreach( ciDependencyType::$name_lookup as $id => $name) 
 	{
@@ -586,7 +596,7 @@ class ciDependencyType
         
     function getDependencyOptions()
     {
-        ciDependencyType::load();
+        ciDependencyType::loadAll();
         $res = array();
 	foreach(self::$name_lookup as $id => $name) 
 	{
@@ -602,7 +612,7 @@ class ciDependencyType
         
     function getDependencyReverseNames($include_none = false)
     {
-        ciDependencyType::load();
+        ciDependencyType::loadAll();
         if ( $include_none) {
 	    return array(-1 => 'Any') +ciDependencyType::$reverse_name_lookup;
 	}
@@ -610,19 +620,26 @@ class ciDependencyType
         return ciDependencyType::$reverse_name_lookup;
     }
         
-    function load()
+    function loadAll()
     {
         if (ciDependencyType::$id_lookup != null) {
             return;
         }
         
-        foreach(db::fetchList("select * from ci_dependency_type where deleted=false order by name") as $row) {
-            ciDependencyType::$id_lookup[$row['name']] = $row['id'];
-            ciDependencyType::$id_lookup[$row['reverse_name']] = $row['id'];
-            ciDependencyType::$name_lookup[$row['id']] = $row['name'];
-            ciDependencyType::$reverse_name_lookup[$row['id']] = $row['reverse_name'];
-            ciDependencyType::$color_lookup[$row['id']] = $row['color'];
+        $obj = new CiDependencyType();
+
+        foreach($obj->findAll() as $row) {
+            ciDependencyType::$id_lookup[$row->name] = $row->id;
+            ciDependencyType::$id_lookup[$row->reverse_name] = $row->id;
+            ciDependencyType::$name_lookup[$row->id] = $row->name;
+            ciDependencyType::$reverse_name_lookup[$row->id] = $row->reverse_name;
+            ciDependencyType::$color_lookup[$row->id] = $row->color;
 	}
+    }
+
+    function hasSoftDelete()
+    {
+        return true;
     }
 
 }
@@ -696,9 +713,8 @@ and ci_column_type_id=:key
         if ($type->pattern != "") {
             $p = $type->pattern;
             if ( preg_match("/$p/", $value) == 0) {
-                error("Value $value illegal for column " . $type->name);
+                error(sprintf(_("Value «%s» is illegal for column %s"), $value, $type->name));
                 return false;
-                
             }
             
         }
@@ -1451,7 +1467,7 @@ extends dbItem
     
     function init()
     {
-        ciUser::$_me = new ciUser();
+        ciUser::$_me = new ciUser(1);
         return true;
     }
 

@@ -95,7 +95,10 @@ extends adminController
     function removeRun()
     {
         $id = param('id');
-	if (!cicolumnType::update($id, null, null, null, 1)) {
+
+        $ci_type = new ciColumnType($id);
+        
+	if (!$ci_type->delete()) {
             error("Column could not be found, not removed.");
 	} else {
 	    message("Column removed");
