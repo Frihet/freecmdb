@@ -57,16 +57,17 @@ extends Application
     
     /**
      Write out the top menu.
-    */    
+    */
     function writeMenu($controller)
     {
-        echo "
+        if(Property::get('tuit.enabled','0')=='1') {
+            echo "
         <div class='main_menu no_print'>
         <iframe src='/tuit/menu/' width='100%' height='80px' frameborder='no'></iframe>
         </div>
 ";
-        return;
-        
+            return;
+        }
 
         $is_admin = $controller->isAdmin();
         $is_help = $controller->isHelp();

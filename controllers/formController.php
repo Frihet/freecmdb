@@ -43,7 +43,7 @@ extends CmdbController
             $foo->lines[] = $it;
         }
 
-        $foo->table = form::makeColumnListEditor(param('column_id'), param('select_id'), param('table_id'));
+        $foo->table = ciView::makeColumnListEditor(param('column_id'), param('select_id'), param('table_id'));
         echo json_encode($foo);
         exit(0);
     }
