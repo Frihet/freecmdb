@@ -14,8 +14,8 @@ extends adminController
         $color = param('color_new');
 
         if (strlen($name) ) {
-            if ((ciDependencyType::getId($name) !== null) || (ciDependencyType::getId($reverse_name) !== null)) {
-                error("Another CI type named $name already exists");
+            if ((ciDependencyType::getId($name) !== null) || ($reverse_name != "" && ciDependencyType::getId($reverse_name) !== null)) {
+                error("Another CI dependency named $name already exists");
                 return false;
             }
             return ciDependencyType::create($name, $reverse_name, $color);
@@ -68,7 +68,7 @@ extends adminController
             error("Error while updating dependecy type with id $id: Another dependency named $name already exists, with id " .ciDependencyType::getId($name));
 	    return false;
 	}
-        else if (ciDependencyType::getId($reverse_name) !== null && ciDependencyType::getId($reverse_name) != $id) {
+        else if ($reverse_name != "" && ciDependencyType::getId($reverse_name) !== null && ciDependencyType::getId($reverse_name) != $id) {
             error("Error while updating dependecy type with id $id: Another dependency named $reverse_name already exists, with id " .ciDependencyType::getId($reverse_name));
 	    return false;
 	}

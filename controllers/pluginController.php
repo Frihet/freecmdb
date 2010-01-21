@@ -112,7 +112,7 @@ extends AdminController
             else {
                     
                 $info = json_decode(file_get_contents("./plugins/$plugin_name/install.json"));
-                    
+                
                 if(!$info) {
                     error("Could not parse install information");
                 }

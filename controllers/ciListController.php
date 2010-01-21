@@ -37,9 +37,13 @@ extends CmdbController
                         $filtered = true;
 			$arr['filter_type'] = $filter_type;
 		    }
+
+                    if(param('output',null) !== 'csv' &&
+                       param('output',null) !== 'autocomplete' ) {
+                        $arr['limit'] = $item_count;
+                        $arr['offset'] = $offset;
+                    }
                     
-                    $arr['limit'] = $item_count;
-                    $arr['offset'] = $offset;
                     //message(sprint_r($arr));
                     
 		    $this->ci_list = ci::fetch($arr);
@@ -85,6 +89,40 @@ extends CmdbController
                     echo $it->id ." - " .$it->getDescription(true);
                     echo "\n";
                     
+                }
+                exit(0);
+            } else if (param('output') == 'csv') {
+                $col = CiColumnType::getColumns();
+                
+                header("Content-type: text/csv");
+                header("Content-Disposition: attachment; filename=CiList.csv");
+                header("Pragma: no-cache");
+                header("Expires: 0");
+
+                echo '"'.implode('","', $col)."\"\n";
+                
+                foreach($ci_list as $it) {
+                    $first = true;
+                    foreach($col as $id => $col_name) {
+                        if ($first) {
+                            $first = false;
+                        }
+                        else {
+                            echo ",";
+                        }
+                        echo "\"";
+                        
+                        if(CiColumnType::getType($id) == CI_COLUMN_LIST) {
+                            $value = ciColumnList::getName($it->_ci_column[$id]);
+                        } else {
+                            $value = $it->_ci_column[$id];
+                        }
+                        echo addcslashes($value,"\"\r\n");
+                        
+                        echo "\"";
+                        
+                    }
+                    echo "\n";
                 }
                 exit(0);
             }
@@ -188,7 +226,6 @@ $desc
 				$content .= "<td>
 $val
 </td>";
-				
 			}
 		
 
@@ -204,6 +241,15 @@ $val
                         
 			$content .= "</td></tr>";
 		}
+                $content .= "<tr><td colspan='4'>";
+                
+                $content .= makeLink(makeUrl(array('output'=>'csv',
+                                                   'filter_type'=>param('filter_type'),
+                                                   'filter_column'=>param('filter_column'),
+                                                   'filter_column_value'=>param('filter_column_value'))),
+                                     'Download as CSV');
+                
+                $content .= "</td></tr>";
 
 		$content .= "</table>";
 		}

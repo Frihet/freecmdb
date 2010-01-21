@@ -114,13 +114,15 @@ extends CmdbController
         ciUser::assert_edit();
         $key = param('key');
         if(array_key_exists('value', $_FILES)){
-            $this->updateFieldFile($key, $_FILES['value']);            
+            $ok = $this->updateFieldFile($key, $_FILES['value']);            
         } else {
             $value = param('value');
-            $this->updateField($key, $value);
+            $ok = $this->updateField($key, $value);
         }
         
-        message(_('CI updated'));
+        if($ok)
+            message(_('CI updated'));
+        
         util::redirect(makeUrl(array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'key'=>null, 'value' => null)));
     }
     
@@ -288,25 +290,28 @@ order by name", array(':type_id'=>$type_id));
         $action_links = array();
 	
         $task = param('task','view');
-                
-        $action_links[] = makeLink(makeUrl(array("controller"=>"ciList")), _("View all"));
 
-        if($task!='view') {
-            $action_links[] = makeLink(array('task'=>'view','revision_id'=>null), _("View"), 'view', _('Go back to read-only view of this CI'));
-        }
-        
-
-        if ($task != 'edit' && ciUser::can_edit()) {
-            $action_links[] = makeLink(array('task'=>'edit','revision_id'=>null), _("Edit"), 'edit',  _('Edit all fields of this CI'));
-        }
-        if($task != 'history') {
-            $action_links[] = makeLink(array('task'=>'history','revision_id'=>null), _("History"), null, _('Show the entire revision history for this item.'));
-        }
-
-        if(ciUser::can_edit()) {
-            $action_links[] = makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), _("Create new item"), null, _("Creat an empty new CI"));
-            $action_links[] = makeLink(array('task'=>'remove','revision_id'=>null), _("Remove"), 'remove', _('Remove this CI'), array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\\').'");'));
-            $action_links[] = makeLink(array('task'=>'copy','revision_id'=>null), _("Copy"), 'copy', _('Copy this CI'));
+        if($task != 'create') {
+                            
+            $action_links[] = makeLink(makeUrl(array("controller"=>"ciList")), _("View all"));
+            
+            if($task!='view') {
+                $action_links[] = makeLink(array('task'=>'view','revision_id'=>null), _("View"), 'view', _('Go back to read-only view of this CI'));
+            }
+            
+            
+            if ($task != 'edit' && ciUser::can_edit()) {
+                $action_links[] = makeLink(array('task'=>'edit','revision_id'=>null), _("Edit"), 'edit',  _('Edit all fields of this CI'));
+            }
+            if($task != 'history') {
+                $action_links[] = makeLink(array('task'=>'history','revision_id'=>null), _("History"), null, _('Show the entire revision history for this item.'));
+            }
+            
+            if(ciUser::can_edit()) {
+                $action_links[] = makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), _("Create new item"), null, _("Creat an empty new CI"));
+                $action_links[] = makeLink(array('task'=>'remove','revision_id'=>null), _("Remove"), 'remove', _('Remove this CI'), array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\\').'");'));
+                $action_links[] = makeLink(array('task'=>'copy','revision_id'=>null), _("Copy"), 'copy', _('Copy this CI'));
+            }
         }
         
         return $action_links;

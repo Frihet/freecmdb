@@ -62,7 +62,7 @@ extends View
 </tr>";
             
         $content .= "</table>
-<button>"._("Update")."</button>
+<button type='submit'>"._("Update")."</button>
 ";
         $content = form::makeForm($content, array('task'=>'update','controller'=>'ciType'));
                     

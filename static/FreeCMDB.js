@@ -1,7 +1,7 @@
 
 function submitAndReloadColumnList(task,columnId, rowId, itemId, tableId, selectId) {
     if(task!='removeColumnListItem' || confirm("Are you sure?")){
-	var url = 'index.php?controller=form&task=' + encodeURIComponent(task) + 
+	var url = FreeCMDB.base + 'index.php?controller=form&task=' + encodeURIComponent(task) + 
 	    '&column_id=' + encodeURIComponent(columnId) +
 	    '&value=' + encodeURIComponent($("#"+itemId)[0].value) +
 	    '&id=' + encodeURIComponent(rowId) + '&select_id='+encodeURIComponent(selectId);

@@ -1,8 +1,8 @@
 
 {
-	description : "Plugin for structured navigation through the CMDB",
-	author      : "Axel Liljencrantz",
-	version     : 1.0,
-	events      : ["Sidebar","Startup"]
+	"description" : "Plugin for structured navigation through the CMDB",
+	"author"      : "Axel Liljencrantz",
+	"version"     : 1.0,
+	"events"      : ["Sidebar","Startup"]
 }
 

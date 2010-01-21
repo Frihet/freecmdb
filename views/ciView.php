@@ -56,7 +56,7 @@ extends View
 		    break;
 		    
 		case CI_COLUMN_LIST:
-		    if ($res != null) {
+		    if ($value != null) {
                         $res .= ciColumnList::getName($value);
 		    }
                     else {
@@ -67,6 +67,11 @@ extends View
 		case CI_COLUMN_EMAIL:
 		    $ev = htmlEncode($value);
 		    $res .= "<a href='mailto:$ev'>$ev</a>";
+		    break;
+                    
+		case CI_COLUMN_URI:
+		    $ev = htmlEncode($value);
+		    $res .= "<a href='$ev'>$ev</a>";
 		    break;
                     
 		default:
@@ -84,6 +89,7 @@ extends View
             case CI_COLUMN_IFRAME:
             case CI_COLUMN_TEXT:
             case CI_COLUMN_EMAIL:
+            case CI_COLUMN_URI:
                 $res .= form::makeText($name, $value, $id);
                 break;
 
@@ -162,7 +168,7 @@ $(function()
             $update = "
 <button type='button' onclick='submitAndReloadColumnList(\"updateColumnListItem\",\"$column_id\", $id, \"$item_id\", \"$table_id\", \"$select_id\")'>Update</button>
 ";
-            $res .= "<tr><td>".self::makeInput($item_id, $name, null, false, $item_id). "</td><td>$update $remove</td></tr>";
+            $res .= "<tr><td>".self::makeInput(null, $item_id, $name, null, false, $item_id). "</td><td>$update $remove</td></tr>";
         }
 
         $item_id = $table_id . "_" . ($column_list_counter++);
@@ -170,7 +176,7 @@ $(function()
         $add = "
 <button type='button' onclick='submitAndReloadColumnList(\"addColumnListItem\",\"$column_id\", null, \"$item_id\", \"$table_id\", \"$select_id\")'>Add</button>
 ";
-        $res .= "<tr><td>".self::makeInput($item_id, '', null, false, $item_id )."</td><td>" . $add . "</td></tr>";
+        $res .= "<tr><td>".self::makeInput(null, $item_id, '', null, false, $item_id )."</td><td>" . $add . "</td></tr>";
         
         $res .= "</table>";
         return $res;
@@ -515,7 +521,7 @@ $(function()
     {
         require_once("ciChart.php");
         $revision_str = $revision_id?"&revision_id=$revision_id":"";
-        $caption = $is_dependencies?_("Dependencies for this CI"):_("Other items that depend on this CI");
+        $caption = !$is_dependencies?_("Dependencies for this CI"):_("Other items that depend on this CI");
         $dep=$reverse?'&mode=dependants':'';
         $title = htmlEncode($caption);
 
