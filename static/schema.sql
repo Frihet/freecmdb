@@ -199,3 +199,4 @@ select 'ciDependency.default', id
 from ci_dependency_type 
 where name='Depends on';
 
+insert into ci_user (username, fullname, password, email, can_view, can_edit, can_admin) values ('admin','Administrator','','axel.liljencrantz@freecode.no',true, true, true);
