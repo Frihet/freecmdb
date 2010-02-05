@@ -4,6 +4,14 @@ class tuitPlugin
 {
     static $has_db=false;
 
+    function startupHandler($param)
+    {
+        $app = $param['source']->getApplication();
+        
+        $app->addScript('../static/tuit.js');
+        $app->addScript('../tuit/ticket/i18n.js');
+    }
+    
     /**
      Add the issue count coumn to the ci list view
      */

@@ -2,5 +2,5 @@
 	"description" : "Integration for the Tuit ticket handling system",
 	"author"      : "Axel Liljencrantz, FreeCode AS",
 	"version"     : "1.0",
-	"events"      : ["CiControllerView", "CiControllerRemove", "CiControllerSaveAll", "CiControllerUpdateField", "CiControllerCopy", "CiControllerRevert", "CiListControllerView"]
+	"events"      : ["CiControllerView", "CiControllerRemove", "CiControllerSaveAll", "CiControllerUpdateField", "CiControllerCopy", "CiControllerRevert", "CiListControllerView", "Startup"]
 }
