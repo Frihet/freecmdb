@@ -23,24 +23,22 @@ class DrilldownView
         require('plugins/drilldown/static/drilldown.css');
 ?>
 </style>
+<?php
+        $link = makeLink(array('plugin'=>null,'controller'=>ci,'id'=>$node->id),$node->getDescription());
+        $root_id = htmlEncode($controller->embedPoint());
+        echo "<div id='$root_id'><div class='drilldown_expand expanded'></div></div>";
+?>
 <script>
 var drilldownData = <?=$d?>;
 var drilldownBaseUrl = <?=json_encode(makeUrl(array('plugin'=>null,'controller'=>ci,'id'=>'')))?>;
 var drilldownIsEmbeded = <?=json_encode($controller->isEmbeded())?>;
 var drilldownUpdateTarget = <?=json_encode($controller->updateTarget())?>;
-
 <?php
       require('plugins/drilldown/static/drilldown.js');
 ?>
-$(document).ready(function(){
 	freecmdbDrilldownAdd(<?=$node->id?>, $('#<?= $controller->embedPoint() ?>')[0],[]);
-});
 </script>
       <?php
-
-        $link = makeLink(array('plugin'=>null,'controller'=>ci,'id'=>$node->id),$node->getDescription());
-        $root_id = htmlEncode($controller->embedPoint());
-        echo "<div id='$root_id'><div class='drilldown_expand expanded'></div></div>";
 
         $content = ob_get_contents();
         ob_end_clean();

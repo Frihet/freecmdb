@@ -23,7 +23,7 @@ function freecmdbDrilldownItem(main, id, name)
     if (drilldownIsEmbeded) 
     {
 	select.stat=false;
-	//	select.type='button';
+	select.type='button';
 	select.onclick=function(event) {
 	    select.state = !select.state;
 	    var target = $('#'+drilldownUpdateTarget)[0];
