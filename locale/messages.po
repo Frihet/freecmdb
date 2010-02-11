@@ -8,13 +8,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-27 11:59+0000\n"
+"POT-Creation-Date: 2010-02-11 12:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: common/controller.php:78
+msgid "Actions"
+msgstr ""
 
 #: controllers/adminController.php:18 views/ciTypeView.php:10
 msgid "CI types"
@@ -36,256 +40,269 @@ msgstr ""
 msgid "Plugins"
 msgstr ""
 
-#: controllers/adminController.php:23
-msgid "Users"
-msgstr ""
-
-#: controllers/adminController.php:24
-msgid "User groups"
-msgstr ""
-
-#: controllers/ciController.php:37
+#: controllers/ciController.php:40
 msgid "Dependants added"
 msgstr ""
 
-#: controllers/ciController.php:39
+#: controllers/ciController.php:42
 msgid "Dependencies added"
 msgstr ""
 
-#: controllers/ciController.php:51
+#: controllers/ciController.php:57
 msgid "Dependency removed"
 msgstr ""
 
-#: controllers/ciController.php:62
+#: controllers/ciController.php:71
 msgid "Dependant removed"
 msgstr ""
 
-#: controllers/ciController.php:103
+#: controllers/ciController.php:124
 msgid "CI updated"
 msgstr ""
 
-#: controllers/ciController.php:116 model.php:23
-msgid "CI created"
-msgstr ""
-
-#: controllers/ciController.php:164
+#: controllers/ciController.php:240
 msgid "Fields updated"
 msgstr ""
 
-#: controllers/ciController.php:169
+#: controllers/ciController.php:245
 msgid "Fields not updated"
 msgstr ""
 
-#: controllers/ciController.php:181 model.php:24
+#: controllers/ciController.php:262 model.php:25
 msgid "CI removed"
 msgstr ""
 
-#: controllers/ciController.php:184
+#: controllers/ciController.php:265
 msgid "Could not remove CI, not found."
 msgstr ""
 
-#: controllers/ciController.php:195
+#: controllers/ciController.php:279
 msgid "Cancel"
 msgstr ""
 
-#: controllers/ciController.php:206
+#: controllers/ciController.php:296
+#: plugins/drilldown/controllers/drilldownController.php:45
 msgid "View all"
 msgstr ""
 
-#: controllers/ciController.php:209
+#: controllers/ciController.php:299
 msgid "View"
 msgstr ""
 
-#: controllers/ciController.php:209
+#: controllers/ciController.php:299
 msgid "Go back to read-only view of this CI"
 msgstr ""
 
-#: controllers/ciController.php:214 views/ciView.php:247 views/ciView.php:291
-#: views/ciView.php:361
+#: controllers/ciController.php:304 views/ciView.php:255 views/ciView.php:301
+#: views/ciView.php:372
 msgid "Edit"
 msgstr ""
 
-#: controllers/ciController.php:214
+#: controllers/ciController.php:304
 msgid "Edit all fields of this CI"
 msgstr ""
 
-#: controllers/ciController.php:217
+#: controllers/ciController.php:307
 msgid "History"
 msgstr ""
 
-#: controllers/ciController.php:217
+#: controllers/ciController.php:307
 msgid "Show the entire revision history for this item."
 msgstr ""
 
-#: controllers/ciController.php:221 controllers/ciListController.php:217
+#: controllers/ciController.php:311 controllers/ciListController.php:263
+#: plugins/drilldown/controllers/drilldownController.php:47
+#: views/recentlyDeletedView.php:55
 msgid "Create new item"
 msgstr ""
 
-#: controllers/ciController.php:221
+#: controllers/ciController.php:311
+#: plugins/drilldown/controllers/drilldownController.php:47
 msgid "Creat an empty new CI"
 msgstr ""
 
-#: controllers/ciController.php:222 controllers/ciListController.php:201
+#: controllers/ciController.php:312 controllers/ciListController.php:238
 #: views/ciColumnView.php:88 views/ciDependencyView.php:54
-#: views/ciView.php:402 views/ciView.php:427 views/pluginView.php:15
+#: views/ciView.php:413 views/ciView.php:438 views/pluginView.php:15
 msgid "Remove"
 msgstr ""
 
-#: controllers/ciController.php:222
+#: controllers/ciController.php:312
 msgid "Remove this CI"
 msgstr ""
 
-#: controllers/ciController.php:222 controllers/ciListController.php:202
-#: views/ciColumnView.php:88 views/ciView.php:402 views/ciView.php:427
+#: controllers/ciController.php:312 controllers/ciListController.php:239
+#: views/ciColumnView.php:88 views/ciView.php:413 views/ciView.php:438
 msgid "Are you sure?"
 msgstr ""
 
-#: controllers/ciController.php:223
+#: controllers/ciController.php:313
 msgid "Copy"
 msgstr ""
 
-#: controllers/ciController.php:223
+#: controllers/ciController.php:313
 msgid "Copy this CI"
 msgstr ""
 
-#: controllers/ciListController.php:101
+#: controllers/ciListController.php:139
 msgid "Filter on type"
 msgstr ""
 
-#: controllers/ciListController.php:114
+#: controllers/ciListController.php:152
 msgid "Filter on column value"
 msgstr ""
 
-#: controllers/ciListController.php:148
+#: controllers/ciListController.php:186 views/recentlyDeletedView.php:13
 msgid "Item"
 msgstr ""
 
-#: controllers/ciListController.php:151 views/ciView.php:230
+#: controllers/ciListController.php:189 views/ciView.php:238
 msgid "Type"
 msgstr ""
 
-#: controllers/ciListController.php:166
+#: controllers/ciListController.php:204
 msgid "Last updated"
 msgstr ""
 
-#: controllers/ciListController.php:201
+#: controllers/ciListController.php:238
 #, php-format
 msgid "Remove the CI %s"
 msgstr ""
 
-#: controllers/ciListController.php:219
+#: controllers/ciListController.php:250
+msgid "Download as CSV"
+msgstr ""
+
+#: controllers/ciListController.php:265 views/recentlyDeletedView.php:56
 msgid "View recently deleted items"
 msgstr ""
 
-#: model.php:25
-msgid "CI type changed"
+#: model.php:24
+msgid "CI created"
 msgstr ""
 
 #: model.php:26
-msgid "CI column value changed"
+msgid "CI type changed"
 msgstr ""
 
 #: model.php:27
-msgid "Added new dependency"
+msgid "CI column value changed"
 msgstr ""
 
 #: model.php:28
+msgid "Added new dependency"
+msgstr ""
+
+#: model.php:29
 msgid "Removed dependency"
 msgstr ""
 
-#: model.php:241
+#: model.php:249
 msgid "Box"
 msgstr ""
 
-#: model.php:242
+#: model.php:250
 msgid "Diamond"
 msgstr ""
 
-#: model.php:243
+#: model.php:251
 msgid "Double octagon"
 msgstr ""
 
-#: model.php:244
+#: model.php:252
 msgid "Ellipse"
 msgstr ""
 
-#: model.php:245
+#: model.php:253
 msgid "House"
 msgstr ""
 
-#: model.php:246
+#: model.php:254
 msgid "Octagon"
 msgstr ""
 
-#: model.php:247
+#: model.php:255
 msgid "Triangle"
 msgstr ""
 
-#: model.php:449
+#: model.php:466
 msgid "Unformated text"
 msgstr ""
 
-#: model.php:450
+#: model.php:467
 msgid "Multiline text with formating"
 msgstr ""
 
-#: model.php:451
+#: model.php:468
 msgid "List"
 msgstr ""
 
-#: model.php:452
+#: model.php:469
 msgid "Email address"
 msgstr ""
 
-#: model.php:453
+#: model.php:470
 msgid "Date picker"
 msgstr ""
 
-#: model.php:454
+#: model.php:471
 msgid "File"
 msgstr ""
 
-#: model.php:455
+#: model.php:472
 msgid "IFrame"
 msgstr ""
 
-#: model.php:575
+#: model.php:473
+msgid "URI"
+msgstr ""
+
+#: model.php:592
 msgid "Do not show in graph"
 msgstr ""
 
-#: model.php:576
+#: model.php:593
 msgid "Black"
 msgstr ""
 
-#: model.php:577
+#: model.php:594
 msgid "Blue"
 msgstr ""
 
-#: model.php:578
+#: model.php:595
 msgid "Brown"
 msgstr ""
 
-#: model.php:579
+#: model.php:596
 msgid "Cyan"
 msgstr ""
 
-#: model.php:580
+#: model.php:597
 msgid "Green"
 msgstr ""
 
-#: model.php:581
+#: model.php:598
 msgid "Red"
 msgstr ""
 
-#: model.php:582
+#: model.php:599
 msgid "Yellow"
 msgstr ""
 
-#: model.php:1423
+#: model.php:723
+#, php-format
+msgid "Value \"%s\" is illegal for column %s"
+msgstr ""
+
+#: model.php:882
+msgid "<unnamed>"
+msgstr ""
+
+#: model.php:1446
 msgid "Permission denied"
 msgstr ""
 
-#: model.php:1423
+#: model.php:1446
 msgid "You are not authorized to view this page"
 msgstr ""
 
@@ -293,7 +310,11 @@ msgstr ""
 msgid "Root node for drilldown"
 msgstr ""
 
-#: plugins/ggg/index.php:19 plugins/tuit/index.php:19
+#: plugins/drilldown/index.php:31
+msgid "Drilldown"
+msgstr ""
+
+#: plugins/ggg/index.php:19 plugins/tuit/index.php:39
 msgid "Issue count"
 msgstr ""
 
@@ -309,12 +330,12 @@ msgstr ""
 msgid "Group required for administrating CMDB"
 msgstr ""
 
-#: plugins/loginTuit/index.php:51
+#: plugins/loginTuit/ggg.php:53 plugins/loginTuit/index.php:55
 #, php-format
 msgid "User"
 msgstr ""
 
-#: plugins/loginTuit/index.php:51
+#: plugins/loginTuit/ggg.php:53 plugins/loginTuit/index.php:55
 #, php-format
 msgid "Log out"
 msgstr ""
@@ -323,12 +344,12 @@ msgstr ""
 msgid "DSN for TUIT database"
 msgstr ""
 
-#: plugins/tuit/controllers/configureController.php:12
-msgid "Status id for closed issues"
+#: plugins/tuit/index.php:181
+msgid "Open issues associated with this CI"
 msgstr ""
 
-#: plugins/tuit/index.php:159
-msgid "Open issues associated with this CI"
+#: plugins/tuit/index.php:195
+msgid "No tickets associated with this CI"
 msgstr ""
 
 #: views/adminView.php:9
@@ -373,6 +394,10 @@ msgstr ""
 msgid "Remove the dependency"
 msgstr ""
 
+#: views/ciHistoryView.php:10
+msgid "empty"
+msgstr ""
+
 #: views/ciHistoryView.php:42
 msgid "Description of change"
 msgstr ""
@@ -385,7 +410,37 @@ msgstr ""
 msgid "Changed by"
 msgstr ""
 
-#: views/ciHistoryView.php:109
+#: views/ciHistoryView.php:65
+#, php-format
+msgid "Added dependency to ci %s"
+msgstr ""
+
+#: views/ciHistoryView.php:68
+#, php-format
+msgid "Added dependency from ci %s"
+msgstr ""
+
+#: views/ciHistoryView.php:74
+#, php-format
+msgid "Removed dependency to ci %s"
+msgstr ""
+
+#: views/ciHistoryView.php:77
+#, php-format
+msgid "Removed dependency from ci %s"
+msgstr ""
+
+#: views/ciHistoryView.php:91
+#, php-format
+msgid "Changed value of column %s from %s to %s"
+msgstr ""
+
+#: views/ciHistoryView.php:102
+#, php-format
+msgid "Changed type from %s to %s"
+msgstr ""
+
+#: views/ciHistoryView.php:109 views/recentlyDeletedView.php:30
 msgid "Show"
 msgstr ""
 
@@ -425,7 +480,7 @@ msgstr ""
 msgid "Base URL for site"
 msgstr ""
 
-#: views/ciTypeView.php:18 views/ciView.php:152
+#: views/ciTypeView.php:18 views/ciView.php:158
 #: views/simpleConfigureView.php:26
 msgid "Name"
 msgstr ""
@@ -442,85 +497,85 @@ msgstr ""
 msgid "<invalid value>"
 msgstr ""
 
-#: views/ciView.php:125
+#: views/ciView.php:131
 msgid "Edit item list"
 msgstr ""
 
-#: views/ciView.php:206
+#: views/ciView.php:214
 #, php-format
 msgid "Viewing revision %s of %s"
 msgstr ""
 
-#: views/ciView.php:210
+#: views/ciView.php:218
 #, php-format
 msgid "Editing %s"
 msgstr ""
 
-#: views/ciView.php:210
+#: views/ciView.php:218
 #, php-format
 msgid "Viewing %s"
 msgstr ""
 
-#: views/ciView.php:216
+#: views/ciView.php:224
 msgid "This is an old revision of this item."
 msgstr ""
 
-#: views/ciView.php:216
+#: views/ciView.php:224
 msgid "Click here to view the latest version"
 msgstr ""
 
-#: views/ciView.php:220
+#: views/ciView.php:228
 msgid "This item has been deleted"
 msgstr ""
 
-#: views/ciView.php:247
+#: views/ciView.php:255
 msgid "Change CI type"
 msgstr ""
 
-#: views/ciView.php:247
+#: views/ciView.php:255
 msgid "Change type of this CI"
 msgstr ""
 
-#: views/ciView.php:291 views/ciView.php:361
+#: views/ciView.php:301 views/ciView.php:372
 #, php-format
 msgid "Edit %s"
 msgstr ""
 
-#: views/ciView.php:291 views/ciView.php:361
+#: views/ciView.php:301 views/ciView.php:372
 msgid "Edit this CI field"
 msgstr ""
 
-#: views/ciView.php:312
+#: views/ciView.php:323
 msgid "Save"
 msgstr ""
 
-#: views/ciView.php:399 views/ciView.php:424 views/ciView.php:451
+#: views/ciView.php:410 views/ciView.php:435 views/ciView.php:462
 #, php-format
 msgid "View all information on %s"
 msgstr ""
 
-#: views/ciView.php:402 views/ciView.php:427
+#: views/ciView.php:413 views/ciView.php:438
 #, php-format
 msgid "Remove dependency from %s to %s"
 msgstr ""
 
-#: views/ciView.php:458
+#: views/ciView.php:469
 msgid "Indirect dependencies"
 msgstr ""
 
-#: views/ciView.php:466
+#: views/ciView.php:477
 msgid "Add new dependency"
 msgstr ""
 
-#: views/ciView.php:470
+#: views/ciView.php:481
 msgid "Add"
 msgstr ""
 
-#: views/ciView.php:513
+#: views/ciView.php:524
 msgid "Dependencies for this CI"
 msgstr ""
 
-#: views/ciView.php:513
+#: views/ciView.php:524
 msgid "Other items that depend on this CI"
 msgstr ""
 
@@ -538,6 +593,18 @@ msgstr ""
 
 #: views/pluginView.php:20
 msgid "Install plugin"
+msgstr ""
+
+#: views/recentlyDeletedView.php:16
+msgid "Deletion time"
+msgstr ""
+
+#: views/recentlyDeletedView.php:19
+msgid "Deleted by"
+msgstr ""
+
+#: views/recentlyDeletedView.php:31
+msgid "Undelete"
 msgstr ""
 
 #: views/simpleConfigureView.php:28
