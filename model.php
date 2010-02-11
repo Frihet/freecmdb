@@ -38,7 +38,10 @@ class history
 	
     function fetch($id) 
     {
-        return db::fetchList('
+        /*
+         Silly! Can't bind to the same param twice without silent crash, so we use :default_column and :default_column2. Retarded!
+         */
+        $res = db::fetchList('
 select  ci_log.id, extract (epoch from create_time) as create_time, 
         ci_log.ci_id, action, 
         type_id_old, ci_log.column_id, 
@@ -51,14 +54,17 @@ from ci_log
 join ci_user
 on ci_log.user_id = ci_user.id
 left join ci_column cc1
-on ci_log.dependency_id = cc1.ci_id and cc1.ci_column_type_id=6
+on ci_log.dependency_id = cc1.ci_id and cc1.ci_column_type_id=:default_column
 left join ci_column cc2
-on ci_log.ci_id = cc2.ci_id and cc2.ci_column_type_id=6
+on ci_log.ci_id = cc2.ci_id and cc2.ci_column_type_id=:default_column2
 where ci_log.ci_id = :ci_id or ci_log.dependency_id = :ci_id
 order by create_time desc', 
-                             array(':ci_id'=>$id));
-		
-
+                             array(':ci_id'=>$id,
+                                   ':default_column' => Property::get("ciColumn.default"),
+                                   ':default_column2' => Property::get("ciColumn.default")));
+        message($res);
+        return $res;
+        
     }
 
     function fetchRemoves()
@@ -75,10 +81,11 @@ from ci_log
 join ci_user
 on ci_log.user_id = ci_user.id
 left join ci_column cc
-on ci_log.ci_id = cc.ci_id and cc.ci_column_type_id=6
+on ci_log.ci_id = cc.ci_id and cc.ci_column_type_id=:default_column
 where ci_log.action = :action
 order by create_time desc', 
-                             array(':action'=>CI_ACTION_REMOVE));
+                             array(':action'=>CI_ACTION_REMOVE,
+                                   ':default_column' => Property::get("ciColumn.default")));
         
     }
     
@@ -713,7 +720,7 @@ and ci_column_type_id=:key
         if ($type->pattern != "") {
             $p = $type->pattern;
             if ( preg_match("/$p/", $value) == 0) {
-                error(sprintf(_("Value «%s» is illegal for column %s"), $value, $type->name));
+                error(sprintf(_("Value \"%s\" is illegal for column %s"), $value, $type->name));
                 return false;
             }
             
@@ -872,7 +879,7 @@ where ci_id=:ci_id and ci_column_type_id = :type:id",
         $nam = $this->get(ciColumnType::getName($default_column));
 	$has_type = $this->type_name;
 	
-        return ($nam?$nam:'<unnamed>') . ($long && $has_type?(' (' . $this->type_name. ")"):'');
+        return ($nam?$nam:_('<unnamed>')) . ($long && $has_type?(' (' . $this->type_name. ")"):'');
     }
     
     function removeDependency($other_id) 
@@ -902,11 +909,25 @@ and ci_id = :my_id";
 		     ':other_id' => $other_id,
 		     ':type_id'=>$type_id);
         
+
+        $old = db::fetchList("
+select id 
+from ci_dependency 
+where ci_id = :my_id
+and dependency_id = :other_id
+", $arr);
+
+        if(count($old)) {
+            message(_("Dependency already exists, ignored."));
+            return;
+        }
+        
         $res = db::query("
 insert into ci_dependency 
 (ci_id, dependency_id, dependency_type_id) 
 values (:my_id, :other_id, :type_id)
 ", $arr);
+
         if ($res && $res->rowCount()) {
             log::add($this->id, CI_ACTION_ADD_DEPENDENCY, $other_id, $type_id);
         }
@@ -1436,7 +1457,20 @@ extends dbItem
     function deny()
     {
         header('HTTP/1.0 403 Forbidden');            
-        echo "<html><head><title>Permission denied</title></head><body><h1>"._("Permission denied")."</h1><p>"._("You are not authorized to view this page")."</p></body></html>";
+        header('Content-Type: text/html; charset=utf-8');
+        echo "
+<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"
+2 \"http://www.w3.org/TR/html4/strict.dtd\"> 
+<html>
+  <head>
+    <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"> 
+    <title>Permission denied</title>
+  </head>
+  <body>
+    <h1>"._("Permission denied")."</h1>
+    <p>"._("You are not authorized to view this page")."</p>
+  </body>
+</html>";
         exit(1);
     }
     

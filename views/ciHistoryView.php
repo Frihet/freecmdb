@@ -7,7 +7,7 @@ class ciHistoryView
     { 
        
         if ($val ==null) {
-            return "<em class='value'>&lt;empty&gt;</em>";
+            return "<em class='value'>&lt;"._("empty")."&gt;</em>";
         }
         
         $type = ciColumnType::getType($column_id);
@@ -62,19 +62,19 @@ class ciHistoryView
             switch($edit['action']) {
             case CI_ACTION_ADD_DEPENDENCY:
                 if ($edit['ci_id'] == $controller->id) {
-                    $desc = "Added dependency to ci ". $edit['dependency_name'];
+                    $desc = sprintf(_("Added dependency to ci %s"), $edit['dependency_name']);
                 }
                 else {
-                    $desc = "Added dependency from ci ". $edit['dependant_name'];
+                    $desc = sprintf(_("Added dependency from ci %s"), $edit['dependant_name']);
                 }
                 
                 break;
             case CI_ACTION_REMOVE_DEPENDENCY:
                 if ($edit['ci_id'] == $controller->id) {
-                    $desc = "Removed dependency to ci ". $edit['dependency_name'];
+                    $desc = sprintf(_("Removed dependency to ci %s"), $edit['dependency_name']);
                 }
                 else {
-                    $desc = "Removed dependency from ci ". $edit['dependant_name'];
+                    $desc = sprintf(_("Removed dependency from ci %s"), $edit['dependant_name']);
                 }
                 break;
 
@@ -88,7 +88,7 @@ class ciHistoryView
                 $old = $this->formatHistoryValue($old, $edit['column_id']);
                 $new = $this->formatHistoryValue($new, $edit['column_id']);
                 
-                $desc = "Changed value of column " . ciColumnType::getName($edit['column_id']) . " from " . $old . " to " . $new;
+                $desc = sprintf(_("Changed value of column %s from %s to %s"), ciColumnType::getName($edit['column_id']), $old, $new);
                 break;
                     
             case CI_ACTION_CHANGE_TYPE:
@@ -99,7 +99,7 @@ class ciHistoryView
                 $old = htmlEncode(ciType::getName($old));
                 $new = htmlEncode(ciType::getName($new));
 					
-                $desc = "Changed type from " . $old . " to " . $new;
+                $desc = sprintf(_("Changed type from %s to %s"), $old, $new);
                 break;
                     
             }

@@ -10,13 +10,13 @@ class recentlyDeletedView
 <table class='striped history_table'>
 <tr>
 <th>
-Item
+"._("Item")."
 </th>
 <th>
-Deletion time
+"._("Deletion time")."
 </th>
 <th>
-Deleted by
+"._("Deleted by")."
 </th>
 <th>
 </th>
@@ -27,8 +27,8 @@ Deleted by
                 $time = FreeCMDB::dateTime($rem['create_time']);
                 $username = makeLink(array('controller'=>'user','id'=>$rem['user_id']), $rem['username']);
 		
-		$buttons =  makeLink(array('controller'=>'ci','task'=>'view','id'=>$rem['ci_id']),'Show', 'revision');
-                $buttons .= makeLink(array('task'=>'undelete', 'target_revision_id' => $edit['id']),'Undelete', 'revert');
+		$buttons =  makeLink(array('controller'=>'ci','task'=>'view','id'=>$rem['ci_id']),_('Show'), 'revision');
+                $buttons .= makeLink(array('task'=>'undelete', 'target_revision_id' => $edit['id']),_('Undelete'), 'revert');
 
 		$content .= "<tr>
 <td>
@@ -52,8 +52,8 @@ $buttons
 	    
 
 
-	    $controller->show(array(makeLink("?controller=ci&amp;task=create", "Create new item", null),
-				    makeLink("?task=recentlyDeleted", "View recently deleted items", null)), 
+	    $controller->show(array(makeLink("?controller=ci&amp;task=create", _("Create new item"), null),
+				    makeLink("?task=recentlyDeleted", _("View recently deleted items"), null)), 
 			      $content);
 	    
 	}

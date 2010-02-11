@@ -25,7 +25,7 @@ extends CmdbController
             $other_id = trim($other_id);
             if($other_id == '')
                 continue;
-            message('Trying to add dependency ' . $other_id);
+            //            message('Trying to add dependency ' . $other_id);
             
             if($reverse) {
                 $ci_list = ci::fetch(array('id_arr'=>array($other_id)));
@@ -36,12 +36,8 @@ extends CmdbController
                 $ci->addDependency($other_id, $type_id);
             }
         }
-        if ($reverse) {
-            message(_("Dependants added"));
-        } else {
-            message(_("Dependencies added"));
-        }
-        
+        message(_("Dependencies added"));
+                
         util::redirect(makeUrl(array('controller'=>'ci', 'id'=>$this->id, 'task'=>null, 'dependency_id'=>null)));
     }
 
@@ -355,7 +351,8 @@ select ci_id, :new_id, dependency_type_id
 from ci_dependency 
 where dependency_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new));
         
-        util::redirect(makeUrl(array('id'=>$id_new, 'task'=>null)));
+        message(_("CI has been copied"));
+        util::redirect(makeUrl(array('id'=>$id_new, 'task'=>edit)));
 	
         /*
          FIXME: Update default column with shiny new value, e.g. append (copy) to it or something...

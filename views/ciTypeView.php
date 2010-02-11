@@ -39,7 +39,7 @@ extends View
             $content .= $shape_select;
             
             $content .= "</td><td>";
-            $content .= makeLink(array('controller' => 'ciType', 'id' => $type_id,'task'=>'remove'),'Remove', 'remove', "Remove the CI " . $type , array('onclick'=>'return confirm("Are you sure?");'));
+            $content .= makeLink(array('controller' => 'ciType', 'id' => $type_id,'task'=>'remove'),_('Remove'), 'remove', null , array('onclick'=>'return confirm("Are you sure?");'));
             $content .= "</td></tr>";
             $idx++;
             

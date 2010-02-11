@@ -247,7 +247,7 @@ $val
                                                    'filter_type'=>param('filter_type'),
                                                    'filter_column'=>param('filter_column'),
                                                    'filter_column_value'=>param('filter_column_value'))),
-                                     'Download as CSV');
+                                     _('Download as CSV'));
                 
                 $content .= "</td></tr>";
 
