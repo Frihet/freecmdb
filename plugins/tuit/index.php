@@ -4,6 +4,18 @@ class tuitPlugin
 {
     static $has_db=false;
 
+    function getClosedStatus()
+    {
+        $closed_id = dbTuit::fetchItem("select value from ticket_property where name = 'issue_closed_id'");
+        if($closed_id === null) {
+            return "()";
+        }
+        
+        return "(" . implode(",",json_decode($closed_id)) . ")";
+    }
+    
+
+
     function startupHandler($param)
     {
         $app = $param['source']->getApplication();
@@ -43,7 +55,10 @@ class tuitPlugin
                 $ci->tuit_tickets = "<span class='numeric'>0</span>";
             }
             $id_list = implode(", ", $id_list);
+
+            $closed_status = tuitPlugin::getClosedStatus();
             
+
             $q = "select
     d.ci_id, 
     count(d.issue_id) as count
@@ -51,10 +66,9 @@ from ticket_cidependency d
 join ticket_issue i
     on d.issue_id = i.id 
 where d.ci_id in ($id_list)
-    and i.current_status_id <> :closed_status
+    and i.current_status_id not in $closed_status
 group by d.ci_id
 ";
-            $param[':closed_status'] = Property::get('plugin.tuit.closedId');
             
             $counts = dbTuit::fetchList($q, $param);
                         
@@ -178,7 +192,7 @@ group by d.ci_id
         }
         
         if ($zero) {
-            $res .= "<tr><td></td><td colspan='2'>No tickets associated with this CI</td></tr>\n";
+            $res .= "<tr><td></td><td colspan='2'>"._("No tickets associated with this CI")."</td></tr>\n";
         }
         		
         $source->addContent("ci_table", $res);
@@ -218,6 +232,7 @@ class CiTuitMapping
 	
     function fetchTickets($ci_id) 
     {
+        $closed_status = tuitPlugin::getClosedStatus();
         return dbTuit::fetchList("
 select 
     i.id, 
@@ -226,7 +241,7 @@ from ticket_cidependency as d
 join ticket_issue as i
     on d.issue_id = i.id
 where ci_id= :ci_id
-    and i.current_status_id <> :closed_status
+    and i.current_status_id not in $closed_status
 ", array(":ci_id"=>$ci_id, ':closed_status' => Property::get('plugin.tuit.closedId')));
     }
 
