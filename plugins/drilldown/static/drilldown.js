@@ -20,10 +20,15 @@ function freecmdbDrilldownItem(main, id, name)
 
     main.appendChild(select);
     $(select).text(name);
+
     if (drilldownIsEmbeded) 
     {
 	select.stat=false;
-	select.type='button';
+
+	// The defualt button type is undefined, so it is a bit creepy
+	//	not to set select.type, but IE throws up if we do...
+
+	//	select.type='button';
 	select.onclick=function(event) {
 	    select.state = !select.state;
 	    var target = $('#'+drilldownUpdateTarget)[0];
@@ -54,7 +59,7 @@ function freecmdbDrilldownItem(main, id, name)
 function freecmdbDrilldownAdd(ci_id, node, skip)
 {
     var ci_data = drilldownData[""+ci_id];
-    
+
     function addChild(node, child_id, is_root) 
     {
 	var child_data = drilldownData[""+child_id];
