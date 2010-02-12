@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-11 12:19+0000\n"
+"POT-Creation-Date: 2010-02-11 16:21+0000\n"
 "PO-Revision-Date: 2009-11-27 11:59+0000\n"
 "Last-Translator: Anja Winther-Ruud <anja.winther-ruud@freecode.no>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,117 +39,127 @@ msgstr "Bindinger"
 msgid "Plugins"
 msgstr "Innstikksmoduler"
 
-#: controllers/ciController.php:40
-msgid "Dependants added"
-msgstr "Avhengige lagt til"
-
-#: controllers/ciController.php:42
+#: controllers/ciController.php:39
 msgid "Dependencies added"
 msgstr "Bindinger lagt til"
 
-#: controllers/ciController.php:57
+#: controllers/ciController.php:53
 msgid "Dependency removed"
 msgstr "Binding fjernet"
 
-#: controllers/ciController.php:71
+#: controllers/ciController.php:67
 msgid "Dependant removed"
 msgstr "Avhengighet fjernet"
 
-#: controllers/ciController.php:124
+#: controllers/ciController.php:120
 msgid "CI updated"
 msgstr "CI oppdatert"
 
-#: controllers/ciController.php:240
+#: controllers/ciController.php:236
 msgid "Fields updated"
 msgstr "Felt oppdatert"
 
-#: controllers/ciController.php:245
+#: controllers/ciController.php:241
 msgid "Fields not updated"
 msgstr "Felt ikke oppdatert"
 
-#: controllers/ciController.php:262 model.php:25
+#: controllers/ciController.php:258 model.php:25
 msgid "CI removed"
 msgstr "CI fjernet"
 
-#: controllers/ciController.php:265
+#: controllers/ciController.php:261
 msgid "Could not remove CI, not found."
 msgstr "Kunne ikke fjerne CI, ikke funnet."
 
-#: controllers/ciController.php:279
+#: controllers/ciController.php:275
 msgid "Cancel"
 msgstr "Forkast"
 
-#: controllers/ciController.php:296
+#: controllers/ciController.php:292
 #: plugins/drilldown/controllers/drilldownController.php:45
 msgid "View all"
 msgstr "Vis alle"
 
-#: controllers/ciController.php:299
+#: controllers/ciController.php:295
 msgid "View"
 msgstr "Vis"
 
-#: controllers/ciController.php:299
+#: controllers/ciController.php:295
 msgid "Go back to read-only view of this CI"
 msgstr "Gå tilbake til bare-lese visning av denne CI"
 
-#: controllers/ciController.php:304 views/ciView.php:255 views/ciView.php:301
+#: controllers/ciController.php:300 views/ciView.php:255 views/ciView.php:301
 #: views/ciView.php:372
 msgid "Edit"
 msgstr "Forandre"
 
-#: controllers/ciController.php:304
+#: controllers/ciController.php:300
 msgid "Edit all fields of this CI"
 msgstr "Forandre alle felt av denne CI"
 
-#: controllers/ciController.php:307
+#: controllers/ciController.php:303
 msgid "History"
 msgstr "Historie"
 
-#: controllers/ciController.php:307
+#: controllers/ciController.php:303
 msgid "Show the entire revision history for this item."
 msgstr "Vis hele revisjon historien for dette elementet"
 
-#: controllers/ciController.php:311 controllers/ciListController.php:263
+#: controllers/ciController.php:307 controllers/ciListController.php:263
 #: plugins/drilldown/controllers/drilldownController.php:47
 #: views/recentlyDeletedView.php:55
 msgid "Create new item"
 msgstr "Skap nytt element"
 
-#: controllers/ciController.php:311
+#: controllers/ciController.php:307
 #: plugins/drilldown/controllers/drilldownController.php:47
 msgid "Creat an empty new CI"
 msgstr "Skap en tom ny CI"
 
-#: controllers/ciController.php:312 controllers/ciListController.php:238
+#: controllers/ciController.php:308 controllers/ciListController.php:238
 #: views/ciColumnView.php:88 views/ciDependencyView.php:54
-#: views/ciView.php:413 views/ciView.php:438 views/pluginView.php:15
+#: views/ciTypeView.php:42 views/ciView.php:413 views/ciView.php:438
+#: views/pluginView.php:15
 msgid "Remove"
 msgstr "Fjern"
 
-#: controllers/ciController.php:312
+#: controllers/ciController.php:308
 msgid "Remove this CI"
 msgstr "Fjern denne CI"
 
-#: controllers/ciController.php:312 controllers/ciListController.php:239
+#: controllers/ciController.php:308 controllers/ciListController.php:239
 #: views/ciColumnView.php:88 views/ciView.php:413 views/ciView.php:438
 msgid "Are you sure?"
 msgstr "Er du sikker?"
 
-#: controllers/ciController.php:313
+#: controllers/ciController.php:309
 msgid "Copy"
 msgstr "Kopier"
 
-#: controllers/ciController.php:313
+#: controllers/ciController.php:309
 msgid "Copy this CI"
 msgstr "Kopier denne CI"
+
+#: controllers/ciController.php:354
+msgid "CI has been copied"
+msgstr ""
 
 #: controllers/ciListController.php:139
 msgid "Filter on type"
 msgstr "Filtrér på type"
 
+#: controllers/ciListController.php:144
+msgid "None"
+msgstr "Ingen"
+
 #: controllers/ciListController.php:152
 msgid "Filter on column value"
 msgstr "Filtrér på kolonneverdi"
+
+#: controllers/ciListController.php:168
+#
+msgid "Filter"
+msgstr "Filtrér"
 
 #: controllers/ciListController.php:186 views/recentlyDeletedView.php:13
 msgid "Item"
@@ -297,11 +307,16 @@ msgstr "Verdien \"%s\" er ikke gyldig for kolonne %s"
 msgid "<unnamed>"
 msgstr "<uten navn>"
 
-#: model.php:1446
+#: model.php:921
+#, fuzzy
+msgid "Dependency already exists, ignored."
+msgstr "Binding fjernet"
+
+#: model.php:1470
 msgid "Permission denied"
 msgstr "Tillatelse avslått"
 
-#: model.php:1446
+#: model.php:1471
 msgid "You are not authorized to view this page"
 msgstr "Du er ikke autorisert til å se denne siden"
 
@@ -612,6 +627,9 @@ msgstr "Opphev sletting"
 #: views/simpleConfigureView.php:28
 msgid "Value"
 msgstr "Verdi"
+
+#~ msgid "Dependants added"
+#~ msgstr "Avhengige lagt til"
 
 #~ msgid "Users"
 #~ msgstr "Brukere"

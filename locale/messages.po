@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-11 12:19+0000\n"
+"POT-Creation-Date: 2010-02-11 16:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,116 +40,125 @@ msgstr ""
 msgid "Plugins"
 msgstr ""
 
-#: controllers/ciController.php:40
-msgid "Dependants added"
-msgstr ""
-
-#: controllers/ciController.php:42
+#: controllers/ciController.php:39
 msgid "Dependencies added"
 msgstr ""
 
-#: controllers/ciController.php:57
+#: controllers/ciController.php:53
 msgid "Dependency removed"
 msgstr ""
 
-#: controllers/ciController.php:71
+#: controllers/ciController.php:67
 msgid "Dependant removed"
 msgstr ""
 
-#: controllers/ciController.php:124
+#: controllers/ciController.php:120
 msgid "CI updated"
 msgstr ""
 
-#: controllers/ciController.php:240
+#: controllers/ciController.php:236
 msgid "Fields updated"
 msgstr ""
 
-#: controllers/ciController.php:245
+#: controllers/ciController.php:241
 msgid "Fields not updated"
 msgstr ""
 
-#: controllers/ciController.php:262 model.php:25
+#: controllers/ciController.php:258 model.php:25
 msgid "CI removed"
 msgstr ""
 
-#: controllers/ciController.php:265
+#: controllers/ciController.php:261
 msgid "Could not remove CI, not found."
 msgstr ""
 
-#: controllers/ciController.php:279
+#: controllers/ciController.php:275
 msgid "Cancel"
 msgstr ""
 
-#: controllers/ciController.php:296
+#: controllers/ciController.php:292
 #: plugins/drilldown/controllers/drilldownController.php:45
 msgid "View all"
 msgstr ""
 
-#: controllers/ciController.php:299
+#: controllers/ciController.php:295
 msgid "View"
 msgstr ""
 
-#: controllers/ciController.php:299
+#: controllers/ciController.php:295
 msgid "Go back to read-only view of this CI"
 msgstr ""
 
-#: controllers/ciController.php:304 views/ciView.php:255 views/ciView.php:301
+#: controllers/ciController.php:300 views/ciView.php:255 views/ciView.php:301
 #: views/ciView.php:372
 msgid "Edit"
 msgstr ""
 
-#: controllers/ciController.php:304
+#: controllers/ciController.php:300
 msgid "Edit all fields of this CI"
 msgstr ""
 
-#: controllers/ciController.php:307
+#: controllers/ciController.php:303
 msgid "History"
 msgstr ""
 
-#: controllers/ciController.php:307
+#: controllers/ciController.php:303
 msgid "Show the entire revision history for this item."
 msgstr ""
 
-#: controllers/ciController.php:311 controllers/ciListController.php:263
+#: controllers/ciController.php:307 controllers/ciListController.php:263
 #: plugins/drilldown/controllers/drilldownController.php:47
 #: views/recentlyDeletedView.php:55
 msgid "Create new item"
 msgstr ""
 
-#: controllers/ciController.php:311
+#: controllers/ciController.php:307
 #: plugins/drilldown/controllers/drilldownController.php:47
 msgid "Creat an empty new CI"
 msgstr ""
 
-#: controllers/ciController.php:312 controllers/ciListController.php:238
+#: controllers/ciController.php:308 controllers/ciListController.php:238
 #: views/ciColumnView.php:88 views/ciDependencyView.php:54
-#: views/ciView.php:413 views/ciView.php:438 views/pluginView.php:15
+#: views/ciTypeView.php:42 views/ciView.php:413 views/ciView.php:438
+#: views/pluginView.php:15
 msgid "Remove"
 msgstr ""
 
-#: controllers/ciController.php:312
+#: controllers/ciController.php:308
 msgid "Remove this CI"
 msgstr ""
 
-#: controllers/ciController.php:312 controllers/ciListController.php:239
+#: controllers/ciController.php:308 controllers/ciListController.php:239
 #: views/ciColumnView.php:88 views/ciView.php:413 views/ciView.php:438
 msgid "Are you sure?"
 msgstr ""
 
-#: controllers/ciController.php:313
+#: controllers/ciController.php:309
 msgid "Copy"
 msgstr ""
 
-#: controllers/ciController.php:313
+#: controllers/ciController.php:309
 msgid "Copy this CI"
+msgstr ""
+
+#: controllers/ciController.php:354
+msgid "CI has been copied"
 msgstr ""
 
 #: controllers/ciListController.php:139
 msgid "Filter on type"
 msgstr ""
 
+#: controllers/ciListController.php:144
+msgid "None"
+msgstr ""
+
 #: controllers/ciListController.php:152
 msgid "Filter on column value"
+msgstr ""
+
+#: controllers/ciListController.php:168
+msgid "Filter"
 msgstr ""
 
 #: controllers/ciListController.php:186 views/recentlyDeletedView.php:13
@@ -298,11 +307,15 @@ msgstr ""
 msgid "<unnamed>"
 msgstr ""
 
-#: model.php:1446
+#: model.php:921
+msgid "Dependency already exists, ignored."
+msgstr ""
+
+#: model.php:1470
 msgid "Permission denied"
 msgstr ""
 
-#: model.php:1446
+#: model.php:1471
 msgid "You are not authorized to view this page"
 msgstr ""
 

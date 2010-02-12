@@ -141,7 +141,7 @@ extends CmdbController
 <td>
 ";
             $form .= form::makeSelect('filter_type',
-                                      array(-1=>'None')+ciType::getTypes(), 
+                                      array(-1=>_('None'))+ciType::getTypes(), 
                                       param('filter_type', -1),
                                       'filter_type');
             $form .= "
@@ -165,7 +165,7 @@ extends CmdbController
 </th>
 </table>
 ";
-            $form .= "<div class='button_list'><button type='submit'>Filter</button></div>";
+            $form .= "<div class='button_list'><button type='submit'>"._("Filter")."</button></div>";
             
             $content .= form::makeForm($form,array('controller'=>'ciList'), 'get');
             
