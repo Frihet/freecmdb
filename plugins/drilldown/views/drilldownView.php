@@ -28,7 +28,7 @@ class DrilldownView
         $root_id = htmlEncode($controller->embedPoint());
         echo "<div id='$root_id'><div class='drilldown_expand expanded'></div></div>";
 ?>
-<script src="/FreeCMDB/plugins/drilldown/static/drilldown.js" />
+<script src="/FreeCMDB/plugins/drilldown/static/drilldown.js" ></script>
 <script>
 
 var drilldownData = <?=$d?>;
