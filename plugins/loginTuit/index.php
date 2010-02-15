@@ -16,10 +16,11 @@ class loginTuitPlugin
             $server_host = $_SERVER['SERVER_ADDR'];
             $browser_host = $_SERVER['HTTP_HOST'];
             $request_uri = $_SERVER['REQUEST_URI'];
+            $server_port = $_SERVER['SERVER_PORT'];
             //	message($_SERVER);
-            
-            
-            curl_setopt($ch, CURLOPT_URL, "http://" .$server_host ."/tuit/account/session");
+            $port_part = ($server_port != 80)?":$server_port":""
+
+            curl_setopt($ch, CURLOPT_URL, "http://" .$server_host . $port_part."/tuit/account/session/");
             curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);

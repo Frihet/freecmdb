@@ -36,7 +36,7 @@ extends adminController
         db::begin();
         $default = null;
         
-        foreach(param("column", array()) as $column) {
+        foreach(param("column", array()) as $idx => $column) {
             
             $obj = new CiColumnType($column);
             if($obj->ci_type_id == '') {
@@ -45,8 +45,8 @@ extends adminController
             
             if($obj->name != "") {
                 $ok &= $obj->save();
-                
-                if($obj->_default) {
+
+                if (param('column_default') == $idx) {
                     $default = $obj->id;
                 }
                 

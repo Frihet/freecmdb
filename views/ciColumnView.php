@@ -32,7 +32,7 @@ class ciColumnview
 </th><th>
 </th></tr>
 ";
-        $idx = 0;
+        $idx = 1;
         $o = new ciColumnType();
         
         $ci_column_list = $o->findAll();
@@ -81,7 +81,7 @@ class ciColumnview
 
 
             $form .= "</td><td>";
-            $form .= "<input type='radio' name='column[$idx][_default]' value='1' id='default_$idx' $checked><label for='default_$idx'>Default</label>";
+            $form .= "<input type='radio' name='column_default' value='$idx' id='default_$idx' $checked><label for='default_$idx'>Default</label>";
             $form .= "</td><td>";
                 
             if($column !== null)
