@@ -46,11 +46,7 @@ extends View
 			form::$iframe_id++;
 		    }
 		    $res .= "
-<iframe class='freecmdb_iframe'
-    id='".htmlEncode($id)."' name='".htmlEncode($id)."'
-    src='".htmlEncode($value)."'
-    onload='dynamicIFrame.resize(\"".htmlEncode($id)."\")'
-    scrolling='no'>"._("Iframes not supported by this browser.")."
+<iframe class='freecmdb_iframe' id='".htmlEncode($id)."' name='".htmlEncode($id)."' src='".htmlEncode($value)."'>"._("Iframes not supported by this browser.")."
 </iframe>";
 		    
 		    break;
