@@ -1,4 +1,27 @@
 <?php
+/******************************************************************************
+ *
+ * Copyright © 2010
+ *
+ * FreeCode Norway AS
+ * Nydalsveien 30A, NO-0484 Oslo, Norway
+ * Norway
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ ******************************************************************************/
+
 require_once('common/index.php');
 require_once("model.php");
 
@@ -61,11 +84,11 @@ extends Application
     function writeMenu($controller)
     {
         if(Property::get('tuit.enabled','0')=='1') {
-            echo "
-        <div class='main_menu no_print'>
-        <iframe src='/tuit/menu/' width='100%' height='80px' frameborder='no'></iframe>
-        </div>
-";
+            echo "<div class='main_menu no_print'>";
+	    echo implode("",$controller->getContent("main_menu_pre"));
+	    echo "<iframe src='/tuit/menu/' width='100%' height='80px' frameborder='0'></iframe>";
+	    echo implode("",$controller->getContent("main_menu_post"));
+	    echo "</div>";
             return;
         }
 
@@ -74,6 +97,7 @@ extends Application
         $is_ci = !$is_admin && !$is_help;
 	
         echo "<div class='main_menu'>\n";
+	echo implode("",$controller->getContent("main_menu_pre"));
         echo "<div class='main_menu_inner'>";
         echo "<div class='logo'><a href='?'>FreeCMDB</a></div>";
 	
@@ -95,7 +119,9 @@ extends Application
         echo makeLink("?controller=logout", "Log out", null);
         echo "</li>\n";
         */        
-        echo "</ul></div></div>\n";
+        echo "</ul></div>";
+        echo implode("",$controller->getContent("main_menu_post"));
+	echo "</div>\n";
     }
 
     function getDefaultController()

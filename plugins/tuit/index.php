@@ -22,6 +22,9 @@ class tuitPlugin
         
         $app->addScript('../static/tuit.js');
         $app->addScript('../tuit/ticket/i18n.js');
+
+        $param['source']->addContent('action_menu_post',"<ul class='comment_target'></ul>");
+
     }
     
     /**

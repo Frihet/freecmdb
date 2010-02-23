@@ -42,6 +42,7 @@ extends CmdbController
     function getActionMenu() 
     {
         $action_links = array();
+        
         $action_links[] = makeLink(makeUrl(array("controller"=>"ciList")), _("View all"));
         if(ciUser::can_edit()) {
             $action_links[] = makeLink(makeUrl(array("controller"=>"ci", "task"=>"create")), _("Create new item"), null, _("Creat an empty new CI"));
