@@ -26,7 +26,6 @@ extends CmdbController
     
     function viewRun()
     {
-	$this->addContent('breadcrumb', makeLink(makeUrl(array()), _('Administration')));
         $this->render("admin");
         
     }

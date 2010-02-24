@@ -102,7 +102,6 @@ extends adminController
 
     function viewRun() 
     {
-	$this->addContent('breadcrumb', makeLink(makeUrl(array('controller'=>'admin')), _('Administration')));
 	$this->addContent('breadcrumb', makeLink(makeUrl(array()), _('Dependencies')));
 	$this->render("ciDependency");
     }

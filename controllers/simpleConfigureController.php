@@ -11,6 +11,8 @@ extends adminController
     
     function viewRun()
     {
+	$this->addContent('breadcrumb', makeLink(makeUrl(array('controller'=>'plugin')), _('Plugins')));
+	$this->addContent('breadcrumb', makeLink(makeUrl(array()), param('plugin')));
         $this->render("configure");
     }
     
@@ -21,8 +23,7 @@ extends adminController
             Property::set(param("name_$idx"), param("value_$idx"));
         }
         message("Plugin properties updated");
-        util::redirect(makeUrl(array('task'=>'view', 
-                                     'plugin'=>param('plugin'),
+        util::redirect(makeUrl(array('plugin'=>param('plugin'),
                                      'controller'=>param('controller'))));
     }
     
