@@ -174,7 +174,7 @@ extends CmdbController
             
             if (!count($ci_list)) 
 		{
-                    $content .= "_("No CIs matched your criteria!")";
+                    $content .= _("No CIs matched your criteria!");
 		}
             else 
 		{

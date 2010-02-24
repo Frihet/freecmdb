@@ -145,7 +145,7 @@ extends Application
     
     function preRun($controller)
     {
-        Event::emit("Startup",array("source"=>$controller));	
+        Event::emit("Startup",array("source"=>$controller));
         ciUser::assert_view();
     }
     

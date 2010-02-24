@@ -367,7 +367,9 @@ where dependency_id = :old_id', array(':old_id'=>$id_orig, ':new_id' => $id_new)
     function editRun()
     {
         ciUser::assert_edit();
-        $this->viewRun();
+	$this->addContent('breadcrumb', makeLink(makeUrl(array('task'=>null)), $this->getCi()->getDescription(true)));
+	$this->addContent('breadcrumb', makeLink(makeUrl(array()), _('Edit')));
+        $this->render("ci");
     }
     
     /**
@@ -451,6 +453,8 @@ order by cl2.create_time desc;',
     */
     function historyRun()
     {
+	$this->addContent('breadcrumb', makeLink(makeUrl(array('task'=>null)), $this->getCi()->getDescription(true)));
+	$this->addContent('breadcrumb', makeLink(makeUrl(array()), _('History')));
         $this->render("ciHistory");
     }
 	
@@ -461,6 +465,7 @@ order by cl2.create_time desc;',
     */
     function viewRun()
     {
+	$this->addContent('breadcrumb', makeLink(makeUrl(array()), $this->getCi()->getDescription(true)));
         $this->render("ci");
     }
 	
