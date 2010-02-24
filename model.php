@@ -84,7 +84,7 @@ order by create_time desc',
                              array(':ci_id'=>$id,
                                    ':default_column' => Property::get("ciColumn.default"),
                                    ':default_column2' => Property::get("ciColumn.default")));
-        message($res);
+        //message($res);
         return $res;
         
     }
