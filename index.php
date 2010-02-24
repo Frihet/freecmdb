@@ -78,16 +78,25 @@ extends Application
         $this->ci_selector = $s;
     }
     
+    function writeHeader($title, $controller)
+    {
+	Application::writeHeader($title, $controller);
+	echo implode("", $controller->getContent("body_pre"));
+    }
+
     /**
      Write out the top menu.
     */
     function writeMenu($controller)
     {
         if(Property::get('tuit.enabled','0')=='1') {
-            echo "<div class='main_menu no_print'>";
+            echo "<div class='menu_box no_print'>";
+            echo "<div class='menu_box_inner'>";
 	    echo implode("",$controller->getContent("main_menu_pre"));
-	    echo "<iframe src='/tuit/menu/' width='100%' height='80px' frameborder='0'></iframe>";
+	    echo "<div class='main_menu_target'></div>";
+//	    echo "<iframe src='/tuit/menu/' width='70%' height='25px' frameborder='0'></iframe>";
 	    echo implode("",$controller->getContent("main_menu_post"));
+	    echo "</div>";
 	    echo "</div>";
             return;
         }

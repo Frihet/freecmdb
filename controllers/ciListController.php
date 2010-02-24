@@ -174,7 +174,7 @@ extends CmdbController
             
             if (!count($ci_list)) 
 		{
-                    $content .= "No CIs matched your criteria!";
+                    $content .= "_("No CIs matched your criteria!")";
 		}
             else 
 		{
@@ -213,7 +213,7 @@ $desc
 			$content .= "<tr>";
 			$content .= "<td>";
             
-			$content .= makeLink(array('controller' => 'ci', 'id' => $ci->id),$ci->getDescription(false), null, "View detailed information for the CI " . $ci->getDescription(false) );
+			$content .= makeLink(array('controller' => 'ci', 'id' => $ci->id),$ci->getDescription(false), null, sprintf(_("View detailed information for the CI %s."), $ci->getDescription(false) ));
 			$content .= "</td><td>";
 			$content .= ciType::getName($ci->ci_type_id);
 			

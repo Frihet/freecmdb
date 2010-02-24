@@ -6,15 +6,60 @@ class pluginView
     function render($controller)
     {
         util::setTitle(_("Installed FreeCMDB plugins"));
-        $content = "        
-<ul>
+
+	$plugins = array();
+	foreach (scandir("./plugins/") as $plugin_name)
+	    if ($plugin_name !== '.' && $plugin_name !== '..' && @stat("./plugins/{$plugin_name}/install.json")) {
+	        $plugins[$plugin_name] = json_decode(file_get_contents("./plugins/{$plugin_name}/install.json"), true);
+	        $plugins[$plugin_name]['name'] = $plugin_name;
+	        $plugins[$plugin_name]['enabled'] = false;
+	    }
+       
+	foreach(db::fetchList("select * from ci_plugin") as $plugin)
+            $plugins[$plugin['name']]['enabled'] = true;
+
+
+        $content = "
+<table class='striped'>
+ <tr><th colspan='2'>Enabled modules</th></tr> 
 ";
-        
-        foreach(db::fetchList("select * from ci_plugin") as $plugin) {
-            $content .= "<li>" . makeLink(array("plugin"=>$plugin['name'], 'controller' => 'configure'), 
-                                          $plugin['name'] . " - " . $plugin['description']) . makeLink(array('controller' => 'plugin', 'plugin' => $plugin['name'],'task'=>'uninstall'),_('Remove'), 'remove', _("Remove the Plugin"),array('onclick'=>'return confirm("Are you sure?");'))."</li>";
-        }
-        $content .= "</ul>";
+        foreach($plugins as $plugin)
+	    if ($plugin['enabled']) {
+		$content .= "<tr><td>";
+		$content .= makeLink(array("plugin"=>$plugin['name'], 'controller' => 'configure'), $plugin['name'] . " - " . $plugin['description']);
+		$content .= "</td><td>";
+                $content .= makeLink(array('controller' => 'plugin', 'plugin_name' => $plugin['name'],'task'=>'disable'),
+                         _('Disable'),
+                         'action disable',
+                         _("Disable the Plugin"));
+		$content .= makeLink(array('controller' => 'plugin', 'plugin_name' => $plugin['name'],'task'=>'uninstall'),
+			     _('Remove'),
+			     'action remove',
+			     _("Remove the Plugin"),
+			     array('onclick'=>'return confirm("Are you sure?");'));
+		$content .= "</td></tr>";
+            }
+
+        $content .= "
+ <tr><th colspan='2'>Disabled modules</th></tr> 
+";
+        foreach($plugins as $plugin)
+	    if (!$plugin['enabled']) {
+		$content .= "<tr><td>";
+		$content .= makeLink(array("plugin"=>$plugin['name'], 'controller' => 'configure'), $plugin['name'] . " - " . $plugin['description']);
+		$content .= "</td><td>";
+                $content .= makeLink(array('controller' => 'plugin', 'plugin_name' => $plugin['name'],'task'=>'enable'),
+                         _('Enable'),
+                         'action enable',
+                         _("Enable the Plugin"));
+		$content .= makeLink(array('controller' => 'plugin', 'plugin_name' => $plugin['name'],'task'=>'uninstall'),
+			     _('Remove'),
+			     'action remove',
+			     _("Remove the Plugin"),
+			     array('onclick'=>'return confirm("Are you sure?");'));
+		$content .= "</td></tr>";
+	    }
+        $content .= "</table>";
 
         $form .= _("Send this file").": <input name='package_file' type='file' />
 <button type='submit'>"._("Install plugin")."</button>

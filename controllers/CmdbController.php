@@ -8,7 +8,6 @@
 class CmdbController
 extends Controller
 {
-
     function preRun()
     {
         $class_name = get_class($this);
