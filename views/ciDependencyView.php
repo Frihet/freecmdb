@@ -48,7 +48,7 @@ class ciDependencyview
 	    
 	    			
 	    $checked = param("default",Property::get("ciDependency.default")) == $dep->id?"checked":"";
-            $form .= "<input type='radio' name='default' value='{$dep->id}' id='default_$idx' $checked><label for='default_$idx'>Default</label>";
+            $form .= "<input type='radio' name='default' value='{$dep->id}' id='default_$idx' $checked><label for='default_$idx'>" . _("Default") . "</label>";
             $form .= "</td><td>";
             
             $form .= makeLink(array('controller' => 'ciDependency', 'id' => $dep->id,'task'=>'remove'),_('Remove'), 'remove', _("Remove the dependency"), array('onclick'=>'return confirm("Are you sure?");'));
@@ -72,7 +72,7 @@ class ciDependencyview
     </td><td>
       $shape_select
     </td><td>
-      <input type='radio' name='default' value='new' id='default_new' $checked><label for='default_new'>Default</label>
+      <input type='radio' name='default' value='new' id='default_new' $checked><label for='default_new'>" . _("Default") . "</label>
     </td>
     <td>
     </td>

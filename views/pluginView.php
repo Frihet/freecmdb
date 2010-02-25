@@ -21,7 +21,7 @@ class pluginView
 
         $content = "
 <table class='striped'>
- <tr><th colspan='2'>Enabled modules</th></tr> 
+ <tr><th colspan='2'>" . _("Enabled modules") . "</th></tr> 
 ";
         foreach($plugins as $plugin)
 	    if ($plugin['enabled']) {
@@ -41,7 +41,7 @@ class pluginView
             }
 
         $content .= "
- <tr><th colspan='2'>Disabled modules</th></tr> 
+ <tr><th colspan='2'>" . _("Disabled modules") . "</th></tr> 
 ";
         foreach($plugins as $plugin)
 	    if (!$plugin['enabled']) {

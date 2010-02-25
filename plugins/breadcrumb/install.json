@@ -1,0 +1,7 @@
+
+{
+	"description" : "Breadcrumbs",
+	"author"      : "Egil Möller",
+	"version"     : 0.01,
+	"events"      : ["Shutdown"]
+}

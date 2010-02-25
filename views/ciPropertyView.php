@@ -13,9 +13,9 @@ class ciPropertyView
 <table class='striped'>
 <tr>
 <th>
-".("Name")."
+". _("Name")."
 </th><th>
-".("Value")."
+"._("Value")."
 </th></tr>
 ";
         $idx = 0;

@@ -17,17 +17,17 @@ class ciColumnview
 <table class='striped'>
 <tr>
 <th>
-".("Name")."
+"._("Name")."
 </th><th>
-".("Type")."
+"._("Type")."
 </th><th>
-".("CI")."
+"._("CI")."
 </th><th>
-".("Pattern")."
+"._("Pattern")."
 </th><th>
-".("Prefix")."
+"._("Prefix")."
 </th><th>
-".("Suffix")."
+"._("Suffix")."
 </th><th>
 </th><th>
 </th></tr>
@@ -81,7 +81,7 @@ class ciColumnview
 
 
             $form .= "</td><td>";
-            $form .= "<input type='radio' name='column_default' value='$idx' id='default_$idx' $checked><label for='default_$idx'>Default</label>";
+            $form .= "<input type='radio' name='column_default' value='$idx' id='default_$idx' $checked><label for='default_$idx'>" . _("Default") . "</label>";
             $form .= "</td><td>";
                 
             if($column !== null)
