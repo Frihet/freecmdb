@@ -26,7 +26,36 @@ extends Controller
         Event::emit($event_name . $task,array("source"=>$this, "point"=>"post"));
         Event::emit($event_name,array("source"=>$this, "point"=>"post"));
     }
-    
+
+    function show($action_menu, $content)
+    {
+        $this->actionMenu($action_menu);
+
+        echo "
+	 <div class='content'>
+	  <div class='content_inner'>
+	   <div class='widget widget_2'>";
+        if (htmlEncode(util::getTitle()) != '') {
+         echo "
+	    <div class='widget_header'>
+	     <h2>";
+         echo htmlEncode(util::getTitle());
+         echo "
+             </h2>
+	    </div>";
+        }
+        echo implode("",$this->getContent("content_pre"));
+        echo $content;
+        echo implode("",$this->getContent("content_post"));
+        echo "
+            <div class='content_post'>
+           </div>";
+	$this->getApplication()->writeFooter2();
+        echo "
+          </div>
+         </div>";
+    }
+  
 }
 
 

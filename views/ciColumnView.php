@@ -85,7 +85,7 @@ class ciColumnview
             $form .= "</td><td>";
                 
             if($column !== null)
-                $form .= makeLink(array('controller' => 'ciColumn', 'id' => $column->id,'task'=>'remove'),_('Remove'), 'remove', _("Remove the column"), array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\\').'");'));
+                $form .= makeLink(array('controller' => 'ciColumn', 'id' => $column->id,'task'=>'remove'),_('Remove'), 'remove button', _("Remove the column"), array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\\').'");'));
             
             $form .= "</td></tr>";
             

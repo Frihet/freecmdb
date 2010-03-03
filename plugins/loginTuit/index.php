@@ -9,7 +9,10 @@ class loginTuitPlugin
     function startupHandler($param)
     {
         if (true) {
-            
+            $app = $param['source']->getApplication();
+            $app->removeStyle('common/static/common.css');
+            $app->addStyle('/static/tuit.css');
+
             $session_id = $_COOKIE['sessionid'];
             
             $ch = curl_init();
@@ -19,8 +22,11 @@ class loginTuitPlugin
             $server_port = $_SERVER['SERVER_PORT'];
             //	message($_SERVER);
             $port_part = ($server_port != 80)?":$server_port":"";
-            
-
+            $port_part="";
+	    
+	    
+	    //echo "http://" .$server_host . $port_part."/tuit/account/session/";
+	    	    
             curl_setopt($ch, CURLOPT_URL, "http://" .$server_host . $port_part."/tuit/account/session/");
             curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -30,9 +36,10 @@ class loginTuitPlugin
             $info = curl_getinfo($ch);
             curl_close($ch);
             //message($_SERVER);
-            //	message($info);
-            
+	    //print_r($info);
+	    
             if ($res !== false) {
+	    
                 $msg = json_decode($res);
                 //message($msg);
                 
@@ -54,7 +61,7 @@ class loginTuitPlugin
                     //message("view: $can_view, edit: $can_edit, admin: $can_admin");
                     
                     ciUser::setUser($msg->username,$msg->first_name . " " . $msg->last_name, $msg->email, $can_view, $can_edit, $can_admin);
-                    $param['source']->addContent('main_menu_pre',sprintf("<ul class='user_info'><li>"._("User").": <a href='/tuit/account/%s'>%s - %s</a></li>\n<li><a href='/tuit/account/logout'>"._("Log out")."</a></li></ul>\n",
+                    $param['source']->addContent('main_menu_pre',sprintf("<ul class='user_info'><li class='username'><a href='/tuit/account/%s'>%s - %s</a></li>\n<li class='logout_button'><a href='/tuit/account/logout'>"._("Log out")."</a></li></ul>\n",
                                                                            ciUser::$_me->username,
                                                                            ciUser::$_me->username,
                                                                            ciUser::$_me->fullname));

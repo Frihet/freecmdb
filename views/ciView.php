@@ -406,7 +406,7 @@ $(function()
 		$dep .= makeLink(array('id'=>$item->id), $item->getDescription(), null, sprintf(_("View all information on %s"), $other_name));
 		$dep .= "</td><td>\n";
 		if (!$is_readonly && $ci->isDirectDependency($item->id)) {
-		    $dep .= makeLink(array('task'=>'removeDependency', 'dependency_id'=>$item->id), _("Remove"),'remove', sprintf(_("Remove dependency from %s to %s"), $my_name, $other_name), array('onclick'=>'return confirm("' .addcslashes(_("Are you sure?"),'"\\').'");'));
+		    $dep .= makeLink(array('task'=>'removeDependency', 'dependency_id'=>$item->id), _("Remove"),'remove button', sprintf(_("Remove dependency from %s to %s"), $my_name, $other_name), array('onclick'=>'return confirm("' .addcslashes(_("Are you sure?"),'"\\').'");'));
 		}
 		$dep .= "</td>\n</tr>\n";
 	    }	
@@ -431,7 +431,7 @@ $(function()
 		$dep2 .= makeLink(array('id'=>$item->id), $item->getDescription(), null, sprintf(_("View all information on %s"),$other_name));
 		$dep2 .= "\n</td><td>\n";
 		if (!$is_readonly && $ci->isDirectDependant($item->id)) {
-		    $dep2 .= makeLink(array('task'=>'removeDependant', 'dependant_id'=>$item->id), _("Remove"),'remove', sprintf(_("Remove dependency from %s to %s"), $other_name, $my_name),array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\\').'");'));
+		    $dep2 .= makeLink(array('task'=>'removeDependant', 'dependant_id'=>$item->id), _("Remove"),'remove button', sprintf(_("Remove dependency from %s to %s"), $other_name, $my_name),array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\\').'");'));
 		}
 		$dep2 .= "\n</td></tr>\n";
 	    }
@@ -470,14 +470,15 @@ $(function()
 
 
         if (!$is_readonly) {
-	    $content .= "<tr><th colspan='3'>"._("Add new dependency")."</th></tr>\n";
-	    $form = "<tr><td>".form::makeSelect('dependency_type_info', CiDependencyType::getDependencyOptions(),property::get(''))."</td><td>";
+	    $content .= "<tr><th>"._("Add new dependency")."</th><td></td><td>\n";
+
+	    $form = form::makeSelect('dependency_type_info', CiDependencyType::getDependencyOptions(),property::get('')) . "<br />";
             $form .= $controller->getApplication()->makeCiSelector('dependency_id', null);
-	    
-            $form .= "</td><td><button type='submit'>"._("Add")."</button>\n";
-            $form .= "</td></tr>";
-            
-            $content .= form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$controller->id));
+            $form .= "<button type='submit'>"._("Add")."</button>\n";
+
+            $form = form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$controller->id));
+
+            $content .= makePopup(_("Add"), "Add new dependency...", $form, "edit" );
         }
 				
         return $content;

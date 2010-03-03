@@ -235,7 +235,7 @@ $val
                         if(ciUser::can_edit()) {
                             
                             $content .= makeLink(array('controller' => 'ci', 'id' => $ci->id,'task'=>'remove'),
-                                                 _('Remove'), 'remove', sprintf(_("Remove the CI %s"), $ci->getDescription()),
+                                                 _('Remove'), 'remove button', sprintf(_("Remove the CI %s"), $ci->getDescription()),
                                                  array('onclick'=>'return confirm("'.addcslashes(_("Are you sure?"),'"\'').'");'));
                         }
                         

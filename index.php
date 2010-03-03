@@ -90,14 +90,24 @@ extends Application
     function writeMenu($controller)
     {
         if(Property::get('tuit.enabled','0')=='1') {
-            echo "<div class='menu_box no_print'>";
-            echo "<div class='menu_box_inner'>";
-	    echo implode("",$controller->getContent("main_menu_pre"));
-	    echo "<div class='main_menu_target'></div>";
-//	    echo "<iframe src='/tuit/menu/' width='70%' height='25px' frameborder='0'></iframe>";
-	    echo implode("",$controller->getContent("main_menu_post"));
-	    echo "</div>";
-	    echo "</div>";
+            echo "
+	     <div class='menu_boxes no_print'>
+	      <div class='menu_box menu_box1'>
+	       <div class='logo'></div>";
+            echo implode("",$controller->getContent("main_menu_pre"));
+            echo "
+	       <div class='endbox'></div>
+	      </div>
+	      <div class='menu_box menu_box2'>
+	       <div class='main_menu_target'></div>
+	       <div class='endbox'></div>
+	      </div>
+	      <div class='menu_box menu_box3'>";
+            echo implode("",$controller->getContent("main_menu_post"));
+            echo "
+	       <div class='endbox'></div>
+	      </div>
+	     </div>";
             return;
         }
 
@@ -152,6 +162,12 @@ extends Application
     function postRun($controller)
     {
         Event::emit("Shutdown",array("source"=>$controller));
+    }
+
+    function writeFooter() {}
+
+    function writeFooter2() {
+        Application::writeFooter();
     }
     
 }

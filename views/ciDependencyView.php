@@ -51,7 +51,7 @@ class ciDependencyview
             $form .= "<input type='radio' name='default' value='{$dep->id}' id='default_$idx' $checked><label for='default_$idx'>" . _("Default") . "</label>";
             $form .= "</td><td>";
             
-            $form .= makeLink(array('controller' => 'ciDependency', 'id' => $dep->id,'task'=>'remove'),_('Remove'), 'remove', _("Remove the dependency"), array('onclick'=>'return confirm("Are you sure?");'));
+            $form .= makeLink(array('controller' => 'ciDependency', 'id' => $dep->id,'task'=>'remove'),_('Remove'), 'remove button', _("Remove the dependency"), array('onclick'=>'return confirm("Are you sure?");'));
             $form .= "</td></tr>";
             
             $idx++;
