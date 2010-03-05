@@ -49,7 +49,9 @@ class ciChart
              hell out of somebody..
             */
             $res = $graph->fetch($format);
-            $res = preg_replace('/font-size:[ 0-9.]*;/','font-size:10px;', $res);
+            $res = preg_replace('/font-size:[ 0-9.]*;/','font-size:8pt;', $res);
+            $res = preg_replace('/width=["\']([0-9]*)pt["\']/','width="\1px"', $res);
+            $res = preg_replace('/height=["\']([0-9]*)pt["\']/','height="\1px"', $res);
             return $res;
         } else {
 	    return $graph->fetch($format);
@@ -94,13 +96,13 @@ class ciChart
         }
 	
         $key = sha1(file_get_contents($graph->saveParsedGraph()).$format);
-        
+
         $res = CiGraphCache::get($key);
         
         if ($res) {
             return ($format=='png'?base64_decode($res):$res);
         }
-        
+
         $res = self::imageKludge($graph, $format);		
         
         CiGraphCache::set($key, ($format=='png'?base64_encode($res):$res));
@@ -143,7 +145,7 @@ class ciChart
                         array('URL' => makeUrl(array('controller'=>'ci','task'=>'view','id'=>$node->id,'revision_id'=>$revision_id)),
                               'target' => '_parent',
                               'shape' => ciType::getShape($node->ci_type_id),
-                              'fontsize' => '10', 
+                              'fontsize' => '8pt', 
                               'fontname' => 'sans-serif',  // Re-add font name attribute on every node, since GraphViz seems to ignore the main graph attribute, even though the docs say it should be inherited.
                               'label'=>str_replace(' ','\n',$node->getDescription(true)),
                               'color' => ($is_root?'green':(array_search($node->id, $this->highlight)?'green':'black'))
