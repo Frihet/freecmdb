@@ -138,7 +138,7 @@ extends CmdbController
 	    $arr = db::fetchList("
 select id 
 from ci_column_type
-where ci_type_id = :type_id or ci_type_id is null
+where (ci_type_id = :type_id or ci_type_id is null) and deleted=false
 order by name", array(':type_id'=>$type_id));
         
 	    foreach( $arr as $row) {
