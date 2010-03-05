@@ -73,8 +73,7 @@ extends CmdbController
     */
     function updateField($key, $value)
     {
-        $ci = new ci();
-        $ci->id=param('id');
+	$ci = $this->getCi();
         if ($key=='type') {
             return $ci->setType(param('type'));
         } else {
@@ -192,11 +191,12 @@ order by name", array(':type_id'=>$type_id));
         ciUser::assert_edit();
 	
         db::begin();
-	if($this->id == null) 
+
+	$is_new = ($this->id == null);
+	if($is_new) 
 	{
 	    db::query("insert into ci (ci_type_id) select id from ci_type where deleted=false limit 1");
 	    $id = $_REQUEST['id'] = db::lastInsertId("ci_id_seq");
-	    message("Created ci with id " . $id);	    
 	    log::add($id, CI_ACTION_CREATE);
 	    $this->id = $id;
 	    $ci_list = ci::fetch(array('id_arr'=>array($this->id), 'deleted'=>true));
@@ -233,11 +233,16 @@ order by name", array(':type_id'=>$type_id));
         }
         if( $ok) {
             db::commit();
-            message(_('Fields updated'));
+	    if ($is_new)
+                message("Created ci with id " . $id);	    
+	    else
+                message(_('Fields updated'));
             util::redirect(makeUrl($arr));
         }
         else {
             db::rollback();
+	    $this->id = null;
+	    $this->ci->id = null;
             error(_('Fields not updated'));
             $_REQUEST['task'] = 'edit';
             $this->viewRun();

@@ -232,7 +232,7 @@ $(function()
 <table class='striped ci_table'>";
 				
         $form .= "<tr><th>"._("Type")."</th><td>";
-				
+
         $type_select = form::makeSelect('type', ciType::getTypes(), $ci->ci_type_id,'type_select');
 				
         
@@ -252,7 +252,7 @@ $(function()
             }
             
         }
-        
+
         $form .= "</td></tr>\n";
         if($ci->_ci_column) 
 	{
