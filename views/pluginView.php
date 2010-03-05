@@ -28,13 +28,17 @@ class pluginView
 		$content .= "<tr><td>";
 		$content .= makeLink(array("plugin"=>$plugin['name'], 'controller' => 'configure'), $plugin['name'] . " - " . $plugin['description']);
 		$content .= "</td><td>";
+                $content .= makeLink(array('controller' => 'plugin', 'plugin_name' => $plugin['name'],'task'=>'reenable'),
+                         _('Re-install'),
+                         'button reenable',
+                         _("Re-install the Plugin"));
                 $content .= makeLink(array('controller' => 'plugin', 'plugin_name' => $plugin['name'],'task'=>'disable'),
                          _('Disable'),
-                         'action disable',
+                         'button disable',
                          _("Disable the Plugin"));
 		$content .= makeLink(array('controller' => 'plugin', 'plugin_name' => $plugin['name'],'task'=>'uninstall'),
 			     _('Remove'),
-			     'action remove',
+			     'button remove',
 			     _("Remove the Plugin"),
 			     array('onclick'=>'return confirm("Are you sure?");'));
 		$content .= "</td></tr>";
@@ -50,11 +54,11 @@ class pluginView
 		$content .= "</td><td>";
                 $content .= makeLink(array('controller' => 'plugin', 'plugin_name' => $plugin['name'],'task'=>'enable'),
                          _('Enable'),
-                         'action enable',
+                         'button enable',
                          _("Enable the Plugin"));
 		$content .= makeLink(array('controller' => 'plugin', 'plugin_name' => $plugin['name'],'task'=>'uninstall'),
 			     _('Remove'),
-			     'action remove',
+			     'button remove',
 			     _("Remove the Plugin"),
 			     array('onclick'=>'return confirm("Are you sure?");'));
 		$content .= "</td></tr>";
