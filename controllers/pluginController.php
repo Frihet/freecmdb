@@ -35,6 +35,12 @@ extends AdminController
 		
     }
 
+    function reenableRun($plugin_name = null)
+    {
+        $this->disableRun($plugin_name);
+        $this->enableRun($plugin_name);
+    }
+
     function enableRun($plugin_name = null)
     {
 	if ($plugin_name === null)
