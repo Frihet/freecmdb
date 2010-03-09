@@ -32,7 +32,7 @@ extends CmdbController
 
     function viewRun()
     {
-		util::setTitle("FreeCMDB help");
+        util::setTitle(_("FreeCMDB help"));
 		
             $this->add("Introduction", "
 <p> FreeCMDB is a Configuration Managment DataBase (CMDB), which is a
