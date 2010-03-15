@@ -275,8 +275,8 @@ order by name", array(':type_id'=>$type_id));
     function makePopupForm($field_name, $input, $input_id, $popup_id)
     {
         
-        $form = "<p><label for='$input_id'>New value:</label></p><p>" . $input;
-        $form .= "</p><p><button type='submit'>Save</button> ";
+        $form = "<p><label for='$input_id'>"._("New value:")."</label></p><p>" . $input;
+        $form .= "</p><p><button type='submit'>"._("Save")."</button> ";
         $form .= "<button type='button' onclick='popupHide(\"$popup_id\")'>"._("Cancel")."</button></p>";
         
         return form::makeForm($form, array('task'=>'updateField','controller'=>'ci','id'=>$this->id,'key'=>$field_name), 'post', true);

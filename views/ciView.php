@@ -21,7 +21,7 @@ extends View
         
         if ($read_only) {
             if($value == null) {
-                $res .= "&lt;empty&gt;";    
+                $res .= "&lt;"._("empty")."&gt;";    
             }
             else {
                 
@@ -124,7 +124,7 @@ $(function()
                 }
                 
                 $res .= form::makeSelect($name, ciColumnList::getItems($column_id), $value, $id);
-                $res .= makePopup(_("Edit item list"), "More...", self::makeColumnListEditor($column_id, $id), "edit" );
+                $res .= makePopup(_("Edit item list"), _("More..."), self::makeColumnListEditor($column_id, $id), "edit" );
                 
                 break;
                 
@@ -478,7 +478,7 @@ $(function()
 
             $form = form::makeForm($form, array('controller'=>'ci', 'task'=>'addDependency','id'=>$controller->id));
 
-            $content .= makePopup(_("Add"), "Add new dependency...", $form, "edit" );
+            $content .= makePopup(_("Add"), _("Add new dependency..."), $form, "edit" );
         }
 				
         return $content;
@@ -508,7 +508,7 @@ $(function()
         }
             
         if ($need_legend) {
-            //            $content .= $this->makeChart('chart.php?legend=true', "Legend for the above figure(s)");
+            //            $content .= $this->makeChart('chart.php?legend=true', _("Legend for the above figure(s)"));
         }
 		
         return $content;
