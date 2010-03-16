@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-09 17:20+0100\n"
+"POT-Creation-Date: 2010-03-16 11:18+0100\n"
 "PO-Revision-Date: 2009-11-27 11:59+0000\n"
 "Last-Translator: Anja Winther-Ruud <anja.winther-ruud@freecode.no>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,6 +30,11 @@ msgstr "Avhengighet fjernet"
 #: controllers/ciController.php:119
 msgid "CI updated"
 msgstr "CI oppdatert"
+
+#: controllers/ciController.php:237
+#, php-format
+msgid "Created ci with id %s"
+msgstr "Opprettet ci med id %s"
 
 #: controllers/ciController.php:239
 msgid "Fields updated"
@@ -130,7 +135,7 @@ msgstr "CI har blitt kopiert"
 
 #: controllers/ciListController.php:131
 msgid "View CIs"
-msgstr "Vis CIer"
+msgstr "Vis CI-er"
 
 #: controllers/ciListController.php:139
 msgid "Filter on type"
@@ -430,11 +435,11 @@ msgstr "Antall saker"
 
 #: plugins/tuit/index.php:184
 msgid "Open issues associated with this CI"
-msgstr "Åpne saker knyttet til denne CIen"
+msgstr "Åpne saker knyttet til denne CI-en"
 
 #: plugins/tuit/index.php:198
 msgid "No tickets associated with this CI"
-msgstr "Ingen saker knyttet til denne CIen"
+msgstr "Ingen saker knyttet til denne CI-en"
 
 #: plugins/drilldown/controllers/configureController.php:11
 msgid "Root node for drilldown"

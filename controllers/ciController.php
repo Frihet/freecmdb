@@ -234,7 +234,7 @@ order by name", array(':type_id'=>$type_id));
         if( $ok) {
             db::commit();
 	    if ($is_new)
-                message("Created ci with id " . $id);	    
+                message(sprintf(_("Created ci with id %s"), $id));	    
 	    else
                 message(_('Fields updated'));
             util::redirect(makeUrl($arr));
