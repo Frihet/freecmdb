@@ -16,6 +16,18 @@ class DrilldownView
 	$node = $controller->getRoot();
 	
 	ob_start();
+        if(!$controller->isEmbeded()) {
+            echo "
+<div class='widget widget_2'>
+<div class='widget_header'>
+<h2>
+<h2>".("CMDB")."</h2>
+</h2>
+</div>
+<p>
+";
+            }
+        
 	
 	?>
 <style>
