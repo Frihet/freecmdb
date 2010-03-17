@@ -18,18 +18,18 @@ extends AdminController
 		
         if(!$plugin) 
             {
-                error("No plugin specified");
+                error(_("No plugin specified"));
                 return;
             }
         if(!preg_match('/^[a-z][a-z0-9]*$/i', $plugin)) 
             {
-                error("Illegal plugin name");
+                error(_("Illegal plugin name"));
                 return;
             }
 
         util::loadClass($plugin."Plugin");
 
-        util::setTitle("Plugin configuration - $plugin");
+        util::setTitle(sprintf(_("Plugin configuration - %s"),$plugin));
 		
         eval($plugin."Plugin::configure(\$this);");
 		
@@ -46,15 +46,15 @@ extends AdminController
 	if ($plugin_name === null)
 	    $plugin_name = param("plugin_name");
 
-        message("Enabling plugin ". $plugin_name);
+        message(sprintf(_("Enabling plugin %s"), $plugin_name));
 
         if (!preg_match('/^[a-z][a-z0-9]*$/i', $plugin_name)) {
-            error("Illegal package name: ". $plugin_name);
+            error(sprintf(_("Illegal package name: %s"), $plugin_name));
             return false;
         }
 
         if(!@stat("./plugins/". $plugin_name)) {
-            error("Plugin $plugin_name doesn't exists!");
+            error(sprintf(_("Plugin %s doesn't exists!"), $plugin_name));
             return false;
         }                
 
@@ -72,14 +72,14 @@ extends AdminController
 	}
 
 	if (!$db_ok) {
-	    error("Could not set up database tables");
+	    error(_("Could not set up database tables"));
 	}
 	else {
 
 	    $info = json_decode(file_get_contents("./plugins/$plugin_name/install.json"));
 
 	    if(!$info) {
-		error("Could not parse install information");
+		error(_("Could not parse install information"));
 	    }
 	    else {
 
@@ -111,7 +111,7 @@ values
 		}
 		else {
 		    db::commit();
-		    message("No errors encountered!");
+		    message(_("No errors encountered!"));
 		    util::redirect(makeUrl(array('task'=>'view' )));
 		    return true;
 		}
@@ -133,7 +133,7 @@ values
         $plugin_name = param("plugin_name");
 
         if (!preg_match('/^[a-z][a-z0-9]*$/i', $plugin_name)) {
-            error("Illegal package name: ". $plugin_name);
+            error(sprintf(_("Illegal package name: %s"), $plugin_name));
             return false;
         }
         
@@ -169,26 +169,26 @@ values
         $plugin_name = $plugin_name[0];
 
         if (!preg_match('/^[a-z][a-z0-9]*$/i', $plugin_name)) {
-            error("Illegal package name: ". $plugin_name);
+            error(sprintf(_("Illegal package name: %s"), $plugin_name));
             return;
         }
             
-        message("Installing plugin ". $plugin_name);
+        message(sprintf(_("Installing plugin %s"), $plugin_name));
 
         if(@stat("./plugins/". $plugin_name)) {
-            error("Plugin $plugin_name already exists!");
+            error(sprintf(_("Plugin %s already exists!"), $plugin_name));
             return;
         }
             
             
         if(!@mkdir("./plugins/". $plugin_name)) {
-            error("Could not create new directory for plugin. You probably need to set up the file permissions so that the web server can write to the plugins directory.");
+            error(_("Could not create new directory for plugin. You probably need to set up the file permissions so that the web server can write to the plugins directory."));
             return;
         }
             
         system("unzip >/dev/null -d plugins/$plugin_name " . escapeshellarg($_FILES['package_file']['tmp_name']), $status);
         if ($status !== 0) {
-            error("Failed to extract package contents");
+            error(_("Failed to extract package contents"));
         }
         else {
             if ($this->enableRun($plugin_name))

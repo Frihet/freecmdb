@@ -702,7 +702,7 @@ extends dbItem
 
     function setType($type)
     {
-        $this->type=$type;
+        $this->ci_type_id=$type;
         db::begin();
         log::add($id, CI_ACTION_CHANGE_TYPE);
         db::query('update ci set ci_type_id=:type_id where id=:id',
@@ -738,6 +738,7 @@ and ci_column_type_id=:key
                 
     function set($key, $value) 
     {
+        $this->_ci_column[$key] = $value;
         $type = ciColumnType::get($key);
         if ($type->pattern != "") {
             $p = $type->pattern;

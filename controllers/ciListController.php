@@ -128,7 +128,7 @@ extends CmdbController
             }
             
 		
-            util::setTitle("View CIs");
+            util::setTitle(_("View CIs"));
             $form = "";
 
 		
