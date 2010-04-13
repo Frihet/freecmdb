@@ -139,7 +139,7 @@ msgstr "Vis CI-er"
 
 #: controllers/ciListController.php:139
 msgid "Filter on type"
-msgstr "Filtrér på type"
+msgstr "Filtrer på type"
 
 #: controllers/ciListController.php:144
 msgid "None"
@@ -147,12 +147,12 @@ msgstr "Ingen"
 
 #: controllers/ciListController.php:152
 msgid "Filter on column value"
-msgstr "Filtrér på kolonneverdi"
+msgstr "Filtrer på kolonneverdi"
 
 #
 #: controllers/ciListController.php:168
 msgid "Filter"
-msgstr "Filtrér"
+msgstr "Filtrer"
 
 #: controllers/ciListController.php:177
 msgid "No CIs matched your criteria!"
