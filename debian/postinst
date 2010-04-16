@@ -1,0 +1,30 @@
+#! /bin/sh
+
+# source debconf stuff
+. /usr/share/debconf/confmodule
+
+# source dbconfig-common shell library, and call the hook function
+if ! [ -f /usr/share/dbconfig-common/dpkg/postinst.pgsql ]; then
+  echo "dbconfig-common / PostgreSQL is broken"
+  exit 1
+fi
+
+. /usr/share/dbconfig-common/dpkg/postinst.pgsql
+
+dbc_go freecmdb $@
+
+. /etc/dbconfig-common/freecmdb.conf
+
+# dbc_generate_include doesn't seem able to set the right password :(
+[ "$dbc_dbserver" ] || dbc_dbserver=localhost
+
+cat > /usr/share/freecmdb/config.php <<EOF
+<?php
+
+define('FC_DSN_DEFAULT', 'pgsql:dbname=$dbc_dbname;host=$dbc_dbserver;user=$dbc_dbuser;password=$dbc_dbpass');
+EOF
+
+[ -f /etc/apache2/mods-enabled/php5.load ] || ln -s /etc/apache2/mods-available/php5.load /etc/apache2/mods-enabled/php5.load
+[ -f /etc/apache2/mods-enabled/php5.conf ] || ln -s /etc/apache2/mods-available/php5.conf /etc/apache2/mods-enabled/php5.conf
+[ -f /etc/php5/conf.d/pdo.ini ] || echo "extension=pdo.so" > /etc/php5/conf.d/pdo.ini
+[ -f /etc/php5/conf.d/pdo_pgsql.ini ] || echo "extension=pdo_pgsql.so" > /etc/php5/conf.d/pdo_pgsql.ini
