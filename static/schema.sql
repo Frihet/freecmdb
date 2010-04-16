@@ -1,22 +1,22 @@
-drop view ci_view;
-drop view ci_column_view;
+drop view if exists ci_view;
+drop view if exists ci_column_view;
 
-drop index ci_dependency_idx;
+drop index if exists ci_dependency_idx;
 
-drop table ci_graph_cache;
-drop table ci_plugin;
-drop table ci_property;
-drop table ci_log;
-drop table ci_dependency;
-drop table ci_dependency_type;
-drop table ci_column;
-drop table ci;
-drop table ci_column_list;
-drop table ci_column_type;
-drop table ci_type;
-drop table ci_session;
-drop table ci_user;
-drop table ci_event;
+drop table if exists ci_graph_cache;
+drop table if exists ci_plugin;
+drop table if exists ci_property;
+drop table if exists ci_log;
+drop table if exists ci_dependency;
+drop table if exists ci_dependency_type;
+drop table if exists ci_column;
+drop table if exists ci;
+drop table if exists ci_column_list;
+drop table if exists ci_column_type;
+drop table if exists ci_type;
+drop table if exists ci_session;
+drop table if exists ci_user;
+drop table if exists ci_event;
 
 create table ci_user
 (
@@ -52,9 +52,9 @@ create table ci_column_type
 	type int not null default 0,
 	name varchar(64) not null,
 	ci_type_id int references ci_type(id),
-	prefix varchar(64) not null,
-	suffix varchar(64) not null,
-	pattern varchar(64) not null,
+	prefix varchar(64) not null default '',
+	suffix varchar(64) not null default '',
+	pattern varchar(64) not null default '',
 	deleted boolean not null default false
 );
 
