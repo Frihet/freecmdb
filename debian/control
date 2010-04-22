@@ -14,3 +14,9 @@ Description: A web-based ITIL CMDB solution
  software, services etc. It supports multiple types of relationships
  between items, as well as dependency graph generation and optional
  ticket management integration.
+
+Package: tuit-freecmdb
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, freecmdb, tuit
+Description: A web-based ITIL CMDB solution
+ This package integrates TUIT with FreeCMDB. It provides theme integration as well as login and content integration.

@@ -1,0 +1,16 @@
+#! /bin/sh
+
+. /etc/dbconfig-common/freecmdb.conf
+
+# dbc_generate_include doesn't seem able to set the right password :(
+[ "$dbc_dbserver" ] || dbc_dbserver=localhost
+
+export PGPASSFILE=/usr/share/freecmdb/pgpass
+
+m4 \
+ -D __dbc_dbname__=$dbc_dbname \
+ -D __dbc_dbserver__=$dbc_dbserver \
+ -D __dbc_dbuser__=$dbc_dbuser \
+ -D __dbc_dbpass__=$dbc_dbpass \
+ /usr/share/freecmdb/tuit-initial-data.sql |
+ psql -U $dbc_dbuser $dbc_dbname

@@ -18,6 +18,19 @@ dbc_go freecmdb $@
 # dbc_generate_include doesn't seem able to set the right password :(
 [ "$dbc_dbserver" ] || dbc_dbserver=localhost
 
+export PGPASSFILE=/usr/share/freecmdb/pgpass
+chmod go-rwx $PGPASSFILE
+echo "$dbc_dbserver:*:$dbc_dbname:$dbc_dbuser:$dbc_dbpass" >> $PGPASSFILE
+
+m4 \
+ -D __dbc_dbname__=$dbc_dbname \
+ -D __dbc_dbserver__=$dbc_dbserver \
+ -D __dbc_dbuser__=$dbc_dbuser \
+ -D __dbc_dbpass__=$dbc_dbpass \
+ -D __domain__=$(hostname -f) \
+ /usr/share/freecmdb/initial-data.sql |
+ psql -U $dbc_dbuser $dbc_dbname
+
 cat > /usr/share/freecmdb/config.php <<EOF
 <?php
 

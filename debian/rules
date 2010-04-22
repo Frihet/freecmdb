@@ -66,9 +66,16 @@ install-indep:
 
 	(cd debian/freecmdb/usr/share/freecmdb; ln -s ../fccommon common; )
 	mkdir -p debian/freecmdb/usr/share/dbconfig-common/data/freecmdb/install
-	cat static/schema.sql debian/initial-data.sql > debian/freecmdb/usr/share/dbconfig-common/data/freecmdb/install/pgsql
+	cat static/schema.sql > debian/freecmdb/usr/share/dbconfig-common/data/freecmdb/install/pgsql
+	cp debian/initial-data.sql debian/freecmdb/usr/share/freecmdb/initial-data.sql
 	mkdir -p debian/freecmdb/etc/apache2/conf.d
 	cp debian/apache.conf debian/freecmdb/etc/apache2/conf.d/freecmdb.conf
+
+	touch debian/freecmdb/usr/share/freecmdb/pgpass
+	chmod go-rwx debian/freecmdb/usr/share/freecmdb/pgpass
+
+	mkdir -p debian/tuit-freecmdb/usr/share/freecmdb
+	cp debian/tuit-initial-data.sql debian/tuit-freecmdb/usr/share/freecmdb/tuit-initial-data.sql
 
 	# Add here commands to install the indep part of the package into
 	# debian/<package>-doc.
