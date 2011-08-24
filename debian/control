@@ -1,0 +1,22 @@
+Source: freecmdb
+Section: unknown
+Priority: extra
+Maintainer: Egil Möller (FreeCode AS company email) <egil.moeller@freecode.no>
+Build-Depends: debhelper (>= 6)
+Standards-Version: 3.8.1
+Homepage: <insert the upstream URL, if relevant>
+
+Package: freecmdb
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, fccommon, dbconfig-common, apache2, libapache2-mod-php5, php5-curl, php5-common, php5-pgsql, php5-json, libgv-php5
+Description: A web-based ITIL CMDB solution
+ A Configuration Management Database for keeping track of inventory,
+ software, services etc. It supports multiple types of relationships
+ between items, as well as dependency graph generation and optional
+ ticket management integration.
+
+Package: tuit-freecmdb
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, freecmdb, tuit
+Description: A web-based ITIL CMDB solution
+ This package integrates TUIT with FreeCMDB. It provides theme integration as well as login and content integration.
