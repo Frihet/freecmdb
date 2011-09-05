@@ -205,6 +205,8 @@ $desc
 </th>
 <th>
 </th>
+<th>
+</th>
 </tr>
 
 ";
@@ -231,6 +233,13 @@ $val
 
 			$content .= "<td>";
 			$content .= FreeCMDB::dateTime($ci->update_time);
+			$content .= "</td><td>";
+                        if(ciUser::can_edit()) {
+                            
+                            $content .= makeLink(array('controller' => 'ci', 'id' => $ci->id,'task'=>'edit'),
+                                                 _('Edit'), 'edit button', sprintf(_("Edit the CI %s"), $ci->getDescription())
+                                                 );
+                        }
 			$content .= "</td><td>";
                         if(ciUser::can_edit()) {
                             
